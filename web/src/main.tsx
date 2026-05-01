@@ -12,23 +12,24 @@ import AppLayout from "@/layouts/app-layout"
 import AppIndex from "@/pages/app/index"
 import Settings from "@/pages/app/settings"
 import { ThemeProvider } from './providers/theme-provider'
+import GuestGuard from "@/components/guest-guard"
 
 const router = createBrowserRouter([
     {
         path: "/sign-in",
-        element: <SignIn />
+        element: <GuestGuard><SignIn /></GuestGuard>
     },
     {
         path: "/sign-up",
-        element: <SignUp />
+        element: <GuestGuard><SignUp /></GuestGuard>
     },
     {
         path: "/forgot-password",
-        element: <ForgotPassword />
+        element: <GuestGuard><ForgotPassword /></GuestGuard>
     },
     {
         path: "/reset-password",
-        element: <ResetPassword />
+        element: <GuestGuard><ResetPassword /></GuestGuard>
     },
     {
         path: "/",
