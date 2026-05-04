@@ -3,13 +3,20 @@ import { query } from '../config/db.js';
 export class UserRepository {
   async findById(id) {
     const result = await query(
-      `SELECT u.id, u.email, u.username, u.is_active, u.created_at, u.updated_at, r.name as role
+      `SELECT u.id, u.email, u.username, u.is_active, u.onboarding_completed, u.created_at, u.updated_at, r.name as role
        FROM users u
        JOIN roles r ON u.role_id = r.id
        WHERE u.id = $1`,
       [id]
     );
     return result.rows[0] || null;
+  }
+
+  async completeOnboarding(id) {
+    await query(
+      `UPDATE users SET onboarding_completed = TRUE, updated_at = NOW() WHERE id = $1`,
+      [id]
+    );
   }
 
   async updateById(id, data) {

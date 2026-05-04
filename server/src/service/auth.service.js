@@ -147,7 +147,7 @@ export class AuthService {
     const tokens = await this._generateTokens(tokenPayload, user.id);
 
     return {
-      user: { id: user.id, email: user.email, username: user.username, role: user.role },
+      user: { id: user.id, email: user.email, username: user.username, role: user.role, onboardingCompleted: user.onboarding_completed },
       tokens,
     };
   }

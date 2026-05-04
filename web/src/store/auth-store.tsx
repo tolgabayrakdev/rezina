@@ -7,6 +7,7 @@ export interface User {
   email: string
   username: string
   role: string
+  onboardingCompleted: boolean
 }
 
 interface AuthState {
@@ -21,6 +22,7 @@ interface AuthState {
   logout: () => Promise<void>
   checkAuth: () => Promise<boolean>
   extendSession: () => Promise<void>
+  completeOnboarding: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>()((set) => ({
@@ -43,6 +45,12 @@ export const useAuthStore = create<AuthState>()((set) => ({
     } finally {
       set({ user: null, isAuthenticated: false, sessionExpired: false })
     }
+  },
+  completeOnboarding: async () => {
+    await apiClient.post("/api/account/complete-onboarding")
+    set((state) => ({
+      user: state.user ? { ...state.user, onboardingCompleted: true } : null,
+    }))
   },
   extendSession: async () => {
     try {

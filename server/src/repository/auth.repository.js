@@ -3,7 +3,7 @@ import { query } from '../config/db.js';
 export class AuthRepository {
   async findUserByEmail(email) {
     const result = await query(
-      `SELECT u.id, u.email, u.username, u.password, u.is_active, u.is_verified, r.name as role
+      `SELECT u.id, u.email, u.username, u.password, u.is_active, u.is_verified, u.onboarding_completed, r.name as role
        FROM users u
        JOIN roles r ON u.role_id = r.id
        WHERE u.email = $1`,

@@ -8,7 +8,7 @@ import { PasswordInput } from "@/components/ui/password-input"
 import { useAuthStore } from "@/store/auth-store"
 import { ApiClientError } from "@/lib/api-client"
 import { AuthLeftPanel } from "@/components/auth-left-panel"
-import wernaLogo from "@/assets/werna_logo.svg"
+import wernaLogo from "@/assets/project_icon.svg"
 
 export default function SignUp() {
   const register = useAuthStore((state) => state.register)
@@ -65,8 +65,8 @@ export default function SignUp() {
           <div className="w-full max-w-md space-y-8 text-center">
             <div className="lg:hidden">
               <div className="flex items-center justify-center gap-2">
-                <img src={wernaLogo} alt="Werna" className="h-8 w-auto" />
-                <span className="text-2xl font-semibold tracking-tight">Werna</span>
+                <img src={wernaLogo} alt="Rezina" className="h-8 w-auto" />
+                <span className="text-2xl font-semibold tracking-tight">Rezina</span>
               </div>
             </div>
 
@@ -103,7 +103,7 @@ export default function SignUp() {
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
           <div className="lg:hidden text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">Werna</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Rezina</h1>
             <p className="text-sm text-muted-foreground mt-1">Hesap oluşturun</p>
           </div>
 

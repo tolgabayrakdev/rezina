@@ -1,5 +1,5 @@
 import { Shield, Zap, BarChart3 } from "lucide-react"
-import wernaLogo from "@/assets/werna_logo.svg"
+import rezinaLogo from "@/assets/project_icon.svg"
 
 const features = [
   {
@@ -46,8 +46,8 @@ export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
       <div className="relative z-10 flex flex-col h-full">
         {/* Logo */}
         <div className="flex items-center gap-2.5">
-          <img src={wernaLogo} alt="Werna" className="h-9 w-auto brightness-0 invert" />
-          <span className="text-xl font-semibold tracking-tight">Werna</span>
+          <img src={rezinaLogo} alt="Rezina" className="h-9 w-auto" />
+          <span className="text-xl font-semibold tracking-tight">Rezina</span>
         </div>
 
         {/* Main content */}
@@ -78,7 +78,7 @@ export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
         </div>
 
         {/* Footer */}
-        <p className="text-xs text-white/25">© 2026 Werna. Tüm hakları saklıdır.</p>
+        <p className="text-xs text-white/25">© 2026 Rezina. Tüm hakları saklıdır.</p>
       </div>
     </div>
   )

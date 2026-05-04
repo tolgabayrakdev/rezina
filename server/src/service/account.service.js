@@ -14,7 +14,7 @@ export class AccountService {
     if (!user) {
       throw new NotFoundError('Kullanıcı bulunamadı');
     }
-    return user;
+    return { ...user, onboardingCompleted: user.onboarding_completed };
   }
 
   async updateProfile(userId, data) {
@@ -38,6 +38,10 @@ export class AccountService {
 
     const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
     return this.userRepo.updateById(userId, { password: hashedPassword });
+  }
+
+  async completeOnboarding(userId) {
+    await this.userRepo.completeOnboarding(userId);
   }
 
   async deleteAccount(userId) {

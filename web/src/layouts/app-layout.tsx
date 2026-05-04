@@ -34,8 +34,9 @@ import {
   ChevronsUpDown,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import wernaLogo from "@/assets/werna_logo.svg"
+import rezinaLogo from "@/assets/project_icon.svg"
 import { useTheme } from "@/providers/theme-provider"
+import { OnboardingModal } from "@/components/onboarding-modal"
 
 const navItems = [
   { to: "/", label: "Ana Sayfa", icon: House },
@@ -81,13 +82,13 @@ function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProp
           )}
         >
           <div className="flex items-center gap-2 lg:hidden">
-            <img src={wernaLogo} alt="Werna" className="h-7 w-auto" />
-            <span className="text-lg font-semibold tracking-tight select-none">Werna</span>
+            <img src={rezinaLogo} alt="Rezina" className="h-7 w-auto" />
+            <span className="text-lg font-semibold tracking-tight select-none">Rezina</span>
           </div>
           {!collapsed && (
             <div className="hidden lg:flex items-center gap-2">
-              <img src={wernaLogo} alt="Werna" className="h-7 w-auto" />
-              <span className="text-lg font-semibold tracking-tight select-none">Werna</span>
+              <img src={rezinaLogo} alt="Rezina" className="h-7 w-auto" />
+              <span className="text-lg font-semibold tracking-tight select-none">Rezina</span>
             </div>
           )}
           <Button
@@ -328,6 +329,7 @@ export default function AppLayout() {
 
   return (
     <AuthProvider>
+      <OnboardingModal />
       <div className="min-h-screen flex">
         {mobileOpen && (
           <div
@@ -349,8 +351,8 @@ export default function AppLayout() {
               <Menu className="size-4" />
             </Button>
             <div className="flex items-center gap-2">
-              <img src={wernaLogo} alt="Werna" className="h-6 w-auto" />
-              <span className="text-base font-semibold tracking-tight">Werna</span>
+              <img src={rezinaLogo} alt="Rezina" className="h-6 w-auto" />
+              <span className="text-base font-semibold tracking-tight">Rezina</span>
             </div>
           </header>
 

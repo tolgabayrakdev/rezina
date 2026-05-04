@@ -32,6 +32,15 @@ export class AccountController {
     }
   };
 
+  completeOnboarding = async (req, res, next) => {
+    try {
+      await this.accountService.completeOnboarding(req.user.id);
+      res.status(200).json({ success: true, data: { message: 'Onboarding tamamlandı' } });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   deleteAccount = async (req, res, next) => {
     try {
       await this.accountService.deleteAccount(req.user.id);

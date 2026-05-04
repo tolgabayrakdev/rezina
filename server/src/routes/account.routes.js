@@ -18,6 +18,7 @@ router.patch(
   validate(updatePasswordSchema),
   accountController.updatePassword
 );
+router.post('/complete-onboarding', authenticate, accountController.completeOnboarding);
 router.delete('/me', authenticate, accountController.deleteAccount);
 
 export default router;
