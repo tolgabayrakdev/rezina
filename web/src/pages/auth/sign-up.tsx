@@ -57,16 +57,16 @@ export default function SignUp() {
     return (
       <div className="min-h-screen grid lg:grid-cols-2">
         <AuthLeftPanel
-          heading={<>Hesabınız<br />oluşturuldu!</>}
-          description="E-posta adresinizi doğruladıktan sonra platformun tüm özelliklerine erişebilirsiniz."
+        heading={<>Çiftliğinize<br />hoş geldiniz!</>}
+        description="Kayıt olun ve çiftlik yönetimini kolayca yapmaya başlayın."
         />
 
         <div className="flex items-center justify-center p-8">
           <div className="w-full max-w-md space-y-8 text-center">
             <div className="lg:hidden">
               <div className="flex items-center justify-center gap-2">
-                <img src={wernaLogo} alt="Rezina" className="h-8 w-auto" />
-                <span className="text-2xl font-semibold tracking-tight">Rezina</span>
+                <img src={wernaLogo} alt="ÇiftlikApp" className="h-8 w-auto" />
+                <span className="text-2xl font-semibold tracking-tight">ÇiftlikApp</span>
               </div>
             </div>
 
@@ -96,14 +96,14 @@ export default function SignUp() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       <AuthLeftPanel
-        heading={<>Yeni bir başlangıç<br />yapın</>}
-        description="Dakikalar içinde hesap oluşturun ve platformumuzun tüm avantajlarından yararlanın."
+        heading={<>Çiftlik yönetimi<br />başlasın</>}
+        description="Hesap oluşturun ve hayvanlarınızı kolayca takip etmeye başlayın."
       />
 
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
           <div className="lg:hidden text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">Rezina</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">ÇiftlikApp</h1>
             <p className="text-sm text-muted-foreground mt-1">Hesap oluşturun</p>
           </div>
 

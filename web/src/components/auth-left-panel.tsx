@@ -1,21 +1,21 @@
-import { Shield, Zap, BarChart3 } from "lucide-react"
-import rezinaLogo from "@/assets/project_icon.svg"
+import { Sprout, Heart, Users } from "lucide-react"
+import farmLogo from "@/assets/project_icon.svg"
 
 const features = [
   {
-    icon: Shield,
-    title: "Güvenli Altyapı",
-    desc: "Verileriniz uçtan uca şifrelenmiş ve güvende",
+    icon: Sprout,
+    title: "Çiftlik Yönetimi",
+    desc: "Tüm hayvanlarınızı tek yerden kolayca takip edin",
   },
   {
-    icon: Zap,
-    title: "Hızlı ve Güvenilir",
-    desc: "Kesintisiz hizmet, anında erişim",
+    icon: Heart,
+    title: "Sağlık Takibi",
+    desc: "Hayvan sağlığı ve aşı takibi otomatik hatırlatmalar",
   },
   {
-    icon: BarChart3,
-    title: "Güçlü Analitik",
-    desc: "İş süreçlerinizi veriye dayalı optimize edin",
+    icon: Users,
+    title: "Sürü Yönetimi",
+    desc: "Sürü bazlı gruplama ve detaylı analiz raporları",
   },
 ]
 
@@ -26,11 +26,11 @@ interface AuthLeftPanelProps {
 
 export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
   return (
-    <div className="hidden lg:flex flex-col relative overflow-hidden bg-slate-950 p-12 text-white select-none">
+    <div className="hidden lg:flex flex-col relative overflow-hidden bg-green-950 p-12 text-white select-none">
       {/* Decorative blobs */}
-      <div className="absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-40 -left-40 size-[420px] rounded-full bg-indigo-600/15 blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 size-[200px] rounded-full bg-violet-500/10 blur-[60px] pointer-events-none" />
+      <div className="absolute -top-40 -right-40 size-[520px] rounded-full bg-green-600/20 blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 size-[420px] rounded-full bg-emerald-700/15 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 size-[200px] rounded-full bg-lime-500/10 blur-[60px] pointer-events-none" />
 
       {/* Dot grid overlay */}
       <div
@@ -46,8 +46,8 @@ export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
       <div className="relative z-10 flex flex-col h-full">
         {/* Logo */}
         <div className="flex items-center gap-2.5">
-          <img src={rezinaLogo} alt="Rezina" className="h-9 w-auto" />
-          <span className="text-xl font-semibold tracking-tight">Rezina</span>
+          <img src={farmLogo} alt="Çiftlik" className="h-9 w-auto" />
+          <span className="text-xl font-semibold tracking-tight">ÇiftlikApp</span>
         </div>
 
         {/* Main content */}
@@ -78,7 +78,7 @@ export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
         </div>
 
         {/* Footer */}
-        <p className="text-xs text-white/25">© 2026 Rezina. Tüm hakları saklıdır.</p>
+        <p className="text-xs text-white/25">© 2026 ÇiftlikApp. Tüm hakları saklıdır.</p>
       </div>
     </div>
   )
