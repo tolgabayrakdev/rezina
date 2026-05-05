@@ -22,7 +22,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   House,
-  ScrollText,
+  Car,
+  Users,
+  Handshake,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -38,7 +40,9 @@ import { useTheme } from "@/providers/theme-provider"
 
 const navItems = [
   { to: "/", label: "Ana Sayfa", icon: House },
-  { to: "/scripts", label: "Scripts", icon: ScrollText },
+  { to: "/cars", label: "Araçlar", icon: Car },
+  { to: "/customers", label: "Müşteriler", icon: Users },
+  { to: "/interests", label: "İlgiler", icon: Handshake },
 ]
 
 export interface AppSidebarProps {
@@ -133,14 +137,12 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
           collapsed ? "lg:w-[68px]" : "lg:w-[260px]"
         )}
       >
-        {/* Header */}
         <div
           className={cn(
             "border-sidebar-border/60 flex h-14 shrink-0 items-center border-b",
             collapsed ? "lg:justify-center lg:px-2" : "justify-between px-3"
           )}
         >
-          {/* Desktop collapsed: sadece toggle */}
           {collapsed && (
             <Button
               variant="ghost"
@@ -152,7 +154,6 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             </Button>
           )}
 
-          {/* Desktop expanded: logo + toggle */}
           {!collapsed && (
             <div className="hidden w-full items-center justify-between lg:flex">
               <div className="flex min-w-0 items-center gap-2.5 overflow-hidden">
@@ -174,7 +175,6 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             </div>
           )}
 
-          {/* Mobile: logo + close */}
           <div className="flex w-full items-center justify-between lg:hidden">
             <div className="flex items-center gap-2.5">
               <div className="ring-sidebar-border/40 size-7 shrink-0 overflow-hidden rounded-lg shadow-sm ring-1">
@@ -195,7 +195,6 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
           </div>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 overflow-x-hidden overflow-y-auto px-2 py-3">
           <p
             className={cn(
@@ -230,9 +229,7 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
           </div>
         </nav>
 
-        {/* Footer */}
         <div className="border-sidebar-border/60 shrink-0 border-t p-2">
-          {/* Desktop collapsed */}
           {collapsed && (
             <div className="hidden justify-center lg:flex">
               <DropdownMenu>
@@ -251,7 +248,6 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             </div>
           )}
 
-          {/* Desktop expanded */}
           {!collapsed && (
             <div className="hidden lg:flex">
               <DropdownMenu>
@@ -261,7 +257,6 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             </div>
           )}
 
-          {/* Mobile */}
           <div className="lg:hidden">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>{userTriggerExpanded}</DropdownMenuTrigger>

@@ -9,11 +9,14 @@ import SignUp from "@/pages/auth/sign-up"
 import ForgotPassword from "@/pages/auth/forgot-password"
 import ResetPassword from "@/pages/auth/reset-password"
 import AppLayout from "@/layouts/app-layout"
-import AppIndex from "@/pages/app/index"
+import Dashboard from "@/pages/app/dashboard"
+import Cars from "@/pages/app/cars"
+import CarDetail from "@/pages/app/cars/car-detail"
+import Customers from "@/pages/app/customers"
+import Interests from "@/pages/app/interests"
 import Settings from "@/pages/app/settings"
 import { ThemeProvider } from "./providers/theme-provider"
 import GuestGuard from "@/components/guest-guard"
-import Scripts from "@/pages/app/scripts"
 
 const router = createBrowserRouter([
   {
@@ -52,18 +55,12 @@ const router = createBrowserRouter([
     path: "/",
     element: <AppLayout />,
     children: [
-      {
-        index: true,
-        element: <AppIndex />,
-      },
-      {
-        path: "settings",
-        element: <Settings />,
-      },
-      {
-        path: "scripts",
-        element: <Scripts />,
-      },
+      { index: true, element: <Dashboard /> },
+      { path: "cars", element: <Cars /> },
+      { path: "cars/:carId", element: <CarDetail /> },
+      { path: "customers", element: <Customers /> },
+      { path: "interests", element: <Interests /> },
+      { path: "settings", element: <Settings /> },
     ],
   },
 ])
