@@ -4,12 +4,12 @@ import pool from '../config/db.js';
 export class CarRepository {
   // ── Cars ────────────────────────────────────────────────────────────────
 
-  async create({ workspaceId, title, brand, model, year, mileage, price, status, description }) {
+  async create({ userId, title, brand, model, year, mileage, price, status, description }) {
     const result = await query(
-      `INSERT INTO cars (workspace_id, title, brand, model, year, mileage, price, status, description)
+      `INSERT INTO cars (user_id, title, brand, model, year, mileage, price, status, description)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [workspaceId, title, brand ?? null, model ?? null, year ?? null, mileage ?? null, price ?? null, status ?? 'in_stock', description ?? null]
+      [userId, title, brand ?? null, model ?? null, year ?? null, mileage ?? null, price ?? null, status ?? 'in_stock', description ?? null]
     );
     return result.rows[0];
   }
@@ -19,9 +19,9 @@ export class CarRepository {
     return result.rows[0] || null;
   }
 
-  async findByWorkspaceId(workspaceId, filters = {}) {
-    const conditions = ['workspace_id = $1'];
-    const values = [workspaceId];
+  async findByUserId(userId, filters = {}) {
+    const conditions = ['user_id = $1'];
+    const values = [userId];
     let idx = 2;
 
     if (filters.status) {

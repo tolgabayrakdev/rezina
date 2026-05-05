@@ -4,7 +4,7 @@ import { authenticate } from '../middleware/auth.js';
 import { validate } from '../middleware/validation.js';
 import { createInterestSchema, updateInterestSchema } from '../schemas/interest.schema.js';
 
-const router = Router({ mergeParams: true });
+const router = Router();
 const interestController = new InterestController();
 
 router.use(authenticate);

@@ -9,7 +9,7 @@ import {
   addCarLinkSchema,
 } from '../schemas/car.schema.js';
 
-const router = Router({ mergeParams: true });
+const router = Router();
 const carController = new CarController();
 
 router.use(authenticate);

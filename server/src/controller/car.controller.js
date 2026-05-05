@@ -7,7 +7,7 @@ export class CarController {
 
   create = async (req, res, next) => {
     try {
-      const car = await this.carService.createCar(req.params.workspaceId, req.user.id, req.body);
+      const car = await this.carService.createCar(req.user.id, req.body);
       res.status(201).json({ success: true, data: car });
     } catch (err) {
       next(err);
@@ -17,7 +17,7 @@ export class CarController {
   list = async (req, res, next) => {
     try {
       const { status, brand, model } = req.query;
-      const cars = await this.carService.getCars(req.params.workspaceId, req.user.id, { status, brand, model });
+      const cars = await this.carService.getCars(req.user.id, { status, brand, model });
       res.status(200).json({ success: true, data: cars });
     } catch (err) {
       next(err);
@@ -26,7 +26,7 @@ export class CarController {
 
   get = async (req, res, next) => {
     try {
-      const car = await this.carService.getCar(req.params.workspaceId, req.user.id, req.params.carId);
+      const car = await this.carService.getCar(req.user.id, req.params.carId);
       res.status(200).json({ success: true, data: car });
     } catch (err) {
       next(err);
@@ -35,7 +35,7 @@ export class CarController {
 
   update = async (req, res, next) => {
     try {
-      const car = await this.carService.updateCar(req.params.workspaceId, req.user.id, req.params.carId, req.body);
+      const car = await this.carService.updateCar(req.user.id, req.params.carId, req.body);
       res.status(200).json({ success: true, data: car });
     } catch (err) {
       next(err);
@@ -44,7 +44,7 @@ export class CarController {
 
   delete = async (req, res, next) => {
     try {
-      await this.carService.deleteCar(req.params.workspaceId, req.user.id, req.params.carId);
+      await this.carService.deleteCar(req.user.id, req.params.carId);
       res.status(200).json({ success: true, data: { message: 'Araç silindi' } });
     } catch (err) {
       next(err);
@@ -56,7 +56,6 @@ export class CarController {
   addImage = async (req, res, next) => {
     try {
       const image = await this.carService.addImage(
-        req.params.workspaceId,
         req.user.id,
         req.params.carId,
         req.body
@@ -70,7 +69,6 @@ export class CarController {
   setCover = async (req, res, next) => {
     try {
       const image = await this.carService.setCover(
-        req.params.workspaceId,
         req.user.id,
         req.params.carId,
         req.params.imageId
@@ -84,7 +82,6 @@ export class CarController {
   deleteImage = async (req, res, next) => {
     try {
       await this.carService.deleteImage(
-        req.params.workspaceId,
         req.user.id,
         req.params.carId,
         req.params.imageId
@@ -100,7 +97,6 @@ export class CarController {
   addLink = async (req, res, next) => {
     try {
       const link = await this.carService.addLink(
-        req.params.workspaceId,
         req.user.id,
         req.params.carId,
         req.body
@@ -114,7 +110,6 @@ export class CarController {
   getLinks = async (req, res, next) => {
     try {
       const links = await this.carService.getLinks(
-        req.params.workspaceId,
         req.user.id,
         req.params.carId
       );
@@ -127,7 +122,6 @@ export class CarController {
   deleteLink = async (req, res, next) => {
     try {
       await this.carService.deleteLink(
-        req.params.workspaceId,
         req.user.id,
         req.params.carId,
         req.params.linkId

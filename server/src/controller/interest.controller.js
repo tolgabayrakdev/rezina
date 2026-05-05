@@ -8,7 +8,6 @@ export class InterestController {
   create = async (req, res, next) => {
     try {
       const interest = await this.interestService.createInterest(
-        req.params.workspaceId,
         req.user.id,
         req.body
       );
@@ -22,7 +21,6 @@ export class InterestController {
     try {
       const { status, car_id, customer_id } = req.query;
       const interests = await this.interestService.getInterests(
-        req.params.workspaceId,
         req.user.id,
         { status, car_id, customer_id }
       );
@@ -35,7 +33,6 @@ export class InterestController {
   get = async (req, res, next) => {
     try {
       const interest = await this.interestService.getInterest(
-        req.params.workspaceId,
         req.user.id,
         req.params.interestId
       );
@@ -48,7 +45,6 @@ export class InterestController {
   update = async (req, res, next) => {
     try {
       const interest = await this.interestService.updateInterest(
-        req.params.workspaceId,
         req.user.id,
         req.params.interestId,
         req.body
@@ -62,7 +58,6 @@ export class InterestController {
   delete = async (req, res, next) => {
     try {
       await this.interestService.deleteInterest(
-        req.params.workspaceId,
         req.user.id,
         req.params.interestId
       );

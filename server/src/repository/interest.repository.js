@@ -15,7 +15,7 @@ export class InterestRepository {
     const result = await query(
       `SELECT
          ci.*,
-         c.workspace_id as car_workspace_id,
+         c.user_id as car_user_id,
          c.title        as car_title,
          c.brand        as car_brand,
          c.model        as car_model,
@@ -30,9 +30,9 @@ export class InterestRepository {
     return result.rows[0] || null;
   }
 
-  async findByWorkspaceId(workspaceId, filters = {}) {
-    const conditions = ['c.workspace_id = $1'];
-    const values = [workspaceId];
+  async findByUserId(userId, filters = {}) {
+    const conditions = ['c.user_id = $1'];
+    const values = [userId];
     let idx = 2;
 
     if (filters.status) {

@@ -4,7 +4,7 @@ import { authenticate } from '../middleware/auth.js';
 import { validate } from '../middleware/validation.js';
 import { createCustomerSchema, updateCustomerSchema } from '../schemas/customer.schema.js';
 
-const router = Router({ mergeParams: true });
+const router = Router();
 const customerController = new CustomerController();
 
 router.use(authenticate);

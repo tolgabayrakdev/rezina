@@ -17,6 +17,7 @@ CREATE TABLE users (
     role_id UUID NOT NULL REFERENCES roles(id) ON DELETE RESTRICT,
     is_active BOOLEAN DEFAULT FALSE,
     is_verified BOOLEAN DEFAULT FALSE,
+    onboarding_completed BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -81,18 +82,10 @@ $$ LANGUAGE plpgsql;
 -- GALLERY OS (NEW MODULE)
 -- =========================
 
--- WORKSPACES (GALERİLER)
-CREATE TABLE workspaces (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(100) NOT NULL,
-    owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
 -- ARAÇLAR
 CREATE TABLE cars (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     brand VARCHAR(100),
     model VARCHAR(100),
@@ -105,7 +98,7 @@ CREATE TABLE cars (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_cars_workspace_id ON cars(workspace_id);
+CREATE INDEX idx_cars_user_id ON cars(user_id);
 CREATE INDEX idx_cars_status ON cars(status);
 
 CREATE TRIGGER trg_cars_updated_at
@@ -150,13 +143,13 @@ CREATE INDEX idx_car_links_car_id ON car_links(car_id);
 -- MÜŞTERİLER
 CREATE TABLE customers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(150),
     phone VARCHAR(50),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_customers_workspace_id ON customers(workspace_id);
+CREATE INDEX idx_customers_user_id ON customers(user_id);
 
 
 -- ARAÇ - MÜŞTERİ İLGİSİ
@@ -177,3 +170,10 @@ CREATE INDEX idx_car_interests_customer_id ON car_interests(customer_id);
 CREATE TRIGGER trg_car_interests_updated_at
   BEFORE UPDATE ON car_interests
   FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+
+-- =========================
+-- WORKSPACE KALDIRMA MİGRASYONU
+-- =========================
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT FALSE;

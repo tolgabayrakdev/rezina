@@ -5,7 +5,6 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/auth.routes.js';
 import accountRoutes from './routes/account.routes.js';
-import workspaceRoutes from './routes/workspace.routes.js';
 import carRoutes from './routes/car.routes.js';
 import customerRoutes from './routes/customer.routes.js';
 import interestRoutes from './routes/interest.routes.js';
@@ -34,10 +33,9 @@ app.use(generalLimiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/account', accountRoutes);
-app.use('/api/workspaces', workspaceRoutes);
-app.use('/api/workspaces/:workspaceId/cars', carRoutes);
-app.use('/api/workspaces/:workspaceId/customers', customerRoutes);
-app.use('/api/workspaces/:workspaceId/interests', interestRoutes);
+app.use('/api/cars', carRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/interests', interestRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });

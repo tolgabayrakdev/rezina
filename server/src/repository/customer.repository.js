@@ -1,12 +1,12 @@
 import { query } from '../config/db.js';
 
 export class CustomerRepository {
-  async create({ workspaceId, name, phone }) {
+  async create({ userId, name, phone }) {
     const result = await query(
-      `INSERT INTO customers (workspace_id, name, phone)
+      `INSERT INTO customers (user_id, name, phone)
        VALUES ($1, $2, $3)
        RETURNING *`,
-      [workspaceId, name, phone ?? null]
+      [userId, name ?? null, phone ?? null]
     );
     return result.rows[0];
   }
@@ -16,9 +16,9 @@ export class CustomerRepository {
     return result.rows[0] || null;
   }
 
-  async findByWorkspaceId(workspaceId, search) {
-    const conditions = ['workspace_id = $1'];
-    const values = [workspaceId];
+  async findByUserId(userId, search) {
+    const conditions = ['user_id = $1'];
+    const values = [userId];
 
     if (search) {
       conditions.push(`(LOWER(name) LIKE $2 OR phone LIKE $2)`);

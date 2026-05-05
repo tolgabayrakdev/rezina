@@ -1,28 +1,23 @@
 import { CarRepository } from '../repository/car.repository.js';
-import { WorkspaceRepository } from '../repository/workspace.repository.js';
-import { NotFoundError, ForbiddenError } from '../exceptions/index.js';
+import { NotFoundError } from '../exceptions/index.js';
 
 export class CarService {
   constructor() {
     this.carRepo = new CarRepository();
-    this.workspaceRepo = new WorkspaceRepository();
   }
 
   // ── Cars ────────────────────────────────────────────────────────────────
 
-  async createCar(workspaceId, userId, data) {
-    await this._requireOwner(workspaceId, userId);
-    return this.carRepo.create({ workspaceId, ...data });
+  async createCar(userId, data) {
+    return this.carRepo.create({ userId, ...data });
   }
 
-  async getCars(workspaceId, userId, filters) {
-    await this._requireOwner(workspaceId, userId);
-    return this.carRepo.findByWorkspaceId(workspaceId, filters);
+  async getCars(userId, filters) {
+    return this.carRepo.findByUserId(userId, filters);
   }
 
-  async getCar(workspaceId, userId, carId) {
-    await this._requireOwner(workspaceId, userId);
-    const car = await this._findCar(carId, workspaceId);
+  async getCar(userId, carId) {
+    const car = await this._findCar(carId, userId);
     const [images, links] = await Promise.all([
       this.carRepo.findImagesByCarId(carId),
       this.carRepo.findLinksByCarId(carId),
@@ -30,29 +25,25 @@ export class CarService {
     return { ...car, images, links };
   }
 
-  async updateCar(workspaceId, userId, carId, data) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async updateCar(userId, carId, data) {
+    await this._findCar(carId, userId);
     return this.carRepo.update(carId, data);
   }
 
-  async deleteCar(workspaceId, userId, carId) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async deleteCar(userId, carId) {
+    await this._findCar(carId, userId);
     await this.carRepo.deleteById(carId);
   }
 
   // ── Images ───────────────────────────────────────────────────────────────
 
-  async addImage(workspaceId, userId, carId, { url, is_cover }) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async addImage(userId, carId, { url, is_cover }) {
+    await this._findCar(carId, userId);
     return this.carRepo.addImage({ carId, url, isCover: is_cover ?? false });
   }
 
-  async setCover(workspaceId, userId, carId, imageId) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async setCover(userId, carId, imageId) {
+    await this._findCar(carId, userId);
 
     const image = await this.carRepo.findImageById(imageId);
     if (!image || image.car_id !== carId) throw new NotFoundError('Fotoğraf bulunamadı');
@@ -60,9 +51,8 @@ export class CarService {
     return this.carRepo.setCover(carId, imageId);
   }
 
-  async deleteImage(workspaceId, userId, carId, imageId) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async deleteImage(userId, carId, imageId) {
+    await this._findCar(carId, userId);
 
     const image = await this.carRepo.findImageById(imageId);
     if (!image || image.car_id !== carId) throw new NotFoundError('Fotoğraf bulunamadı');
@@ -72,21 +62,18 @@ export class CarService {
 
   // ── Links ────────────────────────────────────────────────────────────────
 
-  async addLink(workspaceId, userId, carId, { platform, url }) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async addLink(userId, carId, { platform, url }) {
+    await this._findCar(carId, userId);
     return this.carRepo.addLink({ carId, platform, url });
   }
 
-  async getLinks(workspaceId, userId, carId) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async getLinks(userId, carId) {
+    await this._findCar(carId, userId);
     return this.carRepo.findLinksByCarId(carId);
   }
 
-  async deleteLink(workspaceId, userId, carId, linkId) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCar(carId, workspaceId);
+  async deleteLink(userId, carId, linkId) {
+    await this._findCar(carId, userId);
 
     const link = await this.carRepo.findLinkById(linkId);
     if (!link || link.car_id !== carId) throw new NotFoundError('Link bulunamadı');
@@ -96,15 +83,9 @@ export class CarService {
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
-  async _requireOwner(workspaceId, userId) {
-    const workspace = await this.workspaceRepo.findById(workspaceId);
-    if (!workspace) throw new NotFoundError('Workspace bulunamadı');
-    if (workspace.owner_id !== userId) throw new ForbiddenError('Bu workspace\'e erişim yetkiniz yok');
-  }
-
-  async _findCar(carId, workspaceId) {
+  async _findCar(carId, userId) {
     const car = await this.carRepo.findById(carId);
-    if (!car || car.workspace_id !== workspaceId) throw new NotFoundError('Araç bulunamadı');
+    if (!car || car.user_id !== userId) throw new NotFoundError('Araç bulunamadı');
     return car;
   }
 }

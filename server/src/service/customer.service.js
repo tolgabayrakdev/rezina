@@ -1,49 +1,36 @@
 import { CustomerRepository } from '../repository/customer.repository.js';
-import { WorkspaceRepository } from '../repository/workspace.repository.js';
-import { NotFoundError, ForbiddenError } from '../exceptions/index.js';
+import { NotFoundError } from '../exceptions/index.js';
 
 export class CustomerService {
   constructor() {
     this.customerRepo = new CustomerRepository();
-    this.workspaceRepo = new WorkspaceRepository();
   }
 
-  async createCustomer(workspaceId, userId, data) {
-    await this._requireOwner(workspaceId, userId);
-    return this.customerRepo.create({ workspaceId, ...data });
+  async createCustomer(userId, data) {
+    return this.customerRepo.create({ userId, ...data });
   }
 
-  async getCustomers(workspaceId, userId, search) {
-    await this._requireOwner(workspaceId, userId);
-    return this.customerRepo.findByWorkspaceId(workspaceId, search);
+  async getCustomers(userId, search) {
+    return this.customerRepo.findByUserId(userId, search);
   }
 
-  async getCustomer(workspaceId, userId, customerId) {
-    await this._requireOwner(workspaceId, userId);
-    return this._findCustomer(customerId, workspaceId);
+  async getCustomer(userId, customerId) {
+    return this._findCustomer(customerId, userId);
   }
 
-  async updateCustomer(workspaceId, userId, customerId, data) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCustomer(customerId, workspaceId);
+  async updateCustomer(userId, customerId, data) {
+    await this._findCustomer(customerId, userId);
     return this.customerRepo.update(customerId, data);
   }
 
-  async deleteCustomer(workspaceId, userId, customerId) {
-    await this._requireOwner(workspaceId, userId);
-    await this._findCustomer(customerId, workspaceId);
+  async deleteCustomer(userId, customerId) {
+    await this._findCustomer(customerId, userId);
     await this.customerRepo.deleteById(customerId);
   }
 
-  async _requireOwner(workspaceId, userId) {
-    const workspace = await this.workspaceRepo.findById(workspaceId);
-    if (!workspace) throw new NotFoundError('Workspace bulunamadı');
-    if (workspace.owner_id !== userId) throw new ForbiddenError('Bu workspace\'e erişim yetkiniz yok');
-  }
-
-  async _findCustomer(customerId, workspaceId) {
+  async _findCustomer(customerId, userId) {
     const customer = await this.customerRepo.findById(customerId);
-    if (!customer || customer.workspace_id !== workspaceId) throw new NotFoundError('Müşteri bulunamadı');
+    if (!customer || customer.user_id !== userId) throw new NotFoundError('Müşteri bulunamadı');
     return customer;
   }
 }

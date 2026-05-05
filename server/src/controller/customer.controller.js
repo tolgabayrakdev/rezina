@@ -7,7 +7,7 @@ export class CustomerController {
 
   create = async (req, res, next) => {
     try {
-      const customer = await this.customerService.createCustomer(req.params.workspaceId, req.user.id, req.body);
+      const customer = await this.customerService.createCustomer(req.user.id, req.body);
       res.status(201).json({ success: true, data: customer });
     } catch (err) {
       next(err);
@@ -17,7 +17,6 @@ export class CustomerController {
   list = async (req, res, next) => {
     try {
       const customers = await this.customerService.getCustomers(
-        req.params.workspaceId,
         req.user.id,
         req.query.search
       );
@@ -30,7 +29,6 @@ export class CustomerController {
   get = async (req, res, next) => {
     try {
       const customer = await this.customerService.getCustomer(
-        req.params.workspaceId,
         req.user.id,
         req.params.customerId
       );
@@ -43,7 +41,6 @@ export class CustomerController {
   update = async (req, res, next) => {
     try {
       const customer = await this.customerService.updateCustomer(
-        req.params.workspaceId,
         req.user.id,
         req.params.customerId,
         req.body
@@ -57,7 +54,6 @@ export class CustomerController {
   delete = async (req, res, next) => {
     try {
       await this.customerService.deleteCustomer(
-        req.params.workspaceId,
         req.user.id,
         req.params.customerId
       );
