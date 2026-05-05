@@ -108,12 +108,15 @@ export default function Dashboard() {
   const reserved = cars.filter((c) => c.status === "reserved").length
   const sold = cars.filter((c) => c.status === "sold").length
   const activeInterests = interests.filter((i) => i.status !== "lost" && i.status !== "sold").length
-  const totalRevenue = cars.filter((c) => c.status === "sold").reduce((sum, c) => sum + (c.price || 0), 0)
+  const totalRevenue = cars.filter((c) => c.status === "sold").reduce((sum, c) => sum + (Number(c.price) || 0), 0)
   const soldWithPrice = cars.filter((c) => c.status === "sold" && c.price)
   const avgPrice = soldWithPrice.length > 0 ? totalRevenue / soldWithPrice.length : 0
 
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(price)
+  const formatPrice = (price: number | string | null) => {
+    const num = Number(price)
+    if (!num) return "-"
+    return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(num)
+  }
 
   const formatDate = (date: string) =>
     new Date(date).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })

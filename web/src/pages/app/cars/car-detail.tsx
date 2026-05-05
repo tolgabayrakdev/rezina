@@ -143,9 +143,10 @@ export default function CarDetail() {
 
   if (!car) return null
 
-  const formatPrice = (price: number | null) => {
-    if (!price) return "-"
-    return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(price)
+  const formatPrice = (price: number | string | null) => {
+    const num = Number(price)
+    if (!num) return "-"
+    return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(num)
   }
 
   const formatDate = (date: string) => {
