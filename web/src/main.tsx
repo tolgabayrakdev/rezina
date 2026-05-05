@@ -13,6 +13,7 @@ import AppIndex from "@/pages/app/index"
 import Settings from "@/pages/app/settings"
 import { ThemeProvider } from './providers/theme-provider'
 import GuestGuard from "@/components/guest-guard"
+import Scripts from '@/pages/app/scripts'
 
 const router = createBrowserRouter([
     {
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
             {
                 path: "settings",
                 element: <Settings />
+            },
+            {
+                path: "scripts",
+                element: <Scripts />
             }
         ]
     }

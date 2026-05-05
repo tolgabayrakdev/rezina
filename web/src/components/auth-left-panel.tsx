@@ -26,11 +26,11 @@ interface AuthLeftPanelProps {
 
 export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
   return (
-    <div className="hidden lg:flex flex-col relative overflow-hidden bg-slate-950 p-12 text-white select-none">
+    <div className="hidden lg:flex flex-col relative overflow-hidden p-12 text-white select-none" style={{ background: 'linear-gradient(145deg, #0d0b20 0%, #130f2e 100%)' }}>
       {/* Decorative blobs */}
-      <div className="absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-40 -left-40 size-[420px] rounded-full bg-indigo-600/15 blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 size-[200px] rounded-full bg-violet-500/10 blur-[60px] pointer-events-none" />
+      <div className="absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/30 blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 size-[420px] rounded-full bg-primary/15 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 size-[200px] rounded-full bg-primary/20 blur-[60px] pointer-events-none" />
 
       {/* Dot grid overlay */}
       <div
@@ -65,8 +65,8 @@ export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
           <div className="space-y-5">
             {features.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-start gap-3.5">
-                <div className="size-9 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 backdrop-blur-sm">
-                  <Icon className="size-4 text-white/70" />
+                <div className="size-9 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0 mt-0.5 backdrop-blur-sm">
+                  <Icon className="size-4 text-white/90" />
                 </div>
                 <div>
                   <p className="text-sm font-medium leading-none mb-1">{title}</p>
