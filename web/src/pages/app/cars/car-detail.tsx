@@ -1,32 +1,15 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router"
-import { ArrowLeft, Car, Plus, Trash2, Loader2, Link as LinkIcon } from "lucide-react"
+import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { apiClient, ApiClientError } from "@/lib/api-client"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+import { apiClient } from "@/lib/api-client"
+import { CarImageDialog } from "@/components/car-image-dialog"
+import { CarLinkDialog } from "@/components/car-link-dialog"
+import { CarDeleteImageDialog } from "@/components/car-delete-image-dialog"
 import {
   Select,
   SelectContent,
@@ -86,12 +69,6 @@ export default function CarDetail() {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false)
   const [deleteImageOpen, setDeleteImageOpen] = useState(false)
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null)
-  const [saving, setSaving] = useState(false)
-
-  const [imageUrl, setImageUrl] = useState("")
-  const [isCover, setIsCover] = useState(false)
-  const [linkPlatform, setLinkPlatform] = useState("")
-  const [linkUrl, setLinkUrl] = useState("")
 
   useEffect(() => {
     if (!carId) return
@@ -117,24 +94,6 @@ export default function CarDetail() {
       .catch(() => toast.error("Araç yüklenemedi"))
   }
 
-  const handleAddImage = async () => {
-    if (!carId || !imageUrl) return
-    setSaving(true)
-    try {
-      await apiClient.post(`/api/cars/${carId}/images`, { url: imageUrl, is_cover: isCover })
-      toast.success("Fotoğraf eklendi")
-      setImageDialogOpen(false)
-      setImageUrl("")
-      setIsCover(false)
-      fetchCar()
-    } catch (err) {
-      const msg = err instanceof ApiClientError ? err.data.message : "Fotoğraf eklenemedi"
-      toast.error(msg)
-    } finally {
-      setSaving(false)
-    }
-  }
-
   const handleSetCover = async (imageId: string) => {
     if (!carId) return
     try {
@@ -143,37 +102,6 @@ export default function CarDetail() {
       fetchCar()
     } catch {
       toast.error("Kapak fotoğrafı güncellenemedi")
-    }
-  }
-
-  const handleDeleteImage = async () => {
-    if (!carId || !selectedImageId) return
-    try {
-      await apiClient.delete(`/api/cars/${carId}/images/${selectedImageId}`)
-      toast.success("Fotoğraf silindi")
-      setDeleteImageOpen(false)
-      setSelectedImageId(null)
-      fetchCar()
-    } catch {
-      toast.error("Fotoğraf silinemedi")
-    }
-  }
-
-  const handleAddLink = async () => {
-    if (!carId || !linkPlatform || !linkUrl) return
-    setSaving(true)
-    try {
-      await apiClient.post(`/api/cars/${carId}/links`, { platform: linkPlatform, url: linkUrl })
-      toast.success("Link eklendi")
-      setLinkDialogOpen(false)
-      setLinkPlatform("")
-      setLinkUrl("")
-      fetchCar()
-    } catch (err) {
-      const msg = err instanceof ApiClientError ? err.data.message : "Link eklenemedi"
-      toast.error(msg)
-    } finally {
-      setSaving(false)
     }
   }
 
@@ -367,100 +295,30 @@ export default function CarDetail() {
         </div>
       </div>
 
-      <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Fotoğraf Ekle</DialogTitle>
-            <DialogDescription>Fotoğraf URL'sini girin</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="imageUrl">URL</Label>
-              <Input
-                id="imageUrl"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://..."
-                required
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="isCover"
-                className="accent-primary h-4 w-4"
-                checked={isCover}
-                onChange={(e) => setIsCover(e.target.checked)}
-              />
-              <Label htmlFor="isCover">Kapak fotoğrafı olarak ayarla</Label>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setImageDialogOpen(false)}>
-              İptal
-            </Button>
-            <Button onClick={handleAddImage} disabled={saving || !imageUrl}>
-              {saving && <Loader2 className="mr-2 size-4 animate-spin" />}
-              Ekle
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <CarImageDialog
+        carId={carId!}
+        open={imageDialogOpen}
+        onOpenChange={setImageDialogOpen}
+        onSaved={fetchCar}
+      />
 
-      <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>İlan Linki Ekle</DialogTitle>
-            <DialogDescription>Platform ve URL bilgilerini girin</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="platform">Platform</Label>
-              <Input
-                id="platform"
-                value={linkPlatform}
-                onChange={(e) => setLinkPlatform(e.target.value)}
-                placeholder="sahibinden, arabam.com..."
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="linkUrl">URL</Label>
-              <Input
-                id="linkUrl"
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
-                placeholder="https://..."
-                required
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setLinkDialogOpen(false)}>
-              İptal
-            </Button>
-            <Button onClick={handleAddLink} disabled={saving || !linkPlatform || !linkUrl}>
-              {saving && <Loader2 className="mr-2 size-4 animate-spin" />}
-              Ekle
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <CarLinkDialog
+        carId={carId!}
+        open={linkDialogOpen}
+        onOpenChange={setLinkDialogOpen}
+        onSaved={fetchCar}
+      />
 
-      <AlertDialog open={deleteImageOpen} onOpenChange={setDeleteImageOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Fotoğraf silinsin mi?</AlertDialogTitle>
-            <AlertDialogDescription>Bu işlem geri alınamaz.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>İptal</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDeleteImage}>
-              Sil
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <CarDeleteImageDialog
+        carId={carId!}
+        imageId={selectedImageId}
+        open={deleteImageOpen}
+        onOpenChange={setDeleteImageOpen}
+        onDeleted={() => {
+          setSelectedImageId(null)
+          fetchCar()
+        }}
+      />
     </div>
   )
 }
