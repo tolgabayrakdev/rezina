@@ -1,0 +1,140 @@
+import { CarService } from '../service/car.service.js';
+
+export class CarController {
+  constructor() {
+    this.carService = new CarService();
+  }
+
+  create = async (req, res, next) => {
+    try {
+      const car = await this.carService.createCar(req.params.workspaceId, req.user.id, req.body);
+      res.status(201).json({ success: true, data: car });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  list = async (req, res, next) => {
+    try {
+      const { status, brand, model } = req.query;
+      const cars = await this.carService.getCars(req.params.workspaceId, req.user.id, { status, brand, model });
+      res.status(200).json({ success: true, data: cars });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  get = async (req, res, next) => {
+    try {
+      const car = await this.carService.getCar(req.params.workspaceId, req.user.id, req.params.carId);
+      res.status(200).json({ success: true, data: car });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  update = async (req, res, next) => {
+    try {
+      const car = await this.carService.updateCar(req.params.workspaceId, req.user.id, req.params.carId, req.body);
+      res.status(200).json({ success: true, data: car });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  delete = async (req, res, next) => {
+    try {
+      await this.carService.deleteCar(req.params.workspaceId, req.user.id, req.params.carId);
+      res.status(200).json({ success: true, data: { message: 'Araç silindi' } });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // ── Images ───────────────────────────────────────────────────────────────
+
+  addImage = async (req, res, next) => {
+    try {
+      const image = await this.carService.addImage(
+        req.params.workspaceId,
+        req.user.id,
+        req.params.carId,
+        req.body
+      );
+      res.status(201).json({ success: true, data: image });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  setCover = async (req, res, next) => {
+    try {
+      const image = await this.carService.setCover(
+        req.params.workspaceId,
+        req.user.id,
+        req.params.carId,
+        req.params.imageId
+      );
+      res.status(200).json({ success: true, data: image });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  deleteImage = async (req, res, next) => {
+    try {
+      await this.carService.deleteImage(
+        req.params.workspaceId,
+        req.user.id,
+        req.params.carId,
+        req.params.imageId
+      );
+      res.status(200).json({ success: true, data: { message: 'Fotoğraf silindi' } });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // ── Links ────────────────────────────────────────────────────────────────
+
+  addLink = async (req, res, next) => {
+    try {
+      const link = await this.carService.addLink(
+        req.params.workspaceId,
+        req.user.id,
+        req.params.carId,
+        req.body
+      );
+      res.status(201).json({ success: true, data: link });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  getLinks = async (req, res, next) => {
+    try {
+      const links = await this.carService.getLinks(
+        req.params.workspaceId,
+        req.user.id,
+        req.params.carId
+      );
+      res.status(200).json({ success: true, data: links });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  deleteLink = async (req, res, next) => {
+    try {
+      await this.carService.deleteLink(
+        req.params.workspaceId,
+        req.user.id,
+        req.params.carId,
+        req.params.linkId
+      );
+      res.status(200).json({ success: true, data: { message: 'Link silindi' } });
+    } catch (err) {
+      next(err);
+    }
+  };
+}
