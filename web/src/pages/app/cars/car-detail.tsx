@@ -93,23 +93,29 @@ export default function CarDetail() {
   const [linkPlatform, setLinkPlatform] = useState("")
   const [linkUrl, setLinkUrl] = useState("")
 
-  const fetchCar = async () => {
-    if (!carId) return
-    setLoading(true)
-    try {
-      const res = await apiClient.get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
-      setCar(res.data)
-    } catch {
-      toast.error("Araç yüklenemedi")
-      navigate("/cars")
-    } finally {
-      setLoading(false)
-    }
-  }
-
   useEffect(() => {
-    fetchCar()
-  }, [carId])
+    if (!carId) return
+    let cancelled = false
+    apiClient.get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
+      .then((res) => {
+        if (!cancelled) setCar(res.data)
+      })
+      .catch(() => {
+        toast.error("Araç yüklenemedi")
+        navigate("/cars")
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => { cancelled = true }
+  }, [carId, navigate])
+
+  const fetchCar = () => {
+    if (!carId) return
+    apiClient.get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
+      .then((res) => setCar(res.data))
+      .catch(() => toast.error("Araç yüklenemedi"))
+  }
 
   const handleAddImage = async () => {
     if (!carId || !imageUrl) return
