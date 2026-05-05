@@ -35,3 +35,15 @@ export class ValidationError extends AppError {
     super(message, 400);
   }
 }
+
+export class InternalServerError extends AppError {
+  constructor(message = 'Sunucu hatası') {
+    super(message, 500);
+  }
+}
+
+export class BadRequestError extends AppError {
+  constructor(message = 'Geçersiz istek') {
+    super(message, 400);
+  }
+}
