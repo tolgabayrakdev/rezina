@@ -14,10 +14,7 @@ export default function Settings() {
   const { user, logout } = useAuthStore()
 
   const [profileEditing, setProfileEditing] = useState(false)
-  const [profileForm, setProfileForm] = useState({
-    username: user?.username ?? "",
-    email: user?.email ?? "",
-  })
+  const [profileForm, setProfileForm] = useState({ email: user?.email ?? "" })
   const [profileLoading, setProfileLoading] = useState(false)
 
   const [passwordEditing, setPasswordEditing] = useState(false)
@@ -34,13 +31,13 @@ export default function Settings() {
   const [deleteLoading, setDeleteLoading] = useState(false)
 
   const handleProfileEdit = () => {
-    setProfileForm({ username: user?.username ?? "", email: user?.email ?? "" })
+    setProfileForm({ email: user?.email ?? "" })
     setProfileEditing(true)
   }
 
   const handleProfileCancel = () => {
     setProfileEditing(false)
-    setProfileForm({ username: user?.username ?? "", email: user?.email ?? "" })
+    setProfileForm({ email: user?.email ?? "" })
   }
 
   const handleProfileSave = async () => {
@@ -124,31 +121,19 @@ export default function Settings() {
       {/* Profile */}
       <SettingsSection
         title="Profil Bilgileri"
-        description="Kullanıcı adınız ve e-posta adresiniz hesabınızı tanımlar."
+        description="E-posta adresiniz hesabınızı tanımlar."
       >
         <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="username">Kullanıcı Adı</Label>
-              <Input
-                id="username"
-                value={profileEditing ? profileForm.username : (user?.username ?? "")}
-                onChange={(e) => setProfileForm((p) => ({ ...p, username: e.target.value }))}
-                readOnly={!profileEditing}
-                className={!profileEditing ? "bg-muted/40 cursor-default" : ""}
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">E-posta</Label>
-              <Input
-                id="email"
-                type="email"
-                value={profileEditing ? profileForm.email : (user?.email ?? "")}
-                onChange={(e) => setProfileForm((p) => ({ ...p, email: e.target.value }))}
-                readOnly={!profileEditing}
-                className={!profileEditing ? "bg-muted/40 cursor-default" : ""}
-              />
-            </div>
+          <div className="max-w-sm space-y-1.5">
+            <Label htmlFor="email">E-posta</Label>
+            <Input
+              id="email"
+              type="email"
+              value={profileEditing ? profileForm.email : (user?.email ?? "")}
+              onChange={(e) => setProfileForm((p) => ({ ...p, email: e.target.value }))}
+              readOnly={!profileEditing}
+              className={!profileEditing ? "bg-muted/40 cursor-default" : ""}
+            />
           </div>
           <div className="flex items-center justify-end gap-2 pt-1">
             {profileEditing ? (
@@ -291,13 +276,13 @@ export default function Settings() {
               <p className="text-sm font-medium">Bu işlem geri alınamaz.</p>
             </div>
             <p className="text-muted-foreground text-sm">
-              Onaylamak için kullanıcı adınızı yazın:{" "}
-              <span className="text-foreground font-semibold">{user?.username}</span>
+              Onaylamak için e-posta adresinizi yazın:{" "}
+              <span className="text-foreground font-semibold">{user?.email}</span>
             </p>
             <Input
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value)}
-              placeholder={user?.username}
+              placeholder={user?.email}
               className="max-w-sm"
             />
             <div className="flex justify-end gap-2">
@@ -314,7 +299,7 @@ export default function Settings() {
               <Button
                 variant="destructive"
                 onClick={handleDeleteAccount}
-                disabled={deleteConfirm !== user?.username || deleteLoading}
+                disabled={deleteConfirm !== user?.email || deleteLoading}
                 className="min-w-28"
               >
                 {deleteLoading && <Spinner className="mr-2" />}

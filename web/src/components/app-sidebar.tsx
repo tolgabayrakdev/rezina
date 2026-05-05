@@ -55,7 +55,7 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
   const [logoutOpen, setLogoutOpen] = useState(false)
 
   const isActive = (path: string) => location.pathname === path
-  const initials = user?.username?.slice(0, 2).toUpperCase() ?? "??"
+  const initials = user?.email?.slice(0, 2).toUpperCase() ?? "??"
 
   useEffect(() => {
     onMobileClose()
@@ -65,7 +65,6 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
     <DropdownMenuContent side="top" align="start" className="w-56">
       <DropdownMenuLabel className="font-normal">
         <div className="flex flex-col gap-0.5">
-          <span className="text-sm font-medium">{user?.username}</span>
           <span className="text-muted-foreground truncate text-xs">{user?.email}</span>
         </div>
       </DropdownMenuLabel>
@@ -116,9 +115,8 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sidebar-foreground truncate text-sm leading-tight font-medium">
-          {user?.username}
+          {user?.email}
         </p>
-        <p className="text-sidebar-foreground/40 truncate text-[11px]">{user?.email}</p>
       </div>
       <ChevronsUpDown className="text-sidebar-foreground/30 size-3.5 shrink-0" />
     </button>
@@ -241,7 +239,7 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
                 <DropdownMenuTrigger asChild>
                   <button
                     className="hover:bg-sidebar-accent flex size-9 items-center justify-center rounded-lg transition-colors"
-                    title={user?.username}
+                    title={user?.email}
                   >
                     <div className="from-primary to-primary/60 flex size-8 items-center justify-center rounded-full bg-gradient-to-br text-[11px] font-semibold text-white shadow-sm select-none">
                       {initials}
