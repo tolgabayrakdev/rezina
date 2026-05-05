@@ -13,10 +13,6 @@ import { Pencil, TriangleAlertIcon } from "lucide-react"
 export default function Settings() {
   const { user, logout } = useAuthStore()
 
-  const [profileEditing, setProfileEditing] = useState(false)
-  const [profileForm, setProfileForm] = useState({ email: user?.email ?? "" })
-  const [profileLoading, setProfileLoading] = useState(false)
-
   const [passwordEditing, setPasswordEditing] = useState(false)
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -29,37 +25,6 @@ export default function Settings() {
   const [deleteStep, setDeleteStep] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState("")
   const [deleteLoading, setDeleteLoading] = useState(false)
-
-  const handleProfileEdit = () => {
-    setProfileForm({ email: user?.email ?? "" })
-    setProfileEditing(true)
-  }
-
-  const handleProfileCancel = () => {
-    setProfileEditing(false)
-    setProfileForm({ email: user?.email ?? "" })
-  }
-
-  const handleProfileSave = async () => {
-    setProfileLoading(true)
-    try {
-      const res = await apiClient.patch<{ success: boolean; data: User }>(
-        "/api/account/me",
-        profileForm
-      )
-      useAuthStore.setState({ user: res.data })
-      setProfileEditing(false)
-      toast.success("Profil bilgileri güncellendi.")
-    } catch (err) {
-      toast.error(
-        err instanceof ApiClientError
-          ? (err.data.message ?? "Profil güncellenemedi.")
-          : "Bir hata oluştu."
-      )
-    } finally {
-      setProfileLoading(false)
-    }
-  }
 
   const handlePasswordCancel = () => {
     setPasswordEditing(false)
@@ -123,36 +88,15 @@ export default function Settings() {
         title="Profil Bilgileri"
         description="E-posta adresiniz hesabınızı tanımlar."
       >
-        <div className="space-y-4">
-          <div className="max-w-sm space-y-1.5">
-            <Label htmlFor="email">E-posta</Label>
-            <Input
-              id="email"
-              type="email"
-              value={profileEditing ? profileForm.email : (user?.email ?? "")}
-              onChange={(e) => setProfileForm((p) => ({ ...p, email: e.target.value }))}
-              readOnly={!profileEditing}
-              className={!profileEditing ? "bg-muted/40 cursor-default" : ""}
-            />
-          </div>
-          <div className="flex items-center justify-end gap-2 pt-1">
-            {profileEditing ? (
-              <>
-                <Button variant="outline" onClick={handleProfileCancel} disabled={profileLoading}>
-                  İptal
-                </Button>
-                <Button onClick={handleProfileSave} disabled={profileLoading} className="min-w-24">
-                  {profileLoading && <Spinner className="mr-2" />}
-                  Kaydet
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" onClick={handleProfileEdit} className="gap-1.5">
-                <Pencil className="size-3.5" />
-                Düzenle
-              </Button>
-            )}
-          </div>
+        <div className="max-w-sm space-y-1.5">
+          <Label htmlFor="email">E-posta</Label>
+          <Input
+            id="email"
+            type="email"
+            value={user?.email ?? ""}
+            readOnly
+            className="bg-muted/40 cursor-default"
+          />
         </div>
       </SettingsSection>
 
