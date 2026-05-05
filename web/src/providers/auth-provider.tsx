@@ -46,10 +46,10 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   if (rateLimited && !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8">
-        <div className="text-center space-y-4 max-w-sm">
+      <div className="flex min-h-screen items-center justify-center p-8">
+        <div className="max-w-sm space-y-4 text-center">
           <h2 className="text-xl font-semibold">Çok Fazla İstek</h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Sunucuya çok fazla istek gönderildi. Lütfen bir süre bekleyin ve tekrar deneyin.
           </p>
           <button
@@ -57,7 +57,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
               useAuthStore.setState({ rateLimited: false })
               checkAuth()
             }}
-            className="text-sm text-primary hover:underline"
+            className="text-primary text-sm hover:underline"
           >
             Tekrar Dene
           </button>

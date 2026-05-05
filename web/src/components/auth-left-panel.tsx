@@ -26,24 +26,26 @@ interface AuthLeftPanelProps {
 
 export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
   return (
-    <div className="hidden lg:flex flex-col relative overflow-hidden p-12 text-white select-none" style={{ background: 'linear-gradient(145deg, #0d0b20 0%, #130f2e 100%)' }}>
+    <div
+      className="relative hidden flex-col overflow-hidden p-12 text-white select-none lg:flex"
+      style={{ background: "linear-gradient(145deg, #0d0b20 0%, #130f2e 100%)" }}
+    >
       {/* Decorative blobs */}
-      <div className="absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/30 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-40 -left-40 size-[420px] rounded-full bg-primary/15 blur-[100px] pointer-events-none" />
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 size-[200px] rounded-full bg-primary/20 blur-[60px] pointer-events-none" />
+      <div className="bg-primary/30 pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full blur-[120px]" />
+      <div className="bg-primary/15 pointer-events-none absolute -bottom-40 -left-40 size-[420px] rounded-full blur-[100px]" />
+      <div className="bg-primary/20 pointer-events-none absolute top-1/2 right-0 size-[200px] -translate-y-1/2 rounded-full blur-[60px]" />
 
       {/* Dot grid overlay */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-[0.12]"
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col h-full">
+      <div className="relative z-10 flex h-full flex-col">
         {/* Logo */}
         <div className="flex items-center gap-2.5">
           <img src={rezinaLogo} alt="Rezina" className="h-9 w-auto" />
@@ -51,26 +53,22 @@ export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
         </div>
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col justify-center space-y-10">
+        <div className="flex flex-1 flex-col justify-center space-y-10">
           <div className="space-y-4">
-            <h2 className="text-[2.6rem] font-bold leading-[1.15] tracking-tight">
-              {heading}
-            </h2>
-            <p className="text-white/55 text-base leading-relaxed max-w-[300px]">
-              {description}
-            </p>
+            <h2 className="text-[2.6rem] leading-[1.15] font-bold tracking-tight">{heading}</h2>
+            <p className="max-w-[300px] text-base leading-relaxed text-white/55">{description}</p>
           </div>
 
           {/* Feature list */}
           <div className="space-y-5">
             {features.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-start gap-3.5">
-                <div className="size-9 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0 mt-0.5 backdrop-blur-sm">
+                <div className="bg-primary/20 border-primary/30 mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg border backdrop-blur-sm">
                   <Icon className="size-4 text-white/90" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium leading-none mb-1">{title}</p>
-                  <p className="text-white/45 text-xs leading-relaxed">{desc}</p>
+                  <p className="mb-1 text-sm leading-none font-medium">{title}</p>
+                  <p className="text-xs leading-relaxed text-white/45">{desc}</p>
                 </div>
               </div>
             ))}

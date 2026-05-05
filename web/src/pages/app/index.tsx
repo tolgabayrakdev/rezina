@@ -30,24 +30,24 @@ const stats = [
 
 export default function AppIndex() {
   return (
-    <div className="p-8 space-y-8">
+    <div className="space-y-8 p-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Ana Sayfa</h1>
-        <p className="text-sm text-muted-foreground mt-1">Platforma genel bakış</p>
+        <p className="text-muted-foreground mt-1 text-sm">Platforma genel bakış</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map(({ label, value, change, icon: Icon, color, bg }) => (
-          <div key={label} className="bg-card rounded-xl border p-6 space-y-4">
+          <div key={label} className="bg-card space-y-4 rounded-xl border p-6">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">{label}</p>
-              <div className={cn("size-9 rounded-lg flex items-center justify-center", bg)}>
+              <p className="text-muted-foreground text-sm">{label}</p>
+              <div className={cn("flex size-9 items-center justify-center rounded-lg", bg)}>
                 <Icon className={cn("size-4", color)} />
               </div>
             </div>
             <div className="flex items-end gap-2">
               <p className="text-3xl font-semibold tracking-tight">{value}</p>
-              <span className="text-xs text-emerald-500 font-medium mb-1 flex items-center gap-0.5">
+              <span className="mb-1 flex items-center gap-0.5 text-xs font-medium text-emerald-500">
                 <TrendingUp className="size-3" />
                 {change}
               </span>
@@ -58,22 +58,25 @@ export default function AppIndex() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="bg-card rounded-xl border p-6">
-          <h2 className="text-base font-medium mb-4">Son Aktiviteler</h2>
+          <h2 className="mb-4 text-base font-medium">Son Aktiviteler</h2>
           <div className="space-y-3">
-            {["Yeni kullanıcı kaydoldu", "Proje güncellendi", "Görev tamamlandı", "Yorum eklendi"].map(
-              (item, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm">
-                  <div className="size-1.5 rounded-full bg-primary shrink-0" />
-                  <span className="text-muted-foreground">{item}</span>
-                  <span className="ml-auto text-xs text-muted-foreground/60">{i + 1}s önce</span>
-                </div>
-              )
-            )}
+            {[
+              "Yeni kullanıcı kaydoldu",
+              "Proje güncellendi",
+              "Görev tamamlandı",
+              "Yorum eklendi",
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 text-sm">
+                <div className="bg-primary size-1.5 shrink-0 rounded-full" />
+                <span className="text-muted-foreground">{item}</span>
+                <span className="text-muted-foreground/60 ml-auto text-xs">{i + 1}s önce</span>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="bg-card rounded-xl border p-6">
-          <h2 className="text-base font-medium mb-4">Hızlı İstatistikler</h2>
+          <h2 className="mb-4 text-base font-medium">Hızlı İstatistikler</h2>
           <div className="space-y-3">
             {[
               { label: "Tamamlanma oranı", value: 69, color: "bg-emerald-500" },
@@ -85,7 +88,7 @@ export default function AppIndex() {
                   <span className="text-muted-foreground">{label}</span>
                   <span className="font-medium">{value}%</span>
                 </div>
-                <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="bg-muted h-1.5 overflow-hidden rounded-full">
                   <div
                     className={cn("h-full rounded-full", color)}
                     style={{ width: `${value}%` }}

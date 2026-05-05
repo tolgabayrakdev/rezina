@@ -55,9 +55,15 @@ export default function SignUp() {
 
   if (registered) {
     return (
-      <div className="min-h-screen grid lg:grid-cols-2">
+      <div className="grid min-h-screen lg:grid-cols-2">
         <AuthLeftPanel
-          heading={<>Hesabınız<br />oluşturuldu!</>}
+          heading={
+            <>
+              Hesabınız
+              <br />
+              oluşturuldu!
+            </>
+          }
           description="E-posta adresinizi doğruladıktan sonra platformun tüm özelliklerine erişebilirsiniz."
         />
 
@@ -71,21 +77,28 @@ export default function SignUp() {
             </div>
 
             <div className="flex flex-col items-center gap-4">
-              <div className="size-16 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                <svg className="size-8 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className="flex size-16 items-center justify-center rounded-full bg-emerald-500/10">
+                <svg
+                  className="size-8 text-emerald-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <div className="space-y-2">
                 <h2 className="text-2xl font-semibold tracking-tight">Hesabınız oluşturuldu</h2>
-                <p className="text-sm text-muted-foreground max-w-sm">
-                  Hesabınız başarıyla oluşturuldu. E-posta adresinizi doğruladıktan sonra giriş yapabilirsiniz.
+                <p className="text-muted-foreground max-w-sm text-sm">
+                  Hesabınız başarıyla oluşturuldu. E-posta adresinizi doğruladıktan sonra giriş
+                  yapabilirsiniz.
                 </p>
               </div>
             </div>
 
             <Link to="/sign-in">
-              <Button className="w-full h-11">Giriş Yap</Button>
+              <Button className="h-11 w-full">Giriş Yap</Button>
             </Link>
           </div>
         </div>
@@ -94,22 +107,28 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="grid min-h-screen lg:grid-cols-2">
       <AuthLeftPanel
-        heading={<>Yeni bir başlangıç<br />yapın</>}
+        heading={
+          <>
+            Yeni bir başlangıç
+            <br />
+            yapın
+          </>
+        }
         description="Dakikalar içinde hesap oluşturun ve platformumuzun tüm avantajlarından yararlanın."
       />
 
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
-          <div className="lg:hidden text-center">
+          <div className="text-center lg:hidden">
             <h1 className="text-2xl font-semibold tracking-tight">Rezina</h1>
-            <p className="text-sm text-muted-foreground mt-1">Hesap oluşturun</p>
+            <p className="text-muted-foreground mt-1 text-sm">Hesap oluşturun</p>
           </div>
 
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">Kayıt olun</h2>
-            <p className="text-sm text-muted-foreground">Bilgilerinizi girerek başlayın</p>
+            <p className="text-muted-foreground text-sm">Bilgilerinizi girerek başlayın</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -172,23 +191,29 @@ export default function SignUp() {
                 type="checkbox"
                 id="terms"
                 name="terms"
-                className="h-4 w-4 rounded border-input accent-primary cursor-pointer"
+                className="border-input accent-primary h-4 w-4 cursor-pointer rounded"
                 checked={formData.terms}
                 onChange={handleChange}
                 required
               />
-              <Label htmlFor="terms" className="text-xs text-muted-foreground cursor-pointer">
-                <Link to="#" className="text-primary hover:underline">Kullanım Koşulları</Link> ve{" "}
-                <Link to="#" className="text-primary hover:underline">Gizlilik Politikası</Link>'nı okudum ve kabul ediyorum
+              <Label htmlFor="terms" className="text-muted-foreground cursor-pointer text-xs">
+                <Link to="#" className="text-primary hover:underline">
+                  Kullanım Koşulları
+                </Link>{" "}
+                ve{" "}
+                <Link to="#" className="text-primary hover:underline">
+                  Gizlilik Politikası
+                </Link>
+                'nı okudum ve kabul ediyorum
               </Label>
             </div>
 
-            <Button type="submit" className="w-full h-11" disabled={loading}>
+            <Button type="submit" className="h-11 w-full" disabled={loading}>
               {loading ? "Kayıt yapılıyor..." : "Hesap Oluştur"}
             </Button>
           </form>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-center text-sm">
             Zaten hesabınız var mı?{" "}
             <Link to="/sign-in" className="text-primary font-medium hover:underline">
               Giriş yapın

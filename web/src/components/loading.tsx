@@ -1,10 +1,10 @@
 export default function Loading() {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-            <div className="flex flex-col items-center gap-4">
-                <div className="size-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                <p className="text-sm text-muted-foreground">Yükleniyor...</p>
-            </div>
-        </div>
-    )
+  return (
+    <div className="bg-background flex min-h-screen items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="border-primary size-8 animate-spin rounded-full border-4 border-t-transparent" />
+        <p className="text-muted-foreground text-sm">Yükleniyor...</p>
+      </div>
+    </div>
+  )
 }

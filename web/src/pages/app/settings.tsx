@@ -13,13 +13,25 @@ import { Pencil, TriangleAlertIcon } from "lucide-react"
 export default function Settings() {
   const { user, logout } = useAuthStore()
 
-  // --- Profile ---
   const [profileEditing, setProfileEditing] = useState(false)
   const [profileForm, setProfileForm] = useState({
     username: user?.username ?? "",
     email: user?.email ?? "",
   })
   const [profileLoading, setProfileLoading] = useState(false)
+
+  const [passwordEditing, setPasswordEditing] = useState(false)
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  })
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [passwordError, setPasswordError] = useState("")
+
+  const [deleteStep, setDeleteStep] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState("")
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const handleProfileEdit = () => {
     setProfileForm({ username: user?.username ?? "", email: user?.email ?? "" })
@@ -34,26 +46,23 @@ export default function Settings() {
   const handleProfileSave = async () => {
     setProfileLoading(true)
     try {
-      const res = await apiClient.patch<{ success: boolean; data: User }>("/api/account/me", profileForm)
+      const res = await apiClient.patch<{ success: boolean; data: User }>(
+        "/api/account/me",
+        profileForm
+      )
       useAuthStore.setState({ user: res.data })
       setProfileEditing(false)
       toast.success("Profil bilgileri güncellendi.")
     } catch (err) {
-      toast.error(err instanceof ApiClientError ? (err.data.message ?? "Profil güncellenemedi.") : "Bir hata oluştu.")
+      toast.error(
+        err instanceof ApiClientError
+          ? (err.data.message ?? "Profil güncellenemedi.")
+          : "Bir hata oluştu."
+      )
     } finally {
       setProfileLoading(false)
     }
   }
-
-  // --- Password ---
-  const [passwordEditing, setPasswordEditing] = useState(false)
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  })
-  const [passwordLoading, setPasswordLoading] = useState(false)
-  const [passwordError, setPasswordError] = useState("")
 
   const handlePasswordCancel = () => {
     setPasswordEditing(false)
@@ -76,16 +85,15 @@ export default function Settings() {
       toast.success("Şifreniz güncellendi.")
       handlePasswordCancel()
     } catch (err) {
-      toast.error(err instanceof ApiClientError ? (err.data.message ?? "Şifre güncellenemedi.") : "Bir hata oluştu.")
+      toast.error(
+        err instanceof ApiClientError
+          ? (err.data.message ?? "Şifre güncellenemedi.")
+          : "Bir hata oluştu."
+      )
     } finally {
       setPasswordLoading(false)
     }
   }
-
-  // --- Delete ---
-  const [deleteStep, setDeleteStep] = useState(false)
-  const [deleteConfirm, setDeleteConfirm] = useState("")
-  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const handleDeleteAccount = async () => {
     setDeleteLoading(true)
@@ -94,17 +102,23 @@ export default function Settings() {
       toast.success("Hesabınız silindi.")
       await logout()
     } catch (err) {
-      toast.error(err instanceof ApiClientError ? (err.data.message ?? "Hesap silinemedi.") : "Bir hata oluştu.")
+      toast.error(
+        err instanceof ApiClientError
+          ? (err.data.message ?? "Hesap silinemedi.")
+          : "Bir hata oluştu."
+      )
       setDeleteLoading(false)
     }
   }
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="space-y-8 p-8">
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Ayarlar</h1>
-        <p className="text-sm text-muted-foreground mt-1">Hesap bilgilerinizi ve güvenlik ayarlarınızı yönetin.</p>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Hesap bilgilerinizi ve güvenlik ayarlarınızı yönetin.
+        </p>
       </div>
 
       {/* Profile */}
@@ -171,11 +185,15 @@ export default function Settings() {
               <Input
                 value="••••••••••"
                 readOnly
-                className="bg-muted/40 cursor-default tracking-widest max-w-sm"
+                className="bg-muted/40 max-w-sm cursor-default tracking-widest"
               />
             </div>
             <div className="flex justify-end">
-              <Button variant="outline" onClick={() => setPasswordEditing(true)} className="gap-1.5">
+              <Button
+                variant="outline"
+                onClick={() => setPasswordEditing(true)}
+                className="gap-1.5"
+              >
                 <Pencil className="size-3.5" />
                 Değiştir
               </Button>
@@ -189,7 +207,9 @@ export default function Settings() {
                 <PasswordInput
                   id="currentPassword"
                   value={passwordForm.currentPassword}
-                  onChange={(e) => setPasswordForm((p) => ({ ...p, currentPassword: e.target.value }))}
+                  onChange={(e) =>
+                    setPasswordForm((p) => ({ ...p, currentPassword: e.target.value }))
+                  }
                   className="max-w-sm"
                 />
               </div>
@@ -216,9 +236,7 @@ export default function Settings() {
                 />
               </div>
             </div>
-            {passwordError && (
-              <p className="text-destructive text-xs">{passwordError}</p>
-            )}
+            {passwordError && <p className="text-destructive text-xs">{passwordError}</p>}
             <div className="flex items-center justify-end gap-2 pt-1">
               <Button variant="outline" onClick={handlePasswordCancel} disabled={passwordLoading}>
                 İptal
@@ -250,26 +268,31 @@ export default function Settings() {
         danger
       >
         {!deleteStep ? (
-          <div className="flex items-start justify-between gap-4 rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+          <div className="border-destructive/30 bg-destructive/5 flex items-start justify-between gap-4 rounded-xl border p-4">
             <div>
               <p className="text-sm font-medium">Hesabı Sil</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-muted-foreground mt-0.5 text-xs">
                 Tüm verileriniz kalıcı olarak silinir, bu işlem geri alınamaz.
               </p>
             </div>
-            <Button variant="destructive" size="sm" onClick={() => setDeleteStep(true)} className="shrink-0">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setDeleteStep(true)}
+              className="shrink-0"
+            >
               Hesabı Sil
             </Button>
           </div>
         ) : (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 space-y-4">
-            <div className="flex items-center gap-2 text-destructive">
+          <div className="border-destructive/30 bg-destructive/5 space-y-4 rounded-xl border p-4">
+            <div className="text-destructive flex items-center gap-2">
               <TriangleAlertIcon className="size-4 shrink-0" />
               <p className="text-sm font-medium">Bu işlem geri alınamaz.</p>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Onaylamak için kullanıcı adınızı yazın:{" "}
-              <span className="font-semibold text-foreground">{user?.username}</span>
+              <span className="text-foreground font-semibold">{user?.username}</span>
             </p>
             <Input
               value={deleteConfirm}
@@ -277,10 +300,13 @@ export default function Settings() {
               placeholder={user?.username}
               className="max-w-sm"
             />
-            <div className="flex gap-2 justify-end">
+            <div className="flex justify-end gap-2">
               <Button
                 variant="outline"
-                onClick={() => { setDeleteStep(false); setDeleteConfirm("") }}
+                onClick={() => {
+                  setDeleteStep(false)
+                  setDeleteConfirm("")
+                }}
                 disabled={deleteLoading}
               >
                 İptal
@@ -317,11 +343,9 @@ function SettingsSection({
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       <div className="lg:col-span-1">
         <h2 className={`text-sm font-semibold ${danger ? "text-destructive" : ""}`}>{title}</h2>
-        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{description}</p>
+        <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{description}</p>
       </div>
-      <div className="lg:col-span-2">
-        {children}
-      </div>
+      <div className="lg:col-span-2">{children}</div>
     </div>
   )
 }

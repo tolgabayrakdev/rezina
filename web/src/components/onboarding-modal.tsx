@@ -4,8 +4,14 @@ import { useAuthStore } from "@/store/auth-store"
 import rezinaLogo from "@/assets/project_icon.svg"
 
 const CONFETTI_COLORS = [
-  "#6366f1", "#8b5cf6", "#ec4899", "#f59e0b",
-  "#10b981", "#3b82f6", "#f97316", "#14b8a6",
+  "#6366f1",
+  "#8b5cf6",
+  "#ec4899",
+  "#f59e0b",
+  "#10b981",
+  "#3b82f6",
+  "#f97316",
+  "#14b8a6",
 ]
 
 function ConfettiCanvas() {
@@ -67,7 +73,7 @@ function ConfettiCanvas() {
     return () => cancelAnimationFrame(animId)
   }, [])
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" />
 }
 
 const STEPS = ["Hesabınız hazırlanıyor", "Ayarlar yükleniyor", "Her şey hazır"]
@@ -118,12 +124,12 @@ export function OnboardingModal() {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
 
       <div
-        className={`relative w-full max-w-sm bg-card border rounded-2xl shadow-2xl overflow-hidden transition-all duration-400 ${
+        className={`bg-card relative w-full max-w-sm overflow-hidden rounded-2xl border shadow-2xl transition-all duration-400 ${
           closing ? "scale-95 opacity-0" : "scale-100 opacity-100"
         }`}
       >
         {/* Confetti + header */}
-        <div className="relative h-36 overflow-hidden bg-gradient-to-br from-primary/15 to-violet-500/10">
+        <div className="from-primary/15 relative h-36 overflow-hidden bg-gradient-to-br to-violet-500/10">
           <ConfettiCanvas />
           <div className="absolute inset-0 flex items-center justify-center gap-3">
             <img src={rezinaLogo} alt="Rezina" className="h-10 w-auto drop-shadow" />
@@ -132,38 +138,46 @@ export function OnboardingModal() {
         </div>
 
         {/* Body */}
-        <div className="px-8 py-7 space-y-6 text-center">
+        <div className="space-y-6 px-8 py-7 text-center">
           {!loading ? (
             <>
               <div className="space-y-2">
                 <h2 className="text-xl font-semibold tracking-tight">
                   Hoş geldiniz, {user?.username}!
                 </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Rezina'ya katıldığınız için teşekkürler.<br />
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Rezina'ya katıldığınız için teşekkürler.
+                  <br />
                   Her şey sizi bekliyor.
                 </p>
               </div>
 
-              <Button className="w-full h-11" onClick={handleStart}>
+              <Button className="h-11 w-full" onClick={handleStart}>
                 Başlayalım
               </Button>
             </>
           ) : (
-            <div className="py-2 space-y-4">
+            <div className="space-y-4 py-2">
               <div className="flex justify-center">
-                <svg
-                  className="size-8 animate-spin text-primary"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                  <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                <svg className="text-primary size-8 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle
+                    className="opacity-20"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  />
+                  <path
+                    className="opacity-80"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
                 </svg>
               </div>
               <p
                 key={stepIndex}
-                className="text-sm text-muted-foreground animate-in fade-in duration-300"
+                className="text-muted-foreground animate-in fade-in text-sm duration-300"
               >
                 {STEPS[stepIndex]}…
               </p>

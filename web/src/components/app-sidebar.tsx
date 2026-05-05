@@ -66,31 +66,33 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
       <DropdownMenuLabel className="font-normal">
         <div className="flex flex-col gap-0.5">
           <span className="text-sm font-medium">{user?.username}</span>
-          <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
+          <span className="text-muted-foreground truncate text-xs">{user?.email}</span>
         </div>
       </DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuItem asChild>
-        <Link to="/settings" className="flex items-center gap-2 cursor-pointer">
+        <Link to="/settings" className="flex cursor-pointer items-center gap-2">
           <Settings className="size-4" />
           Ayarlar
         </Link>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <div className="flex items-center justify-between px-2 py-1.5">
-        <span className="text-xs font-medium text-muted-foreground">Tema</span>
-        <div className="flex items-center gap-0.5 rounded-md bg-muted p-0.5">
-          {([
-            { value: "light", icon: Sun, title: "Açık" },
-            { value: "dark", icon: Moon, title: "Koyu" },
-            { value: "system", icon: Monitor, title: "Sistem" },
-          ] as const).map(({ value, icon: Icon, title }) => (
+        <span className="text-muted-foreground text-xs font-medium">Tema</span>
+        <div className="bg-muted flex items-center gap-0.5 rounded-md p-0.5">
+          {(
+            [
+              { value: "light", icon: Sun, title: "Açık" },
+              { value: "dark", icon: Moon, title: "Koyu" },
+              { value: "system", icon: Monitor, title: "Sistem" },
+            ] as const
+          ).map(({ value, icon: Icon, title }) => (
             <button
               key={value}
               onClick={() => setTheme(value)}
               title={title}
               className={cn(
-                "size-6 flex items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground",
+                "text-muted-foreground hover:text-foreground flex size-6 items-center justify-center rounded transition-colors",
                 theme === value && "bg-background text-foreground shadow-sm"
               )}
             >
@@ -108,15 +110,17 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
   )
 
   const userTriggerExpanded = (
-    <button className="flex flex-1 min-w-0 items-center gap-2.5 px-2.5 py-2 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors text-left">
-      <div className="size-8 rounded-full bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center text-[11px] font-semibold text-sidebar-primary-foreground shrink-0 select-none shadow-sm">
+    <button className="text-sidebar-foreground hover:bg-sidebar-accent flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors">
+      <div className="from-sidebar-primary to-sidebar-primary/60 text-sidebar-primary-foreground flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-[11px] font-semibold shadow-sm select-none">
         {initials}
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate leading-tight text-sidebar-foreground">{user?.username}</p>
-        <p className="text-[11px] text-sidebar-foreground/40 truncate">{user?.email}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-sidebar-foreground truncate text-sm leading-tight font-medium">
+          {user?.username}
+        </p>
+        <p className="text-sidebar-foreground/40 truncate text-[11px]">{user?.email}</p>
       </div>
-      <ChevronsUpDown className="size-3.5 shrink-0 text-sidebar-foreground/30" />
+      <ChevronsUpDown className="text-sidebar-foreground/30 size-3.5 shrink-0" />
     </button>
   )
 
@@ -124,60 +128,83 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
     <>
       <aside
         className={cn(
-          "h-screen flex flex-col bg-sidebar z-40",
-          "fixed inset-y-0 left-0 w-[280px] transition-transform duration-300 ease-in-out shadow-xl",
+          "bg-sidebar z-40 flex h-screen flex-col",
+          "fixed inset-y-0 left-0 w-[280px] shadow-xl transition-transform duration-300 ease-in-out",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
-          "lg:shadow-none lg:sticky lg:top-0 lg:translate-x-0 lg:transition-[width] lg:duration-300",
-          collapsed ? "lg:w-[68px]" : "lg:w-[260px]",
+          "lg:sticky lg:top-0 lg:translate-x-0 lg:shadow-none lg:transition-[width] lg:duration-300",
+          collapsed ? "lg:w-[68px]" : "lg:w-[260px]"
         )}
       >
         {/* Header */}
-        <div className={cn(
-          "h-14 flex items-center shrink-0 border-b border-sidebar-border/60",
-          collapsed ? "lg:justify-center lg:px-2" : "px-3 justify-between"
-        )}>
+        <div
+          className={cn(
+            "border-sidebar-border/60 flex h-14 shrink-0 items-center border-b",
+            collapsed ? "lg:justify-center lg:px-2" : "justify-between px-3"
+          )}
+        >
           {/* Desktop collapsed: sadece toggle */}
           {collapsed && (
-            <Button variant="ghost" size="icon" className="hidden lg:flex size-8 text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-lg" onClick={onToggle}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent hidden size-8 rounded-lg lg:flex"
+              onClick={onToggle}
+            >
               <ChevronRight className="size-4" />
             </Button>
           )}
 
           {/* Desktop expanded: logo + toggle */}
           {!collapsed && (
-            <div className="hidden lg:flex items-center justify-between w-full">
-              <div className="flex items-center gap-2.5 min-w-0 overflow-hidden">
-                <div className="size-7 rounded-lg overflow-hidden shrink-0 shadow-sm ring-1 ring-sidebar-border/40">
+            <div className="hidden w-full items-center justify-between lg:flex">
+              <div className="flex min-w-0 items-center gap-2.5 overflow-hidden">
+                <div className="ring-sidebar-border/40 size-7 shrink-0 overflow-hidden rounded-lg shadow-sm ring-1">
                   <img src={rezinaLogo} alt="Rezina" className="h-full w-full" />
                 </div>
-                <span className="text-[13px] font-bold text-sidebar-foreground tracking-tight truncate">Rezina</span>
+                <span className="text-sidebar-foreground truncate text-[13px] font-bold tracking-tight">
+                  Rezina
+                </span>
               </div>
-              <Button variant="ghost" size="icon" className="size-7 shrink-0 text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-lg" onClick={onToggle}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent size-7 shrink-0 rounded-lg"
+                onClick={onToggle}
+              >
                 <ChevronLeft className="size-3.5" />
               </Button>
             </div>
           )}
 
           {/* Mobile: logo + close */}
-          <div className="flex items-center justify-between w-full lg:hidden">
+          <div className="flex w-full items-center justify-between lg:hidden">
             <div className="flex items-center gap-2.5">
-              <div className="size-7 rounded-lg overflow-hidden shrink-0 shadow-sm ring-1 ring-sidebar-border/40">
+              <div className="ring-sidebar-border/40 size-7 shrink-0 overflow-hidden rounded-lg shadow-sm ring-1">
                 <img src={rezinaLogo} alt="Rezina" className="h-full w-full" />
               </div>
-              <span className="text-[13px] font-bold text-sidebar-foreground tracking-tight">Rezina</span>
+              <span className="text-sidebar-foreground text-[13px] font-bold tracking-tight">
+                Rezina
+              </span>
             </div>
-            <Button variant="ghost" size="icon" className="size-7 text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent rounded-lg" onClick={onMobileClose}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent size-7 rounded-lg"
+              onClick={onMobileClose}
+            >
               <ChevronLeft className="size-3.5" />
             </Button>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 px-2 py-3 overflow-y-auto overflow-x-hidden">
-          <p className={cn(
-            "text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/30 px-3 pb-2.5 pt-0.5",
-            collapsed && "lg:hidden"
-          )}>
+        <nav className="flex-1 overflow-x-hidden overflow-y-auto px-2 py-3">
+          <p
+            className={cn(
+              "text-sidebar-foreground/30 px-3 pt-0.5 pb-2.5 text-[10px] font-semibold tracking-widest uppercase",
+              collapsed && "lg:hidden"
+            )}
+          >
             Menü
           </p>
           <div className="space-y-0.5">
@@ -189,15 +216,15 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
                   to={to}
                   title={collapsed ? label : undefined}
                   className={cn(
-                    "group flex items-center gap-3 h-9 text-sm rounded-lg transition-all duration-150",
+                    "group flex h-9 items-center gap-3 rounded-lg text-sm transition-all duration-150",
                     active
                       ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
                       : "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground",
-                    collapsed ? "lg:justify-center lg:px-0 lg:w-9 lg:mx-auto" : "px-3"
+                    collapsed ? "lg:mx-auto lg:w-9 lg:justify-center lg:px-0" : "px-3"
                   )}
                 >
                   <Icon className="size-4 shrink-0" />
-                  {!collapsed && <span className="truncate lg:block hidden">{label}</span>}
+                  {!collapsed && <span className="hidden truncate lg:block">{label}</span>}
                   <span className="truncate lg:hidden">{label}</span>
                 </Link>
               )
@@ -206,14 +233,17 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
         </nav>
 
         {/* Footer */}
-        <div className="p-2 shrink-0 border-t border-sidebar-border/60">
+        <div className="border-sidebar-border/60 shrink-0 border-t p-2">
           {/* Desktop collapsed */}
           {collapsed && (
-            <div className="hidden lg:flex justify-center">
+            <div className="hidden justify-center lg:flex">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="size-9 flex items-center justify-center rounded-lg hover:bg-sidebar-accent transition-colors" title={user?.username}>
-                    <div className="size-8 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-[11px] font-semibold text-white select-none shadow-sm">
+                  <button
+                    className="hover:bg-sidebar-accent flex size-9 items-center justify-center rounded-lg transition-colors"
+                    title={user?.username}
+                  >
+                    <div className="from-primary to-primary/60 flex size-8 items-center justify-center rounded-full bg-gradient-to-br text-[11px] font-semibold text-white shadow-sm select-none">
                       {initials}
                     </div>
                   </button>
@@ -227,9 +257,7 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
           {!collapsed && (
             <div className="hidden lg:flex">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  {userTriggerExpanded}
-                </DropdownMenuTrigger>
+                <DropdownMenuTrigger asChild>{userTriggerExpanded}</DropdownMenuTrigger>
                 {userDropdownContent}
               </DropdownMenu>
             </div>
@@ -238,9 +266,7 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
           {/* Mobile */}
           <div className="lg:hidden">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                {userTriggerExpanded}
-              </DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>{userTriggerExpanded}</DropdownMenuTrigger>
               {userDropdownContent}
             </DropdownMenu>
           </div>

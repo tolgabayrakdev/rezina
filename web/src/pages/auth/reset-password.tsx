@@ -19,13 +19,13 @@ export default function ResetPassword() {
 
   if (!token) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8">
-        <div className="text-center space-y-4 max-w-sm">
+      <div className="flex min-h-screen items-center justify-center p-8">
+        <div className="max-w-sm space-y-4 text-center">
           <h2 className="text-xl font-semibold">Geçersiz Bağlantı</h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Bu şifre sıfırlama bağlantısı geçersiz. Lütfen yeni bir bağlantı isteyin.
           </p>
-          <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+          <Link to="/forgot-password" className="text-primary text-sm hover:underline">
             Yeni bağlantı iste
           </Link>
         </div>
@@ -53,25 +53,31 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="grid min-h-screen lg:grid-cols-2">
       <AuthLeftPanel
-        heading={<>Yeni şifrenizi<br />belirleyin</>}
+        heading={
+          <>
+            Yeni şifrenizi
+            <br />
+            belirleyin
+          </>
+        }
         description="Hesabınız için güçlü ve hatırlanması kolay bir şifre oluşturun."
       />
 
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
-          <div className="lg:hidden text-center">
+          <div className="text-center lg:hidden">
             <div className="flex items-center justify-center gap-2">
               <img src={wernaLogo} alt="Rezina" className="h-8 w-auto" />
               <span className="text-2xl font-semibold tracking-tight">Rezina</span>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">Şifre sıfırlama</p>
+            <p className="text-muted-foreground mt-1 text-sm">Şifre sıfırlama</p>
           </div>
 
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">Yeni Şifre</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Hesabınız için yeni bir şifre belirleyin
             </p>
           </div>
@@ -103,7 +109,7 @@ export default function ResetPassword() {
 
             <Button
               type="submit"
-              className="w-full h-11"
+              className="h-11 w-full"
               disabled={loading || !newPassword || !confirmPassword}
             >
               {loading ? "Kaydediliyor..." : "Şifremi Güncelle"}
@@ -111,8 +117,17 @@ export default function ResetPassword() {
           </form>
 
           <div className="flex items-center justify-center">
-            <Link to="/sign-in" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-2 transition-colors">
-              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <Link
+              to="/sign-in"
+              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition-colors"
+            >
+              <svg
+                className="size-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M15 18l-6-6 6-6" />
               </svg>
               Giriş sayfasına dön

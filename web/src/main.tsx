@@ -1,8 +1,8 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router'
-import { Toaster } from '@/components/ui/sonner'
+import { StrictMode } from "react"
+import { createRoot } from "react-dom/client"
+import "./index.css"
+import { createBrowserRouter, RouterProvider } from "react-router"
+import { Toaster } from "@/components/ui/sonner"
 
 import SignIn from "@/pages/auth/sign-in"
 import SignUp from "@/pages/auth/sign-up"
@@ -11,53 +11,68 @@ import ResetPassword from "@/pages/auth/reset-password"
 import AppLayout from "@/layouts/app-layout"
 import AppIndex from "@/pages/app/index"
 import Settings from "@/pages/app/settings"
-import { ThemeProvider } from './providers/theme-provider'
+import { ThemeProvider } from "./providers/theme-provider"
 import GuestGuard from "@/components/guest-guard"
-import Scripts from '@/pages/app/scripts'
+import Scripts from "@/pages/app/scripts"
 
 const router = createBrowserRouter([
-    {
-        path: "/sign-in",
-        element: <GuestGuard><SignIn /></GuestGuard>
-    },
-    {
-        path: "/sign-up",
-        element: <GuestGuard><SignUp /></GuestGuard>
-    },
-    {
-        path: "/forgot-password",
-        element: <GuestGuard><ForgotPassword /></GuestGuard>
-    },
-    {
-        path: "/reset-password",
-        element: <GuestGuard><ResetPassword /></GuestGuard>
-    },
-    {
-        path: "/",
-        element: <AppLayout />,
-        children: [
-            {
-                index: true,
-                element: <AppIndex />
-            },
-            {
-                path: "settings",
-                element: <Settings />
-            },
-            {
-                path: "scripts",
-                element: <Scripts />
-            }
-        ]
-    }
+  {
+    path: "/sign-in",
+    element: (
+      <GuestGuard>
+        <SignIn />
+      </GuestGuard>
+    ),
+  },
+  {
+    path: "/sign-up",
+    element: (
+      <GuestGuard>
+        <SignUp />
+      </GuestGuard>
+    ),
+  },
+  {
+    path: "/forgot-password",
+    element: (
+      <GuestGuard>
+        <ForgotPassword />
+      </GuestGuard>
+    ),
+  },
+  {
+    path: "/reset-password",
+    element: (
+      <GuestGuard>
+        <ResetPassword />
+      </GuestGuard>
+    ),
+  },
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      {
+        index: true,
+        element: <AppIndex />,
+      },
+      {
+        path: "settings",
+        element: <Settings />,
+      },
+      {
+        path: "scripts",
+        element: <Scripts />,
+      },
+    ],
+  },
 ])
 
-createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <ThemeProvider storageKey='vite-ui-theme'>
-            <Toaster position="top-center" />
-            <RouterProvider router={router} />
-        </ThemeProvider>
-
-    </StrictMode>,
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <ThemeProvider storageKey="vite-ui-theme">
+      <Toaster position="top-center" />
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  </StrictMode>
 )

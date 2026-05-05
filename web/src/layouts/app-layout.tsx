@@ -16,7 +16,7 @@ export default function AppLayout() {
   return (
     <AuthProvider>
       <OnboardingModal />
-      <div className="min-h-screen flex">
+      <div className="flex min-h-screen">
         {mobileOpen && (
           <div
             className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
@@ -31,9 +31,14 @@ export default function AppLayout() {
           onMobileClose={handleMobileClose}
         />
 
-        <div className="flex-1 min-w-0 flex flex-col">
-          <header className="h-14 flex items-center px-4 gap-3 lg:hidden sticky top-0 z-20 shrink-0 bg-card/80 backdrop-blur-lg border-b border-border/50">
-            <Button variant="ghost" size="icon" className="size-9 rounded-lg" onClick={() => setMobileOpen(true)}>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="bg-card/80 border-border/50 sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b px-4 backdrop-blur-lg lg:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9 rounded-lg"
+              onClick={() => setMobileOpen(true)}
+            >
               <Menu className="size-4" />
             </Button>
             <div className="flex items-center gap-2">
@@ -42,7 +47,7 @@ export default function AppLayout() {
             </div>
           </header>
 
-          <main className="flex-1 bg-background overflow-auto">
+          <main className="bg-background flex-1 overflow-auto">
             <Outlet />
           </main>
         </div>

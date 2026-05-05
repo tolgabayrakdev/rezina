@@ -33,7 +33,10 @@ export const useAuthStore = create<AuthState>()((set) => ({
   rateLimited: false,
   setSessionExpired: (val) => set({ sessionExpired: val }),
   login: async (email: string, password: string) => {
-    const res = await apiClient.post<{ success: boolean; data: User }>("/api/auth/login", { email, password })
+    const res = await apiClient.post<{ success: boolean; data: User }>("/api/auth/login", {
+      email,
+      password,
+    })
     localStorage.setItem("ks_had_session", "1")
     set({ user: res.data, isAuthenticated: true })
   },

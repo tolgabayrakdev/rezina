@@ -5,11 +5,7 @@ export class ApiClientError extends Error {
   status: number
   data: { message?: string }
 
-  constructor(
-    status: number,
-    data: { message?: string },
-    message?: string
-  ) {
+  constructor(status: number, data: { message?: string }, message?: string) {
     super(message ?? data.message ?? "Request failed")
     this.status = status
     this.data = data
@@ -47,5 +43,6 @@ export const apiClient = {
     request<T>(path, { ...options, method: "POST", body: JSON.stringify(body) }),
   patch: <T>(path: string, body?: unknown, options?: RequestInit) =>
     request<T>(path, { ...options, method: "PATCH", body: JSON.stringify(body) }),
-  delete: <T>(path: string, options?: RequestInit) => request<T>(path, { ...options, method: "DELETE" }),
+  delete: <T>(path: string, options?: RequestInit) =>
+    request<T>(path, { ...options, method: "DELETE" }),
 }
