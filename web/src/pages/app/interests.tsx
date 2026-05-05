@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Plus, Handshake, Pencil, Trash2, Car } from "lucide-react"
+import { Plus, Handshake, Pencil, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -31,6 +31,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 interface Interest {
   id: string
@@ -217,8 +225,6 @@ export default function Interests() {
       day: "numeric",
       month: "short",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     })
   }
 
@@ -226,8 +232,8 @@ export default function Interests() {
     <div className="space-y-6 p-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Müşteri İlgileri</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Araç-müşteri ilgi kayıtlarını yönetin</p>
+          <h1 className="text-lg font-semibold tracking-tight">Müşteri İlgileri</h1>
+          <p className="text-muted-foreground text-sm">{interests.length} kayıt</p>
         </div>
         <Button onClick={() => { resetForm(); setCreateOpen(true) }}>
           <Plus className="mr-2 size-4" />
@@ -237,7 +243,7 @@ export default function Interests() {
 
       <div className="flex gap-3">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Durum filtresi" />
           </SelectTrigger>
           <SelectContent>
@@ -257,66 +263,70 @@ export default function Interests() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16">
-          <Handshake className="text-muted-foreground/30 mb-4 size-12" />
-          <p className="text-muted-foreground mb-1 text-sm font-medium">İlgi kaydı bulunamadı</p>
-          <p className="text-muted-foreground/60 mb-4 text-xs">
-            {statusFilter !== "all" ? "Filtreyi değiştirin" : "İlk ilgi kaydını oluşturun"}
-          </p>
+          <Handshake className="text-muted-foreground/30 mb-3 size-10" />
+          <p className="text-muted-foreground text-sm">İlgi kaydı bulunamadı</p>
           {statusFilter === "all" && (
-            <Button variant="outline" onClick={() => { resetForm(); setCreateOpen(true) }}>
-              <Plus className="mr-2 size-4" />
+            <Button variant="outline" size="sm" className="mt-3" onClick={() => { resetForm(); setCreateOpen(true) }}>
+              <Plus className="mr-2 size-3.5" />
               İlgi Kaydı Oluştur
             </Button>
           )}
         </div>
       ) : (
-        <div className="divide-y rounded-lg border">
-          {filtered.map((interest) => (
-            <div
-              key={interest.id}
-              className="flex flex-col gap-3 p-4 transition-colors hover:bg-muted/50 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div className="flex items-start gap-3">
-                <div className="bg-primary/10 mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg">
-                  <Handshake className="text-primary size-4" />
-                </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold">{interest.customer_name}</p>
-                    <Badge className={cn("shrink-0", statusColors[interest.status] ?? "")}>
-                      {statusLabels[interest.status] ?? interest.status}
-                    </Badge>
-                  </div>
-                  <div className="text-muted-foreground/70 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-                    <span className="flex items-center gap-1">
-                      <Car className="size-3" />
-                      {interest.car_brand} {interest.car_model}
-                    </span>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Müşteri</TableHead>
+              <TableHead>Araç</TableHead>
+              <TableHead>Durum</TableHead>
+              <TableHead>Not</TableHead>
+              <TableHead>Tarih</TableHead>
+              <TableHead className="w-[80px]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.map((interest) => (
+              <TableRow key={interest.id}>
+                <TableCell>
+                  <div>
+                    <p className="font-medium">{interest.customer_name}</p>
                     {interest.customer_phone && (
-                      <span>{interest.customer_phone}</span>
+                      <p className="text-muted-foreground text-xs">{interest.customer_phone}</p>
                     )}
                   </div>
-                  {interest.note && (
-                    <p className="text-muted-foreground/50 line-clamp-1 text-xs">{interest.note}</p>
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {interest.car_brand} {interest.car_model}
+                </TableCell>
+                <TableCell>
+                  <Badge className={cn(statusColors[interest.status] ?? "")}>
+                    {statusLabels[interest.status] ?? interest.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  {interest.note ? (
+                    <span className="text-muted-foreground line-clamp-1 text-sm">{interest.note}</span>
+                  ) : (
+                    <span className="text-muted-foreground/50">-</span>
                   )}
-                </div>
-              </div>
-              <div className="flex items-center gap-2 pl-12 sm:pl-0">
-                <span className="text-muted-foreground/50 text-xs">{formatDate(interest.updated_at)}</span>
-                <Button variant="ghost" size="sm" onClick={() => openEdit(interest)}>
-                  <Pencil className="size-3.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => { setSelected(interest); setDeleteOpen(true) }}
-                >
-                  <Trash2 className="size-3.5" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+                </TableCell>
+                <TableCell className="text-muted-foreground text-xs">
+                  {formatDate(interest.updated_at)}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(interest)}>
+                      <Pencil className="size-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(interest); setDeleteOpen(true) }}>
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
 
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>

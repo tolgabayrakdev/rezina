@@ -17,6 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@/components/ui/table"
 
 interface CarDetail {
   id: string
@@ -151,21 +157,21 @@ export default function CarDetail() {
   }
 
   return (
-    <div className="space-y-6 p-8">
-      <div className="flex items-center gap-4">
+    <div className="space-y-8 p-8">
+      <div className="flex items-center gap-3">
         <Link to="/cars">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="size-8">
             <ArrowLeft className="size-4" />
           </Button>
         </Link>
-        <div className="flex-1">
-          <h1 className="text-2xl font-semibold tracking-tight">{car.title}</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg font-semibold tracking-tight truncate">{car.title}</h1>
+          <p className="text-muted-foreground text-sm">
             {car.brand} {car.model} {car.year ? `· ${car.year}` : ""}
           </p>
         </div>
         <Select value={car.status} onValueChange={handleStatusChange}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-[140px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -176,13 +182,19 @@ export default function CarDetail() {
         </Select>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-card rounded-xl border p-6">
-            <h2 className="mb-4 text-base font-medium">Fotoğraflar</h2>
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Fotoğraflar</p>
+              <Button variant="outline" size="sm" onClick={() => setImageDialogOpen(true)}>
+                <Plus className="mr-1.5 size-3.5" />
+                Ekle
+              </Button>
+            </div>
             {car.images.length === 0 ? (
-              <div className="bg-muted/50 flex flex-col items-center justify-center rounded-lg py-12">
-                <Car className="text-muted-foreground/30 mb-3 size-10" />
+              <div className="border-dashed border-2 rounded-lg flex flex-col items-center justify-center py-12">
+                <Car className="text-muted-foreground/30 mb-2 size-8" />
                 <p className="text-muted-foreground text-sm">Henüz fotoğraf eklenmemiş</p>
               </div>
             ) : (
@@ -191,7 +203,7 @@ export default function CarDetail() {
                   <div key={img.id} className="group relative overflow-hidden rounded-lg border">
                     <img src={img.url} alt="" className="aspect-square w-full object-cover" />
                     {img.is_cover && (
-                      <Badge className="absolute top-2 left-2">Kapak</Badge>
+                      <Badge className="absolute top-2 left-2 text-[10px]">Kapak</Badge>
                     )}
                     <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                       {!img.is_cover && (
@@ -220,19 +232,11 @@ export default function CarDetail() {
                 ))}
               </div>
             )}
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => setImageDialogOpen(true)}
-            >
-              <Plus className="mr-2 size-4" />
-              Fotoğraf Ekle
-            </Button>
           </div>
 
           {car.description && (
-            <div className="bg-card rounded-xl border p-6">
-              <h2 className="mb-3 text-base font-medium">Açıklama</h2>
+            <div className="space-y-3">
+              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Açıklama</p>
               <p className="text-muted-foreground whitespace-pre-wrap text-sm leading-relaxed">
                 {car.description}
               </p>
@@ -240,25 +244,52 @@ export default function CarDetail() {
           )}
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-card rounded-xl border p-6">
-            <h2 className="mb-4 text-base font-medium">Araç Bilgileri</h2>
-            <div className="space-y-3">
-              <InfoRow label="Fiyat" value={formatPrice(car.price)} />
-              <InfoRow label="Kilometre" value={car.mileage ? `${car.mileage.toLocaleString("tr-TR")} km` : "-"} />
-              <InfoRow label="Marka" value={car.brand || "-"} />
-              <InfoRow label="Model" value={car.model || "-"} />
-              <InfoRow label="Yıl" value={car.year?.toString() || "-"} />
-              <InfoRow label="Durum" value={<Badge className={cn(statusColors[car.status])}>{statusLabels[car.status]}</Badge>} />
-              <InfoRow label="Eklenme" value={formatDate(car.created_at)} />
-            </div>
+        <div className="space-y-8">
+          <div className="space-y-3">
+            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Araç Bilgileri</p>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="text-muted-foreground pl-0">Fiyat</TableCell>
+                  <TableCell className="text-right pr-0 font-medium">{formatPrice(car.price)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="text-muted-foreground pl-0">Kilometre</TableCell>
+                  <TableCell className="text-right pr-0 font-medium">
+                    {car.mileage ? `${car.mileage.toLocaleString("tr-TR")} km` : "-"}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="text-muted-foreground pl-0">Marka</TableCell>
+                  <TableCell className="text-right pr-0 font-medium">{car.brand || "-"}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="text-muted-foreground pl-0">Model</TableCell>
+                  <TableCell className="text-right pr-0 font-medium">{car.model || "-"}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="text-muted-foreground pl-0">Yıl</TableCell>
+                  <TableCell className="text-right pr-0 font-medium">{car.year?.toString() || "-"}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="text-muted-foreground pl-0">Durum</TableCell>
+                  <TableCell className="text-right pr-0">
+                    <Badge className={cn(statusColors[car.status])}>{statusLabels[car.status]}</Badge>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="text-muted-foreground pl-0">Eklenme</TableCell>
+                  <TableCell className="text-right pr-0 text-sm">{formatDate(car.created_at)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
 
-          <div className="bg-card rounded-xl border p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-medium">İlan Linkleri</h2>
-              <Button variant="ghost" size="sm" onClick={() => setLinkDialogOpen(true)}>
-                <Plus className="size-4" />
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">İlan Linkleri</p>
+              <Button variant="ghost" size="icon" className="size-7" onClick={() => setLinkDialogOpen(true)}>
+                <Plus className="size-3.5" />
               </Button>
             </div>
             {car.links.length === 0 ? (
@@ -266,8 +297,8 @@ export default function CarDetail() {
             ) : (
               <div className="space-y-2">
                 {car.links.map((link) => (
-                  <div key={link.id} className="flex items-center gap-2 rounded-lg border p-2">
-                    <LinkIcon className="text-muted-foreground size-4 shrink-0" />
+                  <div key={link.id} className="flex items-center gap-2 border rounded-md p-2.5">
+                    <LinkIcon className="text-muted-foreground size-3.5 shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-medium">{link.platform}</p>
                       <a
@@ -281,8 +312,8 @@ export default function CarDetail() {
                     </div>
                     <Button
                       variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 shrink-0"
+                      size="icon"
+                      className="size-6 shrink-0"
                       onClick={() => handleDeleteLink(link.id)}
                     >
                       <Trash2 className="size-3" />
@@ -319,15 +350,6 @@ export default function CarDetail() {
           fetchCar()
         }}
       />
-    </div>
-  )
-}
-
-function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between py-1.5">
-      <span className="text-muted-foreground text-sm">{label}</span>
-      <span className="text-sm font-medium">{value}</span>
     </div>
   )
 }

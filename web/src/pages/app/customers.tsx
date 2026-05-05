@@ -23,6 +23,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 interface Customer {
   id: string
@@ -144,8 +152,8 @@ export default function Customers() {
     <div className="space-y-6 p-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Müşteriler</h1>
-          <p className="text-muted-foreground mt-1 text-sm">Müşteri listenizi yönetin</p>
+          <h1 className="text-lg font-semibold tracking-tight">Müşteriler</h1>
+          <p className="text-muted-foreground text-sm">{customers.length} müşteri</p>
         </div>
         <Button onClick={() => { resetForm(); setCreateOpen(true) }}>
           <Plus className="mr-2 size-4" />
@@ -169,55 +177,65 @@ export default function Customers() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16">
-          <Users className="text-muted-foreground/30 mb-4 size-12" />
-          <p className="text-muted-foreground mb-1 text-sm font-medium">Müşteri bulunamadı</p>
-          <p className="text-muted-foreground/60 mb-4 text-xs">
-            {search ? "Aramayı değiştirin" : "İlk müşterinizi ekleyin"}
-          </p>
+          <Users className="text-muted-foreground/30 mb-3 size-10" />
+          <p className="text-muted-foreground text-sm">Müşteri bulunamadı</p>
           {!search && (
-            <Button variant="outline" onClick={() => { resetForm(); setCreateOpen(true) }}>
-              <Plus className="mr-2 size-4" />
+            <Button variant="outline" size="sm" className="mt-3" onClick={() => { resetForm(); setCreateOpen(true) }}>
+              <Plus className="mr-2 size-3.5" />
               Müşteri Ekle
             </Button>
           )}
         </div>
       ) : (
-        <div className="divide-y rounded-lg border">
-          {filtered.map((customer) => (
-            <div
-              key={customer.id}
-              className="flex items-center justify-between gap-4 p-4 transition-colors hover:bg-muted/50"
-            >
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 flex size-10 shrink-0 items-center justify-center rounded-full">
-                  <span className="text-primary text-sm font-semibold">
-                    {customer.name.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{customer.name}</p>
-                  <div className="text-muted-foreground/70 flex items-center gap-1 text-xs">
-                    {customer.phone && (
-                      <>
-                        <Phone className="size-3" />
-                        {customer.phone}
-                      </>
-                    )}
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Müşteri</TableHead>
+              <TableHead>Telefon</TableHead>
+              <TableHead>Kayıt Tarihi</TableHead>
+              <TableHead className="w-[80px]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.map((customer) => (
+              <TableRow key={customer.id}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-primary/10 flex size-8 shrink-0 items-center justify-center rounded-full">
+                      <span className="text-primary text-xs font-semibold">
+                        {customer.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <span className="font-medium">{customer.name}</span>
                   </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1">
-                <p className="text-muted-foreground/50 mr-3 text-xs">{formatDate(customer.created_at)}</p>
-                <Button variant="ghost" size="sm" onClick={() => openEdit(customer)}>
-                  <Pencil className="size-3.5" />
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => { setSelected(customer); setDeleteOpen(true) }}>
-                  <Trash2 className="size-3.5" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+                </TableCell>
+                <TableCell>
+                  {customer.phone ? (
+                    <span className="text-muted-foreground flex items-center gap-1.5 text-sm">
+                      <Phone className="size-3" />
+                      {customer.phone}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground/50">-</span>
+                  )}
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {formatDate(customer.created_at)}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(customer)}>
+                      <Pencil className="size-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(customer); setDeleteOpen(true) }}>
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
 
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
