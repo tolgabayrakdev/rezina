@@ -2,6 +2,7 @@ import { Plus, Handshake, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Spinner } from "@/components/ui/spinner"
+import { Pagination } from "@/components/ui/pagination"
 import { cn } from "@/lib/utils"
 import { InterestForm } from "@/components/interest-form"
 import {
@@ -47,7 +48,8 @@ export default function Interests() {
     selected, setSelected,
     form, setForm,
     statusFilter, setStatusFilter,
-    filtered,
+    setPage, pageSize, setPageSize,
+    filtered, paginated, safePage,
     resetForm,
     handleCreate, handleEdit, handleDelete, openEdit,
     formatDate,
@@ -67,7 +69,7 @@ export default function Interests() {
       </div>
 
       <div className="flex gap-3">
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1) }}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Durum filtresi" />
           </SelectTrigger>
@@ -98,19 +100,20 @@ export default function Interests() {
           )}
         </div>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Müşteri</TableHead>
-              <TableHead>Araç</TableHead>
-              <TableHead>Durum</TableHead>
-              <TableHead>Not</TableHead>
-              <TableHead>Tarih</TableHead>
-              <TableHead className="w-[80px]"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.map((interest) => (
+        <>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Müşteri</TableHead>
+                <TableHead>Araç</TableHead>
+                <TableHead>Durum</TableHead>
+                <TableHead>Not</TableHead>
+                <TableHead>Tarih</TableHead>
+                <TableHead className="w-[80px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginated.map((interest) => (
               <TableRow key={interest.id}>
                 <TableCell>
                   <div>
@@ -150,8 +153,17 @@ export default function Interests() {
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
+
+          <Pagination
+            total={filtered.length}
+            page={safePage}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
+        </>
       )}
 
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>

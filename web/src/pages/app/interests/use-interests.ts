@@ -66,6 +66,8 @@ export function useInterests() {
   const [selected, setSelected] = useState<Interest | null>(null)
   const [saving, setSaving] = useState(false)
   const [statusFilter, setStatusFilter] = useState("all")
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
   const [form, setForm] = useState<InterestFormState>(emptyForm)
 
   const fetchData = () => {
@@ -102,6 +104,10 @@ export function useInterests() {
   }, [])
 
   const filtered = interests.filter((i) => statusFilter === "all" || i.status === statusFilter)
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const safePage = Math.min(page, totalPages)
+  const paginated = filtered.slice((safePage - 1) * pageSize, safePage * pageSize)
 
   const resetForm = () => setForm(emptyForm)
 
@@ -181,7 +187,9 @@ export function useInterests() {
     selected, setSelected,
     form, setForm,
     statusFilter, setStatusFilter,
-    filtered,
+    page, setPage,
+    pageSize, setPageSize,
+    filtered, paginated, safePage,
     resetForm,
     handleCreate, handleEdit, handleDelete, openEdit,
     formatDate,
