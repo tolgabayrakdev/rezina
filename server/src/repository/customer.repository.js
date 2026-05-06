@@ -11,8 +11,11 @@ export class CustomerRepository {
     return result.rows[0];
   }
 
-  async findById(id) {
-    const result = await query(`SELECT * FROM customers WHERE id = $1`, [id]);
+  async findById(id, userId) {
+    const result = await query(`SELECT * FROM customers WHERE id = $1 AND user_id = $2`, [
+      id,
+      userId,
+    ]);
     return result.rows[0] || null;
   }
 
@@ -32,10 +35,10 @@ export class CustomerRepository {
     return result.rows;
   }
 
-  async update(id, data) {
+  async update(id, userId, data) {
     const fields = [];
-    const values = [id];
-    let idx = 2;
+    const values = [id, userId];
+    let idx = 3;
 
     if (data.name !== undefined) {
       fields.push(`name = $${idx++}`);
@@ -49,14 +52,17 @@ export class CustomerRepository {
     if (fields.length === 0) return null;
 
     const result = await query(
-      `UPDATE customers SET ${fields.join(', ')} WHERE id = $1 RETURNING *`,
+      `UPDATE customers SET ${fields.join(', ')} WHERE id = $1 AND user_id = $2 RETURNING *`,
       values
     );
     return result.rows[0] || null;
   }
 
-  async deleteById(id) {
-    const result = await query(`DELETE FROM customers WHERE id = $1 RETURNING id`, [id]);
+  async deleteById(id, userId) {
+    const result = await query(
+      `DELETE FROM customers WHERE id = $1 AND user_id = $2 RETURNING id`,
+      [id, userId]
+    );
     return result.rows[0] || null;
   }
 }

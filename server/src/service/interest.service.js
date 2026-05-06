@@ -11,14 +11,19 @@ export class InterestService {
   }
 
   async createInterest(userId, { car_id, customer_id, note }) {
-    const car = await this.carRepo.findById(car_id);
-    if (!car || car.user_id !== userId) throw new NotFoundError('Araç bulunamadı');
+    const car = await this.carRepo.findById(car_id, userId);
+    if (!car) throw new NotFoundError('Araç bulunamadı');
 
-    const customer = await this.customerRepo.findById(customer_id);
-    if (!customer || customer.user_id !== userId) throw new NotFoundError('Müşteri bulunamadı');
+    const customer = await this.customerRepo.findById(customer_id, userId);
+    if (!customer) throw new NotFoundError('Müşteri bulunamadı');
 
     try {
-      return await this.interestRepo.create({ carId: car_id, customerId: customer_id, note });
+      return await this.interestRepo.create({
+        carId: car_id,
+        customerId: customer_id,
+        userId,
+        note,
+      });
     } catch (err) {
       if (err.code === '23505') throw new ConflictError('Bu müşteri için zaten bir ilgi kaydı var');
       throw err;
@@ -35,17 +40,17 @@ export class InterestService {
 
   async updateInterest(userId, interestId, data) {
     await this._findInterest(interestId, userId);
-    return this.interestRepo.update(interestId, data);
+    return this.interestRepo.update(interestId, userId, data);
   }
 
   async deleteInterest(userId, interestId) {
     await this._findInterest(interestId, userId);
-    await this.interestRepo.deleteById(interestId);
+    await this.interestRepo.deleteById(interestId, userId);
   }
 
   async _findInterest(interestId, userId) {
-    const interest = await this.interestRepo.findById(interestId);
-    if (!interest || interest.car_user_id !== userId) {
+    const interest = await this.interestRepo.findById(interestId, userId);
+    if (!interest) {
       throw new NotFoundError('İlgi kaydı bulunamadı');
     }
     return interest;

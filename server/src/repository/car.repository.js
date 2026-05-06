@@ -9,13 +9,23 @@ export class CarRepository {
       `INSERT INTO cars (user_id, title, brand, model, year, mileage, price, status, description)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [userId, title, brand ?? null, model ?? null, year ?? null, mileage ?? null, price ?? null, status ?? 'in_stock', description ?? null]
+      [
+        userId,
+        title,
+        brand ?? null,
+        model ?? null,
+        year ?? null,
+        mileage ?? null,
+        price ?? null,
+        status ?? 'in_stock',
+        description ?? null,
+      ]
     );
     return result.rows[0];
   }
 
-  async findById(id) {
-    const result = await query(`SELECT * FROM cars WHERE id = $1`, [id]);
+  async findById(id, userId) {
+    const result = await query(`SELECT * FROM cars WHERE id = $1 AND user_id = $2`, [id, userId]);
     return result.rows[0] || null;
   }
 
@@ -44,12 +54,22 @@ export class CarRepository {
     return result.rows;
   }
 
-  async update(id, data) {
+  async update(id, userId, data) {
     const fields = [];
-    const values = [id];
-    let idx = 2;
+    const values = [id, userId];
+    let idx = 3;
 
-    const allowed = ['title', 'brand', 'model', 'year', 'mileage', 'price', 'status', 'description', 'expertise'];
+    const allowed = [
+      'title',
+      'brand',
+      'model',
+      'year',
+      'mileage',
+      'price',
+      'status',
+      'description',
+      'expertise',
+    ];
     for (const key of allowed) {
       if (Object.prototype.hasOwnProperty.call(data, key)) {
         fields.push(`${key} = $${idx++}`);
@@ -60,47 +80,65 @@ export class CarRepository {
     if (fields.length === 0) return null;
 
     const result = await query(
-      `UPDATE cars SET ${fields.join(', ')} WHERE id = $1 RETURNING *`,
+      `UPDATE cars SET ${fields.join(', ')} WHERE id = $1 AND user_id = $2 RETURNING *`,
       values
     );
     return result.rows[0] || null;
   }
 
-  async deleteById(id) {
-    const result = await query(`DELETE FROM cars WHERE id = $1 RETURNING id`, [id]);
+  async deleteById(id, userId) {
+    const result = await query(`DELETE FROM cars WHERE id = $1 AND user_id = $2 RETURNING id`, [
+      id,
+      userId,
+    ]);
     return result.rows[0] || null;
   }
 
   // ── Images ───────────────────────────────────────────────────────────────
 
-  async findImagesByCarId(carId) {
+  async findImagesByCarId(carId, userId) {
     const result = await query(
-      `SELECT * FROM car_images WHERE car_id = $1 ORDER BY is_cover DESC, created_at ASC`,
-      [carId]
+      `SELECT ci.*
+       FROM car_images ci
+       JOIN cars c ON ci.car_id = c.id
+       WHERE ci.car_id = $1 AND c.user_id = $2
+       ORDER BY ci.is_cover DESC, ci.created_at ASC`,
+      [carId, userId]
     );
     return result.rows;
   }
 
-  async findImageById(id) {
-    const result = await query(`SELECT * FROM car_images WHERE id = $1`, [id]);
+  async findImageById(id, userId) {
+    const result = await query(
+      `SELECT ci.*
+       FROM car_images ci
+       JOIN cars c ON ci.car_id = c.id
+       WHERE ci.id = $1 AND c.user_id = $2`,
+      [id, userId]
+    );
     return result.rows[0] || null;
   }
 
-  async addImage({ carId, url, isCover }) {
+  async addImage({ carId, userId, url, isCover }) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
       if (isCover) {
         await client.query(
-          `UPDATE car_images SET is_cover = FALSE WHERE car_id = $1`,
-          [carId]
+          `UPDATE car_images ci
+           SET is_cover = FALSE
+           FROM cars c
+           WHERE ci.car_id = c.id AND ci.car_id = $1 AND c.user_id = $2`,
+          [carId, userId]
         );
       }
 
       const result = await client.query(
-        `INSERT INTO car_images (car_id, url, is_cover) VALUES ($1, $2, $3) RETURNING *`,
-        [carId, url, isCover ?? false]
+        `INSERT INTO car_images (car_id, url, is_cover)
+         SELECT id, $3, $4 FROM cars WHERE id = $1 AND user_id = $2
+         RETURNING *`,
+        [carId, userId, url, isCover ?? false]
       );
 
       await client.query('COMMIT');
@@ -113,19 +151,26 @@ export class CarRepository {
     }
   }
 
-  async setCover(carId, imageId) {
+  async setCover(carId, userId, imageId) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
       await client.query(
-        `UPDATE car_images SET is_cover = FALSE WHERE car_id = $1`,
-        [carId]
+        `UPDATE car_images ci
+         SET is_cover = FALSE
+         FROM cars c
+         WHERE ci.car_id = c.id AND ci.car_id = $1 AND c.user_id = $2`,
+        [carId, userId]
       );
 
       const result = await client.query(
-        `UPDATE car_images SET is_cover = TRUE WHERE id = $1 AND car_id = $2 RETURNING *`,
-        [imageId, carId]
+        `UPDATE car_images ci
+         SET is_cover = TRUE
+         FROM cars c
+         WHERE ci.id = $1 AND ci.car_id = $2 AND ci.car_id = c.id AND c.user_id = $3
+         RETURNING ci.*`,
+        [imageId, carId, userId]
       );
 
       await client.query('COMMIT');
@@ -138,36 +183,60 @@ export class CarRepository {
     }
   }
 
-  async deleteImage(id) {
-    const result = await query(`DELETE FROM car_images WHERE id = $1 RETURNING id`, [id]);
+  async deleteImage(id, userId) {
+    const result = await query(
+      `DELETE FROM car_images ci
+       USING cars c
+       WHERE ci.id = $1 AND ci.car_id = c.id AND c.user_id = $2
+       RETURNING ci.id`,
+      [id, userId]
+    );
     return result.rows[0] || null;
   }
 
   // ── Links ────────────────────────────────────────────────────────────────
 
-  async findLinksByCarId(carId) {
+  async findLinksByCarId(carId, userId) {
     const result = await query(
-      `SELECT * FROM car_links WHERE car_id = $1 ORDER BY created_at ASC`,
-      [carId]
+      `SELECT cl.*
+       FROM car_links cl
+       JOIN cars c ON cl.car_id = c.id
+       WHERE cl.car_id = $1 AND c.user_id = $2
+       ORDER BY cl.created_at ASC`,
+      [carId, userId]
     );
     return result.rows;
   }
 
-  async findLinkById(id) {
-    const result = await query(`SELECT * FROM car_links WHERE id = $1`, [id]);
+  async findLinkById(id, userId) {
+    const result = await query(
+      `SELECT cl.*
+       FROM car_links cl
+       JOIN cars c ON cl.car_id = c.id
+       WHERE cl.id = $1 AND c.user_id = $2`,
+      [id, userId]
+    );
     return result.rows[0] || null;
   }
 
-  async addLink({ carId, platform, url }) {
+  async addLink({ carId, userId, platform, url }) {
     const result = await query(
-      `INSERT INTO car_links (car_id, platform, url) VALUES ($1, $2, $3) RETURNING *`,
-      [carId, platform, url]
+      `INSERT INTO car_links (car_id, platform, url)
+       SELECT id, $3, $4 FROM cars WHERE id = $1 AND user_id = $2
+       RETURNING *`,
+      [carId, userId, platform, url]
     );
     return result.rows[0];
   }
 
-  async deleteLink(id) {
-    const result = await query(`DELETE FROM car_links WHERE id = $1 RETURNING id`, [id]);
+  async deleteLink(id, userId) {
+    const result = await query(
+      `DELETE FROM car_links cl
+       USING cars c
+       WHERE cl.id = $1 AND cl.car_id = c.id AND c.user_id = $2
+       RETURNING cl.id`,
+      [id, userId]
+    );
     return result.rows[0] || null;
   }
 }

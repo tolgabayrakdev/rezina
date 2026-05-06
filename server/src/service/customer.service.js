@@ -20,17 +20,17 @@ export class CustomerService {
 
   async updateCustomer(userId, customerId, data) {
     await this._findCustomer(customerId, userId);
-    return this.customerRepo.update(customerId, data);
+    return this.customerRepo.update(customerId, userId, data);
   }
 
   async deleteCustomer(userId, customerId) {
     await this._findCustomer(customerId, userId);
-    await this.customerRepo.deleteById(customerId);
+    await this.customerRepo.deleteById(customerId, userId);
   }
 
   async _findCustomer(customerId, userId) {
-    const customer = await this.customerRepo.findById(customerId);
-    if (!customer || customer.user_id !== userId) throw new NotFoundError('Müşteri bulunamadı');
+    const customer = await this.customerRepo.findById(customerId, userId);
+    if (!customer) throw new NotFoundError('Müşteri bulunamadı');
     return customer;
   }
 }
