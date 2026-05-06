@@ -19,7 +19,13 @@ interface CarDeleteImageDialogProps {
   onDeleted: () => void
 }
 
-export function CarDeleteImageDialog({ carId, imageId, open, onOpenChange, onDeleted }: CarDeleteImageDialogProps) {
+export function CarDeleteImageDialog({
+  carId,
+  imageId,
+  open,
+  onOpenChange,
+  onDeleted,
+}: CarDeleteImageDialogProps) {
   const handleDelete = async () => {
     if (!carId || !imageId) return
     try {

@@ -44,6 +44,7 @@ interface InterestItem {
   customer_name: string
   customer_phone: string
   status: string
+  note: string
   updated_at: string
 }
 
@@ -108,14 +109,20 @@ export default function Dashboard() {
   const reserved = cars.filter((c) => c.status === "reserved").length
   const sold = cars.filter((c) => c.status === "sold").length
   const activeInterests = interests.filter((i) => i.status !== "lost" && i.status !== "sold").length
-  const totalRevenue = cars.filter((c) => c.status === "sold").reduce((sum, c) => sum + (Number(c.price) || 0), 0)
+  const totalRevenue = cars
+    .filter((c) => c.status === "sold")
+    .reduce((sum, c) => sum + (Number(c.price) || 0), 0)
   const soldWithPrice = cars.filter((c) => c.status === "sold" && c.price)
   const avgPrice = soldWithPrice.length > 0 ? totalRevenue / soldWithPrice.length : 0
 
   const formatPrice = (price: number | string | null) => {
     const num = Number(price)
     if (!num) return "-"
-    return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(num)
+    return new Intl.NumberFormat("tr-TR", {
+      style: "currency",
+      currency: "TRY",
+      maximumFractionDigits: 0,
+    }).format(num)
   }
 
   const formatDate = (date: string) =>
@@ -128,8 +135,12 @@ export default function Dashboard() {
     year: "numeric",
   })
 
-  const recentCars = [...cars].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)
-  const recentInterests = [...interests].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()).slice(0, 5)
+  const recentCars = [...cars]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 5)
+  const recentInterests = [...interests]
+    .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+    .slice(0, 5)
 
   return (
     <div className="space-y-8 p-8">
@@ -144,7 +155,9 @@ export default function Dashboard() {
         <div className="space-y-1 border-b pb-4">
           <div className="flex items-center gap-2">
             <Package className="text-muted-foreground size-3.5" />
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Stokta</p>
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Stokta
+            </p>
           </div>
           <p className="text-2xl font-semibold tracking-tight">{inStock}</p>
           <p className="text-muted-foreground text-xs">{cars.length} toplam araç</p>
@@ -153,7 +166,9 @@ export default function Dashboard() {
         <div className="space-y-1 border-b pb-4">
           <div className="flex items-center gap-2">
             <Handshake className="text-muted-foreground size-3.5" />
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Aktif İlgi</p>
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Aktif İlgi
+            </p>
           </div>
           <p className="text-2xl font-semibold tracking-tight">{activeInterests}</p>
           <p className="text-muted-foreground text-xs">{customers.length} kayıtlı müşteri</p>
@@ -162,7 +177,9 @@ export default function Dashboard() {
         <div className="space-y-1 border-b pb-4">
           <div className="flex items-center gap-2">
             <TrendingUp className="text-muted-foreground size-3.5" />
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Satılan</p>
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Satılan
+            </p>
           </div>
           <p className="text-2xl font-semibold tracking-tight">{sold}</p>
           <p className="text-muted-foreground text-xs">{reserved} rezerve</p>
@@ -171,7 +188,9 @@ export default function Dashboard() {
         <div className="space-y-1 border-b pb-4">
           <div className="flex items-center gap-2">
             <Banknote className="text-muted-foreground size-3.5" />
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Satış Geliri</p>
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Satış Geliri
+            </p>
           </div>
           <p className="text-2xl font-semibold tracking-tight">{formatPrice(totalRevenue)}</p>
           <p className="text-muted-foreground text-xs">Ort. {formatPrice(avgPrice)}</p>
@@ -179,15 +198,20 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-3">
+        <div className="space-y-3 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Son Araçlar</p>
-            <Link to="/cars" className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs">
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Son Araçlar
+            </p>
+            <Link
+              to="/cars"
+              className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs"
+            >
               Tümü <ArrowUpRight className="size-3" />
             </Link>
           </div>
           {recentCars.length === 0 ? (
-            <div className="border-dashed border-2 rounded-lg flex flex-col items-center justify-center py-10">
+            <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-10">
               <Car className="text-muted-foreground/30 mb-2 size-8" />
               <p className="text-muted-foreground text-sm">Henüz araç eklenmemiş</p>
               <Link to="/cars">
@@ -236,7 +260,9 @@ export default function Dashboard() {
 
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Durum Dağılımı</p>
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Durum Dağılımı
+            </p>
           </div>
           <div className="space-y-3">
             {[
@@ -259,12 +285,20 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <div className="border-t pt-4 mt-4 space-y-3">
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">İlgi Durumları</p>
+          <div className="mt-4 space-y-3 border-t pt-4">
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              İlgi Durumları
+            </p>
             {[
               { label: "İlgili", count: interests.filter((i) => i.status === "interested").length },
-              { label: "Test Sürüşü", count: interests.filter((i) => i.status === "test_drive").length },
-              { label: "Pazarlık", count: interests.filter((i) => i.status === "negotiating").length },
+              {
+                label: "Test Sürüşü",
+                count: interests.filter((i) => i.status === "test_drive").length,
+              },
+              {
+                label: "Pazarlık",
+                count: interests.filter((i) => i.status === "negotiating").length,
+              },
               { label: "Satıldı", count: interests.filter((i) => i.status === "sold").length },
               { label: "Kayıp", count: interests.filter((i) => i.status === "lost").length },
             ].map(({ label, count }) => (
@@ -279,13 +313,18 @@ export default function Dashboard() {
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Son İlgiler</p>
-          <Link to="/interests" className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs">
+          <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+            Son İlgiler
+          </p>
+          <Link
+            to="/interests"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-1 text-xs"
+          >
             Tümü <ArrowUpRight className="size-3" />
           </Link>
         </div>
         {recentInterests.length === 0 ? (
-          <div className="border-dashed border-2 rounded-lg flex flex-col items-center justify-center py-10">
+          <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-10">
             <Handshake className="text-muted-foreground/30 mb-2 size-8" />
             <p className="text-muted-foreground text-sm">Henüz ilgi kaydı yok</p>
             <Link to="/interests">
@@ -327,7 +366,9 @@ export default function Dashboard() {
                   </TableCell>
                   <TableCell>
                     {interest.note ? (
-                      <span className="text-muted-foreground line-clamp-1 text-sm">{interest.note}</span>
+                      <span className="text-muted-foreground line-clamp-1 text-sm">
+                        {interest.note}
+                      </span>
                     ) : (
                       <span className="text-muted-foreground/50">-</span>
                     )}

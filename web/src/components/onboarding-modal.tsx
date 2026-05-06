@@ -142,9 +142,7 @@ export function OnboardingModal() {
           {!loading ? (
             <>
               <div className="space-y-2">
-                <h2 className="text-xl font-semibold tracking-tight">
-                  Hoş geldiniz!
-                </h2>
+                <h2 className="text-xl font-semibold tracking-tight">Hoş geldiniz!</h2>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   Rezina'ya katıldığınız için teşekkürler.
                   <br />

@@ -35,14 +35,26 @@ interface InterestFormProps {
   isEdit?: boolean
 }
 
-export function InterestForm({ form, setForm, cars, customers, onSubmit, onCancel, saving, isEdit }: InterestFormProps) {
+export function InterestForm({
+  form,
+  setForm,
+  cars,
+  customers,
+  onSubmit,
+  onCancel,
+  saving,
+  isEdit,
+}: InterestFormProps) {
   return (
     <div className="space-y-4">
       {!isEdit && (
         <>
           <div className="space-y-2">
             <Label htmlFor="car">Araç *</Label>
-            <Select value={form.car_id} onValueChange={(v) => setForm((p) => ({ ...p, car_id: v }))}>
+            <Select
+              value={form.car_id}
+              onValueChange={(v) => setForm((p) => ({ ...p, car_id: v }))}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Araç seçin" />
               </SelectTrigger>
@@ -104,7 +116,10 @@ export function InterestForm({ form, setForm, cars, customers, onSubmit, onCance
         <Button variant="outline" onClick={onCancel}>
           İptal
         </Button>
-        <Button onClick={onSubmit} disabled={saving || (!isEdit && (!form.car_id || !form.customer_id))}>
+        <Button
+          onClick={onSubmit}
+          disabled={saving || (!isEdit && (!form.car_id || !form.customer_id))}
+        >
           {saving && <Loader2 className="mr-2 size-4 animate-spin" />}
           {isEdit ? "Güncelle" : "Ekle"}
         </Button>

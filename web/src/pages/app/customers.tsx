@@ -58,7 +58,8 @@ export default function Customers() {
 
   useEffect(() => {
     let cancelled = false
-    apiClient.get<{ success: boolean; data: Customer[] }>("/api/customers")
+    apiClient
+      .get<{ success: boolean; data: Customer[] }>("/api/customers")
       .then((res) => {
         if (!cancelled) setCustomers(res.data)
       })
@@ -66,22 +67,26 @@ export default function Customers() {
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const fetchCustomers = () => {
-    apiClient.get<{ success: boolean; data: Customer[] }>("/api/customers")
+    apiClient
+      .get<{ success: boolean; data: Customer[] }>("/api/customers")
       .then((res) => setCustomers(res.data))
       .catch(() => toast.error("Müşteriler yüklenemedi"))
   }
 
-  const filtered = useMemo(() =>
-    customers.filter(
-      (c) =>
-        !search ||
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        (c.phone?.includes(search) ?? false)
-    ),
+  const filtered = useMemo(
+    () =>
+      customers.filter(
+        (c) =>
+          !search ||
+          c.name.toLowerCase().includes(search.toLowerCase()) ||
+          (c.phone?.includes(search) ?? false)
+      ),
     [customers, search]
   )
 
@@ -167,19 +172,27 @@ export default function Customers() {
           <h1 className="text-lg font-semibold tracking-tight">Müşteriler</h1>
           <p className="text-muted-foreground text-sm">{customers.length} müşteri</p>
         </div>
-        <Button onClick={() => { resetForm(); setCreateOpen(true) }}>
+        <Button
+          onClick={() => {
+            resetForm()
+            setCreateOpen(true)
+          }}
+        >
           <Plus className="mr-2 size-4" />
           Yeni Müşteri
         </Button>
       </div>
 
       <div className="relative max-w-sm">
-        <Search className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
+        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
         <Input
           className="pl-9"
           placeholder="Müşteri ara..."
           value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setPage(1)
+          }}
         />
       </div>
 
@@ -192,7 +205,15 @@ export default function Customers() {
           <Users className="text-muted-foreground/30 mb-3 size-10" />
           <p className="text-muted-foreground text-sm">Müşteri bulunamadı</p>
           {!search && (
-            <Button variant="outline" size="sm" className="mt-3" onClick={() => { resetForm(); setCreateOpen(true) }}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={() => {
+                resetForm()
+                setCreateOpen(true)
+              }}
+            >
               <Plus className="mr-2 size-3.5" />
               Müşteri Ekle
             </Button>
@@ -237,10 +258,23 @@ export default function Customers() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(customer)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => openEdit(customer)}
+                      >
                         <Pencil className="size-3.5" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(customer); setDeleteOpen(true) }}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => {
+                          setSelected(customer)
+                          setDeleteOpen(true)
+                        }}
+                      >
                         <Trash2 className="size-3.5" />
                       </Button>
                     </div>
@@ -298,7 +332,8 @@ export default function Customers() {
           <AlertDialogHeader>
             <AlertDialogTitle>Müşteri silinsin mi?</AlertDialogTitle>
             <AlertDialogDescription>
-              <span className="font-semibold">{selected?.name}</span> müşterisi silinecek. Bu işlem geri alınamaz.
+              <span className="font-semibold">{selected?.name}</span> müşterisi silinecek. Bu işlem
+              geri alınamaz.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

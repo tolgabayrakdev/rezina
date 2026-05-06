@@ -13,7 +13,14 @@ interface CustomerFormProps {
   isEdit?: boolean
 }
 
-export function CustomerForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: CustomerFormProps) {
+export function CustomerForm({
+  form,
+  setForm,
+  onSubmit,
+  onCancel,
+  saving,
+  isEdit,
+}: CustomerFormProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">

@@ -128,7 +128,9 @@ export default function Interests() {
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const fetchData = () => {
@@ -145,12 +147,9 @@ export default function Interests() {
       .catch(() => toast.error("Veriler yüklenemedi"))
   }
 
-  const filtered = interests.filter(
-    (i) => statusFilter === "all" || i.status === statusFilter
-  )
+  const filtered = interests.filter((i) => statusFilter === "all" || i.status === statusFilter)
 
-  const resetForm = () =>
-    setForm({ car_id: "", customer_id: "", status: "interested", note: "" })
+  const resetForm = () => setForm({ car_id: "", customer_id: "", status: "interested", note: "" })
 
   const handleCreate = async () => {
     if (!form.car_id || !form.customer_id) return
@@ -235,7 +234,12 @@ export default function Interests() {
           <h1 className="text-lg font-semibold tracking-tight">Müşteri İlgileri</h1>
           <p className="text-muted-foreground text-sm">{interests.length} kayıt</p>
         </div>
-        <Button onClick={() => { resetForm(); setCreateOpen(true) }}>
+        <Button
+          onClick={() => {
+            resetForm()
+            setCreateOpen(true)
+          }}
+        >
           <Plus className="mr-2 size-4" />
           Yeni İlgi
         </Button>
@@ -266,7 +270,15 @@ export default function Interests() {
           <Handshake className="text-muted-foreground/30 mb-3 size-10" />
           <p className="text-muted-foreground text-sm">İlgi kaydı bulunamadı</p>
           {statusFilter === "all" && (
-            <Button variant="outline" size="sm" className="mt-3" onClick={() => { resetForm(); setCreateOpen(true) }}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={() => {
+                resetForm()
+                setCreateOpen(true)
+              }}
+            >
               <Plus className="mr-2 size-3.5" />
               İlgi Kaydı Oluştur
             </Button>
@@ -305,7 +317,9 @@ export default function Interests() {
                 </TableCell>
                 <TableCell>
                   {interest.note ? (
-                    <span className="text-muted-foreground line-clamp-1 text-sm">{interest.note}</span>
+                    <span className="text-muted-foreground line-clamp-1 text-sm">
+                      {interest.note}
+                    </span>
                   ) : (
                     <span className="text-muted-foreground/50">-</span>
                   )}
@@ -315,10 +329,23 @@ export default function Interests() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-end gap-1">
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(interest)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8"
+                      onClick={() => openEdit(interest)}
+                    >
                       <Pencil className="size-3.5" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(interest); setDeleteOpen(true) }}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8"
+                      onClick={() => {
+                        setSelected(interest)
+                        setDeleteOpen(true)
+                      }}
+                    >
                       <Trash2 className="size-3.5" />
                     </Button>
                   </div>

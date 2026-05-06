@@ -17,12 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
 
 interface CarDetail {
   id: string
@@ -79,7 +74,8 @@ export default function CarDetail() {
   useEffect(() => {
     if (!carId) return
     let cancelled = false
-    apiClient.get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
+    apiClient
+      .get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
       .then((res) => {
         if (!cancelled) setCar(res.data)
       })
@@ -90,12 +86,15 @@ export default function CarDetail() {
       .finally(() => {
         if (!cancelled) setLoading(false)
       })
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [carId, navigate])
 
   const fetchCar = () => {
     if (!carId) return
-    apiClient.get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
+    apiClient
+      .get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
       .then((res) => setCar(res.data))
       .catch(() => toast.error("Araç yüklenemedi"))
   }
@@ -165,8 +164,8 @@ export default function CarDetail() {
             <ArrowLeft className="size-4" />
           </Button>
         </Link>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-lg font-semibold tracking-tight truncate">{car.title}</h1>
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate text-lg font-semibold tracking-tight">{car.title}</h1>
           <p className="text-muted-foreground text-sm">
             {car.brand} {car.model} {car.year ? `· ${car.year}` : ""}
           </p>
@@ -184,17 +183,19 @@ export default function CarDetail() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-8">
+        <div className="space-y-8 lg:col-span-2">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Fotoğraflar</p>
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Fotoğraflar
+              </p>
               <Button variant="outline" size="sm" onClick={() => setImageDialogOpen(true)}>
                 <Plus className="mr-1.5 size-3.5" />
                 Ekle
               </Button>
             </div>
             {car.images.length === 0 ? (
-              <div className="border-dashed border-2 rounded-lg flex flex-col items-center justify-center py-12">
+              <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-12">
                 <Car className="text-muted-foreground/30 mb-2 size-8" />
                 <p className="text-muted-foreground text-sm">Henüz fotoğraf eklenmemiş</p>
               </div>
@@ -237,8 +238,10 @@ export default function CarDetail() {
 
           {car.description && (
             <div className="space-y-3">
-              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Açıklama</p>
-              <p className="text-muted-foreground whitespace-pre-wrap text-sm leading-relaxed">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Açıklama
+              </p>
+              <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">
                 {car.description}
               </p>
             </div>
@@ -247,40 +250,50 @@ export default function CarDetail() {
 
         <div className="space-y-8">
           <div className="space-y-3">
-            <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">Araç Bilgileri</p>
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Araç Bilgileri
+            </p>
             <Table>
               <TableBody>
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Fiyat</TableCell>
-                  <TableCell className="text-right pr-0 font-medium">{formatPrice(car.price)}</TableCell>
+                  <TableCell className="pr-0 text-right font-medium">
+                    {formatPrice(car.price)}
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Kilometre</TableCell>
-                  <TableCell className="text-right pr-0 font-medium">
+                  <TableCell className="pr-0 text-right font-medium">
                     {car.mileage ? `${car.mileage.toLocaleString("tr-TR")} km` : "-"}
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Marka</TableCell>
-                  <TableCell className="text-right pr-0 font-medium">{car.brand || "-"}</TableCell>
+                  <TableCell className="pr-0 text-right font-medium">{car.brand || "-"}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Model</TableCell>
-                  <TableCell className="text-right pr-0 font-medium">{car.model || "-"}</TableCell>
+                  <TableCell className="pr-0 text-right font-medium">{car.model || "-"}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Yıl</TableCell>
-                  <TableCell className="text-right pr-0 font-medium">{car.year?.toString() || "-"}</TableCell>
+                  <TableCell className="pr-0 text-right font-medium">
+                    {car.year?.toString() || "-"}
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Durum</TableCell>
-                  <TableCell className="text-right pr-0">
-                    <Badge className={cn(statusColors[car.status])}>{statusLabels[car.status]}</Badge>
+                  <TableCell className="pr-0 text-right">
+                    <Badge className={cn(statusColors[car.status])}>
+                      {statusLabels[car.status]}
+                    </Badge>
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Eklenme</TableCell>
-                  <TableCell className="text-right pr-0 text-sm">{formatDate(car.created_at)}</TableCell>
+                  <TableCell className="pr-0 text-right text-sm">
+                    {formatDate(car.created_at)}
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
@@ -288,8 +301,15 @@ export default function CarDetail() {
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">İlan Linkleri</p>
-              <Button variant="ghost" size="icon" className="size-7" onClick={() => setLinkDialogOpen(true)}>
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                İlan Linkleri
+              </p>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7"
+                onClick={() => setLinkDialogOpen(true)}
+              >
                 <Plus className="size-3.5" />
               </Button>
             </div>
@@ -298,7 +318,7 @@ export default function CarDetail() {
             ) : (
               <div className="space-y-2">
                 {car.links.map((link) => (
-                  <div key={link.id} className="flex items-center gap-2 border rounded-md p-2.5">
+                  <div key={link.id} className="flex items-center gap-2 rounded-md border p-2.5">
                     <LinkIcon className="text-muted-foreground size-3.5 shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-xs font-medium">{link.platform}</p>
