@@ -325,7 +325,7 @@ export function useCars() {
   const formatPrice = (price: number | string | null) => {
     const num = Number(price)
     if (!num) return "-"
-    return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(num)
+    return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(num)
   }
 
   const formatDate = (date: string) =>

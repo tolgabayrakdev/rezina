@@ -41,6 +41,12 @@ import {
 import { cn } from "@/lib/utils"
 import { useCars, statusLabels, statusColors, sortOptions } from "./use-cars"
 
+const fmt = (val: string) => {
+  const n = parseInt(val.replace(/\D/g, ""), 10)
+  return isNaN(n) ? "" : n.toLocaleString("tr-TR")
+}
+const parse = (val: string) => val.replace(/[^\d]/g, "")
+
 export default function Cars() {
   const {
     cars,
@@ -220,40 +226,40 @@ export default function Cars() {
               <label className="text-xs font-medium">Fiyat min (₺)</label>
               <Input
                 className="h-8 text-sm"
-                type="number"
-                placeholder="örn. 500000"
-                value={priceMin}
-                onChange={(e) => handleFilterChange(setPriceMin)(e.target.value)}
+                inputMode="numeric"
+                placeholder="500.000"
+                value={fmt(priceMin)}
+                onChange={(e) => handleFilterChange(setPriceMin)(parse(e.target.value))}
               />
             </div>
             <div className="space-y-1">
               <label className="text-xs font-medium">Fiyat max (₺)</label>
               <Input
                 className="h-8 text-sm"
-                type="number"
-                placeholder="örn. 2000000"
-                value={priceMax}
-                onChange={(e) => handleFilterChange(setPriceMax)(e.target.value)}
+                inputMode="numeric"
+                placeholder="2.000.000"
+                value={fmt(priceMax)}
+                onChange={(e) => handleFilterChange(setPriceMax)(parse(e.target.value))}
               />
             </div>
             <div className="space-y-1">
               <label className="text-xs font-medium">KM min</label>
               <Input
                 className="h-8 text-sm"
-                type="number"
-                placeholder="örn. 0"
-                value={mileageMin}
-                onChange={(e) => handleFilterChange(setMileageMin)(e.target.value)}
+                inputMode="numeric"
+                placeholder="0"
+                value={fmt(mileageMin)}
+                onChange={(e) => handleFilterChange(setMileageMin)(parse(e.target.value))}
               />
             </div>
             <div className="space-y-1">
               <label className="text-xs font-medium">KM max</label>
               <Input
                 className="h-8 text-sm"
-                type="number"
-                placeholder="örn. 100000"
-                value={mileageMax}
-                onChange={(e) => handleFilterChange(setMileageMax)(e.target.value)}
+                inputMode="numeric"
+                placeholder="100.000"
+                value={fmt(mileageMax)}
+                onChange={(e) => handleFilterChange(setMileageMax)(parse(e.target.value))}
               />
             </div>
           </div>

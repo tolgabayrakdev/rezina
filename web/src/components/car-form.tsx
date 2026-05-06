@@ -1,4 +1,10 @@
 import { Loader2 } from "lucide-react"
+
+const fmt = (val: string) => {
+  const n = parseInt(val.replace(/\D/g, ""), 10)
+  return isNaN(n) ? "" : n.toLocaleString("tr-TR")
+}
+const parse = (val: string) => val.replace(/[^\d]/g, "")
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -78,20 +84,20 @@ export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: C
           <Label htmlFor="mileage">Kilometre</Label>
           <Input
             id="mileage"
-            type="number"
-            value={form.mileage}
-            onChange={(e) => setForm((p) => ({ ...p, mileage: e.target.value }))}
-            placeholder="45000"
+            inputMode="numeric"
+            value={fmt(form.mileage)}
+            onChange={(e) => setForm((p) => ({ ...p, mileage: parse(e.target.value) }))}
+            placeholder="38.000"
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="price">Fiyat (₺)</Label>
           <Input
             id="price"
-            type="number"
-            value={form.price}
-            onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))}
-            placeholder="850000"
+            inputMode="numeric"
+            value={fmt(form.price)}
+            onChange={(e) => setForm((p) => ({ ...p, price: parse(e.target.value) }))}
+            placeholder="2.000.000"
           />
         </div>
       </div>
