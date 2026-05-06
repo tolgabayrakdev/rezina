@@ -49,7 +49,7 @@ export class CarRepository {
     const values = [id];
     let idx = 2;
 
-    const allowed = ['title', 'brand', 'model', 'year', 'mileage', 'price', 'status', 'description'];
+    const allowed = ['title', 'brand', 'model', 'year', 'mileage', 'price', 'status', 'description', 'expertise'];
     for (const key of allowed) {
       if (Object.prototype.hasOwnProperty.call(data, key)) {
         fields.push(`${key} = $${idx++}`);

@@ -33,6 +33,7 @@ export const updateCarSchema = Joi.object({
   price: Joi.number().min(0).optional().allow(null).label('Fiyat'),
   status: Joi.string().valid('in_stock', 'reserved', 'sold').optional().label('Durum'),
   description: Joi.string().max(5000).optional().allow('').label('Açıklama'),
+  expertise: Joi.object().optional().allow(null).label('Ekspertiz'),
 }).min(1).messages(tr);
 
 export const addCarImageSchema = Joi.object({
