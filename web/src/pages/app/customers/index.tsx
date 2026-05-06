@@ -1,11 +1,8 @@
-import { useEffect, useMemo, useState } from "react"
 import { Plus, Search, Users, Pencil, Trash2, Phone } from "lucide-react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { Pagination } from "@/components/ui/pagination"
-import { apiClient, ApiClientError } from "@/lib/api-client"
 import { CustomerForm } from "@/components/customer-form"
 import {
   Dialog,
@@ -32,138 +29,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-interface Customer {
-  id: string
-  name: string
-  phone: string | null
-  created_at: string
-}
+import { useCustomers } from "./use-customers"
 
 export default function Customers() {
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState("")
-  const [createOpen, setCreateOpen] = useState(false)
-  const [editOpen, setEditOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [selected, setSelected] = useState<Customer | null>(null)
-  const [saving, setSaving] = useState(false)
-
-  // Pagination
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-
-  const [form, setForm] = useState({ name: "", phone: "" })
-
-  useEffect(() => {
-    let cancelled = false
-    apiClient
-      .get<{ success: boolean; data: Customer[] }>("/api/customers")
-      .then((res) => {
-        if (!cancelled) setCustomers(res.data)
-      })
-      .catch(() => toast.error("Müşteriler yüklenemedi"))
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  const fetchCustomers = () => {
-    apiClient
-      .get<{ success: boolean; data: Customer[] }>("/api/customers")
-      .then((res) => setCustomers(res.data))
-      .catch(() => toast.error("Müşteriler yüklenemedi"))
-  }
-
-  const filtered = useMemo(
-    () =>
-      customers.filter(
-        (c) =>
-          !search ||
-          c.name.toLowerCase().includes(search.toLowerCase()) ||
-          (c.phone?.includes(search) ?? false)
-      ),
-    [customers, search]
-  )
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-  const safePage = Math.min(page, totalPages)
-  const paginated = filtered.slice((safePage - 1) * pageSize, safePage * pageSize)
-
-  const resetForm = () => setForm({ name: "", phone: "" })
-
-  const handleCreate = async () => {
-    if (!form.name) return
-    setSaving(true)
-    try {
-      await apiClient.post("/api/customers", {
-        name: form.name,
-        phone: form.phone || null,
-      })
-      toast.success("Müşteri eklendi")
-      setCreateOpen(false)
-      resetForm()
-      fetchCustomers()
-    } catch (err) {
-      const msg = err instanceof ApiClientError ? err.data.message : "Müşteri eklenemedi"
-      toast.error(msg)
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const handleEdit = async () => {
-    if (!selected || !form.name) return
-    setSaving(true)
-    try {
-      await apiClient.patch(`/api/customers/${selected.id}`, {
-        name: form.name,
-        phone: form.phone || null,
-      })
-      toast.success("Müşteri güncellendi")
-      setEditOpen(false)
-      setSelected(null)
-      resetForm()
-      fetchCustomers()
-    } catch (err) {
-      const msg = err instanceof ApiClientError ? err.data.message : "Müşteri güncellenemedi"
-      toast.error(msg)
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const handleDelete = async () => {
-    if (!selected) return
-    try {
-      await apiClient.delete(`/api/customers/${selected.id}`)
-      toast.success("Müşteri silindi")
-      setDeleteOpen(false)
-      setSelected(null)
-      fetchCustomers()
-    } catch (err) {
-      const msg = err instanceof ApiClientError ? err.data.message : "Müşteri silinemedi"
-      toast.error(msg)
-    }
-  }
-
-  const openEdit = (c: Customer) => {
-    setSelected(c)
-    setForm({ name: c.name, phone: c.phone ?? "" })
-    setEditOpen(true)
-  }
-
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString("tr-TR", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    })
-  }
+  const {
+    customers, loading, saving,
+    search, setSearch,
+    createOpen, setCreateOpen,
+    editOpen, setEditOpen,
+    deleteOpen, setDeleteOpen,
+    selected, setSelected,
+    form, setForm,
+    setPage, pageSize, setPageSize,
+    filtered, paginated, safePage,
+    resetForm,
+    handleCreate, handleEdit, handleDelete, openEdit,
+    formatDate,
+  } = useCustomers()
 
   return (
     <div className="space-y-6 p-8">
@@ -172,12 +54,7 @@ export default function Customers() {
           <h1 className="text-lg font-semibold tracking-tight">Müşteriler</h1>
           <p className="text-muted-foreground text-sm">{customers.length} müşteri</p>
         </div>
-        <Button
-          onClick={() => {
-            resetForm()
-            setCreateOpen(true)
-          }}
-        >
+        <Button onClick={() => { resetForm(); setCreateOpen(true) }}>
           <Plus className="mr-2 size-4" />
           Yeni Müşteri
         </Button>
@@ -189,10 +66,7 @@ export default function Customers() {
           className="pl-9"
           placeholder="Müşteri ara..."
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value)
-            setPage(1)
-          }}
+          onChange={(e) => { setSearch(e.target.value); setPage(1) }}
         />
       </div>
 
@@ -205,15 +79,7 @@ export default function Customers() {
           <Users className="text-muted-foreground/30 mb-3 size-10" />
           <p className="text-muted-foreground text-sm">Müşteri bulunamadı</p>
           {!search && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3"
-              onClick={() => {
-                resetForm()
-                setCreateOpen(true)
-              }}
-            >
+            <Button variant="outline" size="sm" className="mt-3" onClick={() => { resetForm(); setCreateOpen(true) }}>
               <Plus className="mr-2 size-3.5" />
               Müşteri Ekle
             </Button>
@@ -258,23 +124,10 @@ export default function Customers() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-8"
-                        onClick={() => openEdit(customer)}
-                      >
+                      <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(customer)}>
                         <Pencil className="size-3.5" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-8"
-                        onClick={() => {
-                          setSelected(customer)
-                          setDeleteOpen(true)
-                        }}
-                      >
+                      <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(customer); setDeleteOpen(true) }}>
                         <Trash2 className="size-3.5" />
                       </Button>
                     </div>
@@ -300,13 +153,7 @@ export default function Customers() {
             <DialogTitle>Yeni Müşteri Ekle</DialogTitle>
             <DialogDescription>Müşteri bilgilerini girin</DialogDescription>
           </DialogHeader>
-          <CustomerForm
-            form={form}
-            setForm={setForm}
-            onSubmit={handleCreate}
-            onCancel={() => setCreateOpen(false)}
-            saving={saving}
-          />
+          <CustomerForm form={form} setForm={setForm} onSubmit={handleCreate} onCancel={() => setCreateOpen(false)} saving={saving} />
         </DialogContent>
       </Dialog>
 
@@ -316,14 +163,7 @@ export default function Customers() {
             <DialogTitle>Müşteri Düzenle</DialogTitle>
             <DialogDescription>Müşteri bilgilerini güncelleyin</DialogDescription>
           </DialogHeader>
-          <CustomerForm
-            form={form}
-            setForm={setForm}
-            onSubmit={handleEdit}
-            onCancel={() => setEditOpen(false)}
-            saving={saving}
-            isEdit
-          />
+          <CustomerForm form={form} setForm={setForm} onSubmit={handleEdit} onCancel={() => setEditOpen(false)} saving={saving} isEdit />
         </DialogContent>
       </Dialog>
 
@@ -332,15 +172,12 @@ export default function Customers() {
           <AlertDialogHeader>
             <AlertDialogTitle>Müşteri silinsin mi?</AlertDialogTitle>
             <AlertDialogDescription>
-              <span className="font-semibold">{selected?.name}</span> müşterisi silinecek. Bu işlem
-              geri alınamaz.
+              <span className="font-semibold">{selected?.name}</span> müşterisi silinecek. Bu işlem geri alınamaz.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>İptal</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDelete}>
-              Sil
-            </AlertDialogAction>
+            <AlertDialogAction variant="destructive" onClick={handleDelete}>Sil</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
