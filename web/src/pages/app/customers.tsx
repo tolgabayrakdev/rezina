@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Plus, Search, Users, Pencil, Trash2, Phone } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
+import { Pagination } from "@/components/ui/pagination"
 import { apiClient, ApiClientError } from "@/lib/api-client"
 import { CustomerForm } from "@/components/customer-form"
 import {
@@ -49,6 +50,10 @@ export default function Customers() {
   const [selected, setSelected] = useState<Customer | null>(null)
   const [saving, setSaving] = useState(false)
 
+  // Pagination
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+
   const [form, setForm] = useState({ name: "", phone: "" })
 
   useEffect(() => {
@@ -70,12 +75,19 @@ export default function Customers() {
       .catch(() => toast.error("Müşteriler yüklenemedi"))
   }
 
-  const filtered = customers.filter(
-    (c) =>
-      !search ||
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      (c.phone?.includes(search) ?? false)
+  const filtered = useMemo(() =>
+    customers.filter(
+      (c) =>
+        !search ||
+        c.name.toLowerCase().includes(search.toLowerCase()) ||
+        (c.phone?.includes(search) ?? false)
+    ),
+    [customers, search]
   )
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const safePage = Math.min(page, totalPages)
+  const paginated = filtered.slice((safePage - 1) * pageSize, safePage * pageSize)
 
   const resetForm = () => setForm({ name: "", phone: "" })
 
@@ -167,7 +179,7 @@ export default function Customers() {
           className="pl-9"
           placeholder="Müşteri ara..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); setPage(1) }}
         />
       </div>
 
@@ -187,55 +199,65 @@ export default function Customers() {
           )}
         </div>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Müşteri</TableHead>
-              <TableHead>Telefon</TableHead>
-              <TableHead>Kayıt Tarihi</TableHead>
-              <TableHead className="w-[80px]"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.map((customer) => (
-              <TableRow key={customer.id}>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-primary/10 flex size-8 shrink-0 items-center justify-center rounded-full">
-                      <span className="text-primary text-xs font-semibold">
-                        {customer.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <span className="font-medium">{customer.name}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {customer.phone ? (
-                    <span className="text-muted-foreground flex items-center gap-1.5 text-sm">
-                      <Phone className="size-3" />
-                      {customer.phone}
-                    </span>
-                  ) : (
-                    <span className="text-muted-foreground/50">-</span>
-                  )}
-                </TableCell>
-                <TableCell className="text-muted-foreground text-sm">
-                  {formatDate(customer.created_at)}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center justify-end gap-1">
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(customer)}>
-                      <Pencil className="size-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(customer); setDeleteOpen(true) }}>
-                      <Trash2 className="size-3.5" />
-                    </Button>
-                  </div>
-                </TableCell>
+        <>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Müşteri</TableHead>
+                <TableHead>Telefon</TableHead>
+                <TableHead>Kayıt Tarihi</TableHead>
+                <TableHead className="w-[80px]"></TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {paginated.map((customer) => (
+                <TableRow key={customer.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary/10 flex size-8 shrink-0 items-center justify-center rounded-full">
+                        <span className="text-primary text-xs font-semibold">
+                          {customer.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <span className="font-medium">{customer.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {customer.phone ? (
+                      <span className="text-muted-foreground flex items-center gap-1.5 text-sm">
+                        <Phone className="size-3" />
+                        {customer.phone}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground/50">-</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-sm">
+                    {formatDate(customer.created_at)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(customer)}>
+                        <Pencil className="size-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(customer); setDeleteOpen(true) }}>
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <Pagination
+            total={filtered.length}
+            page={safePage}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+          />
+        </>
       )}
 
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
