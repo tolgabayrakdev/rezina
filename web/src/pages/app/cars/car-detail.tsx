@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router"
-import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon, Save } from "lucide-react"
+import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon, Save, ChevronLeft, ChevronRight, X } from "lucide-react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { CarBodyDiagram } from "@/components/car-body-diagram"
 import { type Expertise, type PanelStatus } from "@/types/expertise"
 import { toast } from "sonner"
@@ -111,6 +112,7 @@ export default function CarDetail() {
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null)
   const [expertise, setExpertise] = useState<Expertise>({})
   const [expertiseSaving, setExpertiseSaving] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (!carId) return
@@ -211,6 +213,16 @@ export default function CarDetail() {
     return new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(num)
   }
 
+  const getDisplayUrl = (url: string) => {
+    try {
+      const { hostname, pathname } = new URL(url)
+      const path = pathname.length > 1 ? pathname.slice(0, 28) + (pathname.length > 28 ? "…" : "") : ""
+      return hostname + path
+    } catch {
+      return url.slice(0, 40) + (url.length > 40 ? "…" : "")
+    }
+  }
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("tr-TR", {
       day: "numeric",
@@ -264,8 +276,12 @@ export default function CarDetail() {
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {car.images.map((img) => (
-                  <div key={img.id} className="group relative overflow-hidden rounded-lg border">
+                {car.images.map((img, idx) => (
+                  <div
+                    key={img.id}
+                    className="group relative cursor-zoom-in overflow-hidden rounded-lg border"
+                    onClick={() => setLightboxIndex(idx)}
+                  >
                     <img src={img.url} alt="" className="aspect-square w-full object-cover" />
                     {img.is_cover && (
                       <Badge className="absolute top-2 left-2 text-[10px]">Kapak</Badge>
@@ -276,7 +292,7 @@ export default function CarDetail() {
                           variant="secondary"
                           size="sm"
                           className="h-7 text-xs"
-                          onClick={() => handleSetCover(img.id)}
+                          onClick={(e) => { e.stopPropagation(); handleSetCover(img.id) }}
                         >
                           Kapak yap
                         </Button>
@@ -285,7 +301,8 @@ export default function CarDetail() {
                         variant="destructive"
                         size="sm"
                         className="h-7 text-xs"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation()
                           setSelectedImageId(img.id)
                           setDeleteImageOpen(true)
                         }}
@@ -445,9 +462,10 @@ export default function CarDetail() {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary truncate text-xs hover:underline"
+                        title={link.url}
+                        className="text-primary block truncate text-xs hover:underline"
                       >
-                        {link.url}
+                        {getDisplayUrl(link.url)}
                       </a>
                     </div>
                     <Button
@@ -465,6 +483,45 @@ export default function CarDetail() {
           </div>
         </div>
       </div>
+
+      <Dialog open={lightboxIndex !== null} onOpenChange={(open) => !open && setLightboxIndex(null)}>
+        <DialogContent className="max-w-5xl border-0 bg-black/95 p-0 shadow-2xl">
+          {lightboxIndex !== null && (
+            <div className="relative flex items-center justify-center">
+              <img
+                src={car.images[lightboxIndex].url}
+                alt=""
+                className="max-h-[88vh] w-full object-contain"
+              />
+              <button
+                className="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                onClick={() => setLightboxIndex(null)}
+              >
+                <X className="size-4" />
+              </button>
+              {lightboxIndex > 0 && (
+                <button
+                  className="absolute left-3 flex size-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i ?? 1) - 1) }}
+                >
+                  <ChevronLeft className="size-5" />
+                </button>
+              )}
+              {lightboxIndex < car.images.length - 1 && (
+                <button
+                  className="absolute right-3 flex size-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i ?? 0) + 1) }}
+                >
+                  <ChevronRight className="size-5" />
+                </button>
+              )}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs text-white/70">
+                {lightboxIndex + 1} / {car.images.length}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <CarImageDialog
         carId={carId!}
