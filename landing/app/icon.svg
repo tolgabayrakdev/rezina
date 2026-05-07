@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+  <!-- Car body -->
+  <rect x="3" y="18" width="26" height="7" rx="2.5" fill="white"/>
+  <!-- Car roof/cabin -->
+  <path d="M7.5,18 C9,11.5 23,11.5 24.5,18 Z" fill="white"/>
+  <!-- Windows -->
+  <path d="M10,17.5 C10.5,14 13.5,13.5 15,17.5 Z" fill="#2563eb" opacity="0.55"/>
+  <path d="M17,17.5 C18.5,13.5 21.5,14 22,17.5 Z" fill="#2563eb" opacity="0.55"/>
+  <!-- Wheels -->
+  <circle cx="9" cy="25" r="3.5" fill="#1e3a8a"/>
+  <circle cx="9" cy="25" r="1.5" fill="white"/>
+  <circle cx="23" cy="25" r="3.5" fill="#1e3a8a"/>
+  <circle cx="23" cy="25" r="1.5" fill="white"/>
+  <!-- Headlight -->
+  <rect x="3" y="20.5" width="3.5" height="2.5" rx="1" fill="#fde68a" opacity="0.9"/>
+</svg>
