@@ -1,11 +1,57 @@
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="a" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#7c70e0"/>
-      <stop offset="100%" stop-color="#5045c8"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
     </linearGradient>
   </defs>
-  <circle cx="100" cy="100" r="100" fill="url(#a)"/>
-  <circle cx="100" cy="100" r="52" fill="white"/>
-  <circle cx="100" cy="100" r="26" fill="url(#a)"/>
+
+  <!-- Background rounded rect -->
+  <rect width="200" height="200" rx="44" fill="url(#bg)"/>
+
+  <!-- Garage building -->
+  <!-- Roof triangle -->
+  <polygon points="25,86 100,30 175,86" fill="white"/>
+  <!-- Building walls -->
+  <rect x="35" y="86" width="130" height="68" fill="white"/>
+
+  <!-- Small side windows -->
+  <rect x="40" y="92" width="12" height="9" rx="2" fill="#93c5fd" opacity="0.55"/>
+  <rect x="148" y="92" width="12" height="9" rx="2" fill="#93c5fd" opacity="0.55"/>
+
+  <!-- Garage door opening -->
+  <rect x="53" y="98" width="94" height="56" rx="4" fill="#1e3a8a" opacity="0.85"/>
+
+  <!-- Garage door horizontal panel lines -->
+  <rect x="53" y="113" width="94" height="2.5" rx="1.25" fill="white" opacity="0.3"/>
+  <rect x="53" y="126" width="94" height="2.5" rx="1.25" fill="white" opacity="0.3"/>
+  <rect x="53" y="139" width="94" height="2.5" rx="1.25" fill="white" opacity="0.3"/>
+
+  <!-- Ground -->
+  <rect x="20" y="154" width="160" height="3" rx="1.5" fill="white" opacity="0.15"/>
+
+  <!-- Car shadow -->
+  <ellipse cx="100" cy="158" rx="46" ry="5" fill="black" opacity="0.1"/>
+
+  <!-- Car body -->
+  <rect x="56" y="140" width="88" height="21" rx="6" fill="white"/>
+
+  <!-- Car cabin/roof -->
+  <path d="M70,140 C72,126 128,126 130,140 Z" fill="white"/>
+
+  <!-- Car windows (blue tint) -->
+  <path d="M76,139 C77,130 90,129 93,139 Z" fill="#2563eb" opacity="0.55"/>
+  <path d="M95,139 L95,129 L105,129 L105,139 Z" fill="#2563eb" opacity="0.55"/>
+  <path d="M107,139 C110,129 123,130 124,139 Z" fill="#2563eb" opacity="0.55"/>
+
+  <!-- Wheels -->
+  <circle cx="74" cy="161" r="9" fill="#1e3a8a"/>
+  <circle cx="74" cy="161" r="4" fill="white"/>
+  <circle cx="126" cy="161" r="9" fill="#1e3a8a"/>
+  <circle cx="126" cy="161" r="4" fill="white"/>
+
+  <!-- Headlight -->
+  <rect x="56" y="146" width="7" height="5" rx="1.5" fill="#fde68a" opacity="0.9"/>
+  <!-- Taillight -->
+  <rect x="137" y="146" width="7" height="5" rx="1.5" fill="#fca5a5" opacity="0.9"/>
 </svg>

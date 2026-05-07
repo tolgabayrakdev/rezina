@@ -35,7 +35,7 @@ import {
   ChevronsUpDown,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import rezinaLogo from "@/assets/project_icon.svg"
+import bengarajLogo from "@/assets/project_icon.svg"
 import { useTheme } from "@/providers/theme-provider"
 
 const navItems = [
@@ -158,10 +158,10 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             <div className="hidden w-full items-center justify-between lg:flex">
               <div className="flex min-w-0 items-center gap-2.5 overflow-hidden">
                 <div className="ring-sidebar-border/40 size-7 shrink-0 overflow-hidden rounded-lg shadow-sm ring-1">
-                  <img src={rezinaLogo} alt="Rezina" className="h-full w-full" />
+                  <img src={bengarajLogo} alt="BenGaraj" className="h-full w-full" />
                 </div>
                 <span className="text-sidebar-foreground truncate text-[13px] font-bold tracking-tight">
-                  Rezina
+                  BenGaraj
                 </span>
               </div>
               <Button
@@ -178,10 +178,10 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
           <div className="flex w-full items-center justify-between lg:hidden">
             <div className="flex items-center gap-2.5">
               <div className="ring-sidebar-border/40 size-7 shrink-0 overflow-hidden rounded-lg shadow-sm ring-1">
-                <img src={rezinaLogo} alt="Rezina" className="h-full w-full" />
+                <img src={bengarajLogo} alt="BenGaraj" className="h-full w-full" />
               </div>
               <span className="text-sidebar-foreground text-[13px] font-bold tracking-tight">
-                Rezina
+                BenGaraj
               </span>
             </div>
             <Button

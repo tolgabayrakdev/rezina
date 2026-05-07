@@ -3,7 +3,7 @@ import { Outlet } from "react-router"
 import AuthProvider from "@/providers/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
-import rezinaLogo from "@/assets/project_icon.svg"
+import bengarajLogo from "@/assets/project_icon.svg"
 import { OnboardingModal } from "@/components/onboarding-modal"
 import { AppSidebar } from "@/components/app-sidebar"
 
@@ -42,8 +42,8 @@ export default function AppLayout() {
               <Menu className="size-4" />
             </Button>
             <div className="flex items-center gap-2">
-              <img src={rezinaLogo} alt="Rezina" className="h-6 w-auto" />
-              <span className="text-sm font-semibold tracking-tight">Rezina</span>
+              <img src={bengarajLogo} alt="BenGaraj" className="h-6 w-auto" />
+              <span className="text-sm font-semibold tracking-tight">BenGaraj</span>
             </div>
           </header>
 

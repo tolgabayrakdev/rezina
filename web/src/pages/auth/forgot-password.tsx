@@ -45,8 +45,8 @@ export default function ForgotPassword() {
           <div className="w-full max-w-md space-y-8 text-center">
             <div className="lg:hidden">
               <div className="flex items-center justify-center gap-2">
-                <img src={wernaLogo} alt="Rezina" className="h-8 w-auto" />
-                <span className="text-2xl font-semibold tracking-tight">Rezina</span>
+                <img src={wernaLogo} alt="BenGaraj" className="h-8 w-auto" />
+                <span className="text-2xl font-semibold tracking-tight">BenGaraj</span>
               </div>
             </div>
 
@@ -112,7 +112,7 @@ export default function ForgotPassword() {
       <div className="flex items-center justify-center p-8">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center lg:hidden">
-            <h1 className="text-2xl font-semibold tracking-tight">Rezina</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">BenGaraj</h1>
             <p className="text-muted-foreground mt-1 text-sm">Şifre sıfırlama</p>
           </div>
 

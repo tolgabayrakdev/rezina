@@ -399,7 +399,7 @@ export default function Dashboard() {
               {interests.length} ilgi kaydı
             </span>
           </div>
-          <p className="text-muted-foreground text-xs">Rezina Araç Yönetim Sistemi</p>
+          <p className="text-muted-foreground text-xs">BenGaraj Araç Yönetim Sistemi</p>
         </div>
       </div>
     </div>

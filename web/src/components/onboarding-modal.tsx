@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/store/auth-store"
-import rezinaLogo from "@/assets/project_icon.svg"
+import bengarajLogo from "@/assets/project_icon.svg"
 
 const CONFETTI_COLORS = [
   "#6366f1",
@@ -132,8 +132,8 @@ export function OnboardingModal() {
         <div className="from-primary/15 relative h-36 overflow-hidden bg-gradient-to-br to-violet-500/10">
           <ConfettiCanvas />
           <div className="absolute inset-0 flex items-center justify-center gap-3">
-            <img src={rezinaLogo} alt="Rezina" className="h-10 w-auto drop-shadow" />
-            <span className="text-2xl font-semibold tracking-tight">Rezina</span>
+            <img src={bengarajLogo} alt="BenGaraj" className="h-10 w-auto drop-shadow" />
+            <span className="text-2xl font-semibold tracking-tight">BenGaraj</span>
           </div>
         </div>
 
@@ -144,7 +144,7 @@ export function OnboardingModal() {
               <div className="space-y-2">
                 <h2 className="text-xl font-semibold tracking-tight">Hoş geldiniz!</h2>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Rezina'ya katıldığınız için teşekkürler.
+                  BenGaraj'a katıldığınız için teşekkürler.
                   <br />
                   Her şey sizi bekliyor.
                 </p>
