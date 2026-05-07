@@ -372,7 +372,7 @@ export default function Cars() {
       )}
 
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Yeni Araç Ekle</DialogTitle>
             <DialogDescription>Araç bilgilerini girin</DialogDescription>
@@ -388,7 +388,7 @@ export default function Cars() {
       </Dialog>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>Araç Düzenle</DialogTitle>
             <DialogDescription>Araç bilgilerini güncelleyin</DialogDescription>

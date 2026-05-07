@@ -58,7 +58,7 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
   const location = useLocation()
   const [logoutOpen, setLogoutOpen] = useState(false)
 
-  const isActive = (path: string) => location.pathname === path
+  const isActive = (path: string) => path === "/" ? location.pathname === "/" : location.pathname.startsWith(path)
   const initials = user?.email?.slice(0, 2).toUpperCase() ?? "??"
 
   useEffect(() => {

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router"
-import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon } from "lucide-react"
+import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon, Save } from "lucide-react"
+import { CarBodyDiagram } from "@/components/car-body-diagram"
+import { type Expertise, type PanelStatus } from "@/types/expertise"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -29,6 +31,14 @@ interface CarDetail {
   price: number | null
   status: string
   description: string | null
+  expertise: Expertise | null
+  fuel_type: string | null
+  transmission: string | null
+  body_type: string | null
+  engine_power: number | null
+  engine_volume: number | null
+  drive_type: string | null
+  color: string | null
   created_at: string
   updated_at: string
   images: CarImage[]
@@ -61,6 +71,35 @@ const statusColors: Record<string, string> = {
   sold: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
 }
 
+const fuelLabels: Record<string, string> = {
+  gasoline: "Benzin",
+  diesel: "Dizel",
+  lpg: "LPG",
+  electric: "Elektrik",
+  hybrid: "Hibrit",
+}
+
+const transmissionLabels: Record<string, string> = {
+  automatic: "Otomatik",
+  manual: "Manuel",
+}
+
+const bodyTypeLabels: Record<string, string> = {
+  sedan: "Sedan",
+  hatchback: "Hatchback",
+  suv: "SUV",
+  station_wagon: "Station Wagon",
+  pickup: "Pickup",
+  truck: "Kamyon",
+}
+
+const driveTypeLabels: Record<string, string> = {
+  fwd: "Önden Çekiş",
+  rwd: "Arkadan İtiş",
+  "4wd": "4x4",
+  awd: "AWD",
+}
+
 export default function CarDetail() {
   const { carId } = useParams<{ carId: string }>()
   const navigate = useNavigate()
@@ -70,6 +109,8 @@ export default function CarDetail() {
   const [linkDialogOpen, setLinkDialogOpen] = useState(false)
   const [deleteImageOpen, setDeleteImageOpen] = useState(false)
   const [selectedImageId, setSelectedImageId] = useState<string | null>(null)
+  const [expertise, setExpertise] = useState<Expertise>({})
+  const [expertiseSaving, setExpertiseSaving] = useState(false)
 
   useEffect(() => {
     if (!carId) return
@@ -77,7 +118,10 @@ export default function CarDetail() {
     apiClient
       .get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
       .then((res) => {
-        if (!cancelled) setCar(res.data)
+        if (!cancelled) {
+          setCar(res.data)
+          setExpertise(res.data.expertise ?? {})
+        }
       })
       .catch(() => {
         toast.error("Araç yüklenemedi")
@@ -121,6 +165,23 @@ export default function CarDetail() {
     }
   }
 
+  const handleExpertisePanelChange = (key: string, status: PanelStatus) => {
+    setExpertise((prev) => ({ ...prev, [key]: status }))
+  }
+
+  const handleExpertiseSave = async () => {
+    if (!carId) return
+    setExpertiseSaving(true)
+    try {
+      await apiClient.patch(`/api/cars/${carId}`, { expertise })
+      toast.success("Ekspertiz kaydedildi")
+    } catch {
+      toast.error("Ekspertiz kaydedilemedi")
+    } finally {
+      setExpertiseSaving(false)
+    }
+  }
+
   const handleStatusChange = async (status: string) => {
     if (!carId) return
     try {
@@ -131,6 +192,8 @@ export default function CarDetail() {
       toast.error("Durum güncellenemedi")
     }
   }
+
+
 
   if (loading) {
     return (
@@ -246,6 +309,29 @@ export default function CarDetail() {
               </p>
             </div>
           )}
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+                Ekspertiz Raporu
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExpertiseSave}
+                disabled={expertiseSaving}
+              >
+                <Save className="mr-1.5 size-3.5" />
+                Kaydet
+              </Button>
+            </div>
+            <div className="rounded-lg border p-4">
+              <CarBodyDiagram
+                expertise={expertise}
+                onChange={handleExpertisePanelChange}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="space-y-8">
@@ -281,6 +367,39 @@ export default function CarDetail() {
                     {car.year?.toString() || "-"}
                   </TableCell>
                 </TableRow>
+                {(
+                  [
+                    { field: "fuel_type", label: "Yakıt", labels: fuelLabels },
+                    { field: "transmission", label: "Vites", labels: transmissionLabels },
+                    { field: "body_type", label: "Kasa", labels: bodyTypeLabels },
+                    { field: "drive_type", label: "Çekiş", labels: driveTypeLabels },
+                  ] as const
+                ).map(({ field, label, labels }) => (
+                  <TableRow key={field}>
+                    <TableCell className="text-muted-foreground pl-0">{label}</TableCell>
+                    <TableCell className="pr-0 text-right font-medium">
+                      {car[field]
+                        ? (labels as Record<string, string>)[car[field]!]
+                        : <span className="text-muted-foreground font-normal">-</span>}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {(
+                  [
+                    { field: "engine_power", label: "Motor Gücü", suffix: "hp" },
+                    { field: "engine_volume", label: "Motor Hacmi", suffix: "cc" },
+                    { field: "color", label: "Renk", suffix: "" },
+                  ] as const
+                ).map(({ field, label, suffix }) => (
+                  <TableRow key={field}>
+                    <TableCell className="text-muted-foreground pl-0">{label}</TableCell>
+                    <TableCell className="pr-0 text-right font-medium">
+                      {car[field] != null
+                        ? `${car[field]}${suffix ? ` ${suffix}` : ""}`
+                        : <span className="text-muted-foreground font-normal">-</span>}
+                    </TableCell>
+                  </TableRow>
+                ))}
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Durum</TableCell>
                   <TableCell className="pr-0 text-right">

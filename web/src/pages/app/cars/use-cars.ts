@@ -12,6 +12,13 @@ export interface CarItem {
   price: number | null
   status: string
   description: string | null
+  fuel_type: string | null
+  transmission: string | null
+  body_type: string | null
+  engine_power: number | null
+  engine_volume: number | null
+  drive_type: string | null
+  color: string | null
   created_at: string
 }
 
@@ -24,6 +31,13 @@ export type CarFormState = {
   price: string
   status: string
   description: string
+  fuel_type: string
+  transmission: string
+  body_type: string
+  engine_power: string
+  engine_volume: string
+  drive_type: string
+  color: string
 }
 
 export type SortKey =
@@ -128,6 +142,13 @@ const emptyForm: CarFormState = {
   price: "",
   status: "in_stock",
   description: "",
+  fuel_type: "",
+  transmission: "",
+  body_type: "",
+  engine_power: "",
+  engine_volume: "",
+  drive_type: "",
+  color: "",
 }
 
 export function useCars() {
@@ -256,6 +277,13 @@ export function useCars() {
         price: form.price ? parseFloat(form.price) : null,
         status: form.status,
         description: form.description || null,
+        fuel_type: form.fuel_type || null,
+        transmission: form.transmission || null,
+        body_type: form.body_type || null,
+        engine_power: form.engine_power ? parseInt(form.engine_power) : null,
+        engine_volume: form.engine_volume ? parseInt(form.engine_volume) : null,
+        drive_type: form.drive_type || null,
+        color: form.color || null,
       })
       toast.success("Araç eklendi")
       setCreateOpen(false)
@@ -281,6 +309,13 @@ export function useCars() {
         price: form.price ? parseFloat(form.price) : null,
         status: form.status,
         description: form.description || null,
+        fuel_type: form.fuel_type || null,
+        transmission: form.transmission || null,
+        body_type: form.body_type || null,
+        engine_power: form.engine_power ? parseInt(form.engine_power) : null,
+        engine_volume: form.engine_volume ? parseInt(form.engine_volume) : null,
+        drive_type: form.drive_type || null,
+        color: form.color || null,
       })
       toast.success("Araç güncellendi")
       setEditOpen(false)
@@ -318,6 +353,13 @@ export function useCars() {
       price: car.price?.toString() ?? "",
       status: car.status,
       description: car.description ?? "",
+      fuel_type: car.fuel_type ?? "",
+      transmission: car.transmission ?? "",
+      body_type: car.body_type ?? "",
+      engine_power: car.engine_power?.toString() ?? "",
+      engine_volume: car.engine_volume?.toString() ?? "",
+      drive_type: car.drive_type ?? "",
+      color: car.color ?? "",
     })
     setEditOpen(true)
   }
