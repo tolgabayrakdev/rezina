@@ -47,6 +47,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
       await apiClient.post("/api/auth/logout")
     } finally {
       localStorage.removeItem("ks_had_session")
+      localStorage.removeItem("remembered_email")
       set({ user: null, isAuthenticated: false, sessionExpired: false })
     }
   },
