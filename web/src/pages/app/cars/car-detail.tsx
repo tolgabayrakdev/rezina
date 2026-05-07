@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router"
-import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon, Save, ChevronLeft, ChevronRight, X } from "lucide-react"
+import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon, Save, ChevronLeft, ChevronRight, X, Pencil } from "lucide-react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 import { CarBodyDiagram } from "@/components/car-body-diagram"
 import { type Expertise, type PanelStatus } from "@/types/expertise"
 import { toast } from "sonner"
@@ -113,6 +114,9 @@ export default function CarDetail() {
   const [expertise, setExpertise] = useState<Expertise>({})
   const [expertiseSaving, setExpertiseSaving] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [editingDesc, setEditingDesc] = useState(false)
+  const [descValue, setDescValue] = useState("")
+  const [descSaving, setDescSaving] = useState(false)
 
   useEffect(() => {
     if (!carId) return
@@ -123,6 +127,7 @@ export default function CarDetail() {
         if (!cancelled) {
           setCar(res.data)
           setExpertise(res.data.expertise ?? {})
+          setDescValue(res.data.description ?? "")
         }
       })
       .catch(() => {
@@ -181,6 +186,21 @@ export default function CarDetail() {
       toast.error("Ekspertiz kaydedilemedi")
     } finally {
       setExpertiseSaving(false)
+    }
+  }
+
+  const handleDescSave = async () => {
+    if (!carId) return
+    setDescSaving(true)
+    try {
+      await apiClient.patch(`/api/cars/${carId}`, { description: descValue })
+      setCar((prev) => prev ? { ...prev, description: descValue } : prev)
+      toast.success("Açıklama güncellendi")
+      setEditingDesc(false)
+    } catch {
+      toast.error("Açıklama güncellenemedi")
+    } finally {
+      setDescSaving(false)
     }
   }
 
@@ -282,7 +302,7 @@ export default function CarDetail() {
                     className="group relative cursor-zoom-in overflow-hidden rounded-lg border"
                     onClick={() => setLightboxIndex(idx)}
                   >
-                    <img src={img.url} alt="" className="aspect-square w-full object-cover" />
+                    <img src={img.url} alt="" className="aspect-[4/3] w-full object-cover" />
                     {img.is_cover && (
                       <Badge className="absolute top-2 left-2 text-[10px]">Kapak</Badge>
                     )}
@@ -316,16 +336,54 @@ export default function CarDetail() {
             )}
           </div>
 
-          {car.description && (
-            <div className="space-y-3">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
                 Açıklama
               </p>
+              {!editingDesc && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-7"
+                  onClick={() => { setDescValue(car.description ?? ""); setEditingDesc(true) }}
+                >
+                  <Pencil className="size-3.5" />
+                </Button>
+              )}
+            </div>
+            {editingDesc ? (
+              <div className="space-y-2">
+                <Textarea
+                  value={descValue}
+                  onChange={(e) => setDescValue(e.target.value)}
+                  placeholder="Araç hakkında açıklama yazın..."
+                  className="min-h-[120px] resize-none text-sm"
+                  autoFocus
+                />
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setEditingDesc(false)}
+                    disabled={descSaving}
+                  >
+                    İptal
+                  </Button>
+                  <Button size="sm" onClick={handleDescSave} disabled={descSaving}>
+                    <Save className="mr-1.5 size-3.5" />
+                    Kaydet
+                  </Button>
+                </div>
+              </div>
+            ) : car.description ? (
               <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">
                 {car.description}
               </p>
-            </div>
-          )}
+            ) : (
+              <p className="text-muted-foreground/50 text-sm italic">Açıklama eklenmemiş</p>
+            )}
+          </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
