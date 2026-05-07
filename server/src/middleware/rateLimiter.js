@@ -2,7 +2,7 @@ import rateLimit from 'express-rate-limit';
 
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 1000,
   message: {
     success: false,
     message: 'Çok fazla istek gönderildi, lütfen daha sonra tekrar deneyin.',
@@ -24,7 +24,7 @@ export const authLimiter = rateLimit({
 
 export const accountLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
+  max: 500,
   message: {
     success: false,
     message: 'Çok fazla istek gönderildi, lütfen daha sonra tekrar deneyin.',
