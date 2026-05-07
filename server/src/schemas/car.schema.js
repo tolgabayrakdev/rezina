@@ -22,6 +22,13 @@ export const createCarSchema = Joi.object({
   price: Joi.number().min(0).optional().label('Fiyat'),
   status: Joi.string().valid('in_stock', 'reserved', 'sold').default('in_stock').label('Durum'),
   description: Joi.string().max(5000).optional().allow('').label('Açıklama'),
+  fuel_type: Joi.string().valid('gasoline', 'diesel', 'lpg', 'electric', 'hybrid').optional().label('Yakıt Tipi'),
+  transmission: Joi.string().valid('automatic', 'manual').optional().label('Vites'),
+  body_type: Joi.string().valid('sedan', 'hatchback', 'suv', 'station_wagon', 'pickup', 'truck').optional().label('Kasa Tipi'),
+  engine_power: Joi.number().integer().min(1).optional().label('Motor Gücü'),
+  engine_volume: Joi.number().integer().min(1).optional().label('Motor Hacmi'),
+  drive_type: Joi.string().valid('fwd', 'rwd', '4wd', 'awd').optional().label('Çekiş'),
+  color: Joi.string().max(50).optional().allow('').label('Renk'),
 }).messages(tr);
 
 export const updateCarSchema = Joi.object({
@@ -34,6 +41,13 @@ export const updateCarSchema = Joi.object({
   status: Joi.string().valid('in_stock', 'reserved', 'sold').optional().label('Durum'),
   description: Joi.string().max(5000).optional().allow('').label('Açıklama'),
   expertise: Joi.object().optional().allow(null).label('Ekspertiz'),
+  fuel_type: Joi.string().valid('gasoline', 'diesel', 'lpg', 'electric', 'hybrid').optional().allow(null).label('Yakıt Tipi'),
+  transmission: Joi.string().valid('automatic', 'manual').optional().allow(null).label('Vites'),
+  body_type: Joi.string().valid('sedan', 'hatchback', 'suv', 'station_wagon', 'pickup', 'truck').optional().allow(null).label('Kasa Tipi'),
+  engine_power: Joi.number().integer().min(1).optional().allow(null).label('Motor Gücü'),
+  engine_volume: Joi.number().integer().min(1).optional().allow(null).label('Motor Hacmi'),
+  drive_type: Joi.string().valid('fwd', 'rwd', '4wd', 'awd').optional().allow(null).label('Çekiş'),
+  color: Joi.string().max(50).optional().allow('', null).label('Renk'),
 }).min(1).messages(tr);
 
 export const addCarImageSchema = Joi.object({

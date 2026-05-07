@@ -77,12 +77,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE TRIGGER trg_users_updated_at
+  BEFORE UPDATE ON users
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
 
 -- =========================
--- GALLERY OS (NEW MODULE)
--- =========================
-
 -- ARAÇLAR
+-- =========================
+
 CREATE TABLE cars (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -94,6 +97,14 @@ CREATE TABLE cars (
     price NUMERIC(12,2) CHECK (price >= 0),
     status VARCHAR(20) DEFAULT 'in_stock' CHECK (status IN ('in_stock', 'reserved', 'sold')),
     description TEXT,
+    expertise JSONB DEFAULT NULL,
+    fuel_type VARCHAR(20) CHECK (fuel_type IN ('gasoline', 'diesel', 'lpg', 'electric', 'hybrid')),
+    transmission VARCHAR(20) CHECK (transmission IN ('automatic', 'manual')),
+    body_type VARCHAR(30) CHECK (body_type IN ('sedan', 'hatchback', 'suv', 'station_wagon', 'pickup', 'truck')),
+    engine_power INT CHECK (engine_power > 0),
+    engine_volume INT CHECK (engine_volume > 0),
+    drive_type VARCHAR(20) CHECK (drive_type IN ('fwd', 'rwd', '4wd', 'awd')),
+    color VARCHAR(50),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -103,10 +114,6 @@ CREATE INDEX idx_cars_status ON cars(status);
 
 CREATE TRIGGER trg_cars_updated_at
   BEFORE UPDATE ON cars
-  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
-CREATE TRIGGER trg_users_updated_at
-  BEFORE UPDATE ON users
   FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 
@@ -132,7 +139,6 @@ CREATE TABLE car_links (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     car_id UUID NOT NULL REFERENCES cars(id) ON DELETE CASCADE,
     platform VARCHAR(100) NOT NULL,
-    -- sahibinden | arabam | ikinciyeni | custom vb.
     url TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -140,7 +146,10 @@ CREATE TABLE car_links (
 CREATE INDEX idx_car_links_car_id ON car_links(car_id);
 
 
+-- =========================
 -- MÜŞTERİLER
+-- =========================
+
 CREATE TABLE customers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -170,10 +179,3 @@ CREATE INDEX idx_car_interests_customer_id ON car_interests(customer_id);
 CREATE TRIGGER trg_car_interests_updated_at
   BEFORE UPDATE ON car_interests
   FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-
-
--- =========================
--- WORKSPACE KALDIRMA MİGRASYONU
--- =========================
-
-ALTER TABLE users ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT FALSE;
