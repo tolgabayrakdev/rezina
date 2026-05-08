@@ -1,5 +1,6 @@
 import { CarRepository } from '../repository/car.repository.js';
 import { NotFoundError } from '../exceptions/index.js';
+import cloudinary from '../config/cloudinary.js';
 
 export class CarService {
   constructor() {
@@ -37,9 +38,11 @@ export class CarService {
 
   // ── Images ───────────────────────────────────────────────────────────────
 
-  async addImage(userId, carId, { url, is_cover }) {
+  async addImage(userId, carId, file, isCover) {
     await this._findCar(carId, userId);
-    return this.carRepo.addImage({ carId, userId, url, isCover: is_cover ?? false });
+
+    const { url, public_id } = await this._uploadToCloudinary(file.buffer, file.mimetype);
+    return this.carRepo.addImage({ carId, userId, url, publicId: public_id, isCover: isCover ?? false });
   }
 
   async setCover(userId, carId, imageId) {
@@ -57,7 +60,20 @@ export class CarService {
     const image = await this.carRepo.findImageById(imageId, userId);
     if (!image || image.car_id !== carId) throw new NotFoundError('Fotoğraf bulunamadı');
 
-    await this.carRepo.deleteImage(imageId, userId);
+    const deleted = await this.carRepo.deleteImage(imageId, userId);
+    if (deleted?.public_id) {
+      cloudinary.uploader.destroy(deleted.public_id).catch(() => {});
+    }
+  }
+
+  _uploadToCloudinary(buffer, mimetype) {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: 'rezina/cars', resource_type: 'image' },
+        (err, result) => (err ? reject(err) : resolve(result))
+      );
+      stream.end(buffer);
+    });
   }
 
   // ── Links ────────────────────────────────────────────────────────────────

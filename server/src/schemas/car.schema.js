@@ -56,11 +56,6 @@ export const updateCarSchema = Joi.object({
   inspection_date: Joi.date().iso().optional().allow(null).label('Muayene Tarihi'),
 }).min(1).messages(tr);
 
-export const addCarImageSchema = Joi.object({
-  url: Joi.string().uri().required().label('Fotoğraf URL'),
-  is_cover: Joi.boolean().default(false).label('Kapak'),
-}).messages(tr);
-
 export const addCarLinkSchema = Joi.object({
   platform: Joi.string().max(100).required().label('Platform'),
   url: Joi.string().uri().required().label('İlan URL'),

@@ -112,7 +112,7 @@ export class CarRepository {
     return result.rows[0] || null;
   }
 
-  async addImage({ carId, userId, url, isCover }) {
+  async addImage({ carId, userId, url, publicId, isCover }) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -128,10 +128,10 @@ export class CarRepository {
       }
 
       const result = await client.query(
-        `INSERT INTO car_images (car_id, url, is_cover)
-         SELECT id, $3, $4 FROM cars WHERE id = $1 AND user_id = $2
+        `INSERT INTO car_images (car_id, url, public_id, is_cover)
+         SELECT id, $3, $4, $5 FROM cars WHERE id = $1 AND user_id = $2
          RETURNING *`,
-        [carId, userId, url, isCover ?? false]
+        [carId, userId, url, publicId, isCover ?? false]
       );
 
       await client.query('COMMIT');
@@ -181,7 +181,7 @@ export class CarRepository {
       `DELETE FROM car_images ci
        USING cars c
        WHERE ci.id = $1 AND ci.car_id = c.id AND c.user_id = $2
-       RETURNING ci.id`,
+       RETURNING ci.id, ci.public_id`,
       [id, userId]
     );
     return result.rows[0] || null;

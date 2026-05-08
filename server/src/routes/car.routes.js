@@ -2,10 +2,10 @@ import { Router } from 'express';
 import { CarController } from '../controller/car.controller.js';
 import { authenticate } from '../middleware/auth.js';
 import { validate } from '../middleware/validation.js';
+import upload from '../middleware/upload.js';
 import {
   createCarSchema,
   updateCarSchema,
-  addCarImageSchema,
   addCarLinkSchema,
   addMaintenanceItemSchema,
   updateMaintenanceItemSchema,
@@ -25,7 +25,7 @@ router.patch('/:carId', validate(updateCarSchema), carController.update);
 router.delete('/:carId', carController.delete);
 
 // Images
-router.post('/:carId/images', validate(addCarImageSchema), carController.addImage);
+router.post('/:carId/images', upload.single('image'), carController.addImage);
 router.patch('/:carId/images/:imageId/cover', carController.setCover);
 router.delete('/:carId/images/:imageId', carController.deleteImage);
 

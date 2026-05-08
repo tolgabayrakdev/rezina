@@ -37,6 +37,9 @@ const config = {
   SMTP_PASS: process.env.SMTP_PASS,
   EMAIL_FROM: process.env.EMAIL_FROM || 'norepengineer@gmail.com',
   APP_URL: process.env.APP_URL || 'http://localhost:5173',
+  CLOUD_NAME: process.env.CLOUD_NAME,
+  CLOUD_API_KEY: process.env.CLOUD_API_KEY,
+  CLOUD_API_SECRET: process.env.CLOUD_API_SECRET,
 };
 
 export default config;

@@ -120,6 +120,7 @@ CREATE TABLE car_images (
     id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     car_id     UUID NOT NULL REFERENCES cars(id) ON DELETE CASCADE,
     url        TEXT NOT NULL,
+    public_id  VARCHAR(255),
     is_cover   BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

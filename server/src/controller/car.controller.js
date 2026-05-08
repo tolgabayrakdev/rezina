@@ -55,10 +55,15 @@ export class CarController {
 
   addImage = async (req, res, next) => {
     try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, message: 'Resim dosyası gereklidir' });
+      }
+      const isCover = req.body.is_cover === 'true' || req.body.is_cover === true;
       const image = await this.carService.addImage(
         req.user.id,
         req.params.carId,
-        req.body
+        req.file,
+        isCover
       );
       res.status(201).json({ success: true, data: image });
     } catch (err) {
