@@ -25,26 +25,36 @@ export function useCustomers() {
   const [form, setForm] = useState(emptyForm)
 
   const fetchCustomers = () => {
-    apiClient.get<{ success: boolean; data: Customer[] }>("/api/customers")
+    apiClient
+      .get<{ success: boolean; data: Customer[] }>("/api/customers")
       .then((res) => setCustomers(res.data))
       .catch(() => toast.error("Müşteriler yüklenemedi"))
   }
 
   useEffect(() => {
     let cancelled = false
-    apiClient.get<{ success: boolean; data: Customer[] }>("/api/customers")
-      .then((res) => { if (!cancelled) setCustomers(res.data) })
+    apiClient
+      .get<{ success: boolean; data: Customer[] }>("/api/customers")
+      .then((res) => {
+        if (!cancelled) setCustomers(res.data)
+      })
       .catch(() => toast.error("Müşteriler yüklenemedi"))
-      .finally(() => { if (!cancelled) setLoading(false) })
-    return () => { cancelled = true }
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
-  const filtered = useMemo(() =>
-    customers.filter((c) =>
-      !search ||
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      (c.phone?.includes(search) ?? false)
-    ),
+  const filtered = useMemo(
+    () =>
+      customers.filter(
+        (c) =>
+          !search ||
+          c.name.toLowerCase().includes(search.toLowerCase()) ||
+          (c.phone?.includes(search) ?? false)
+      ),
     [customers, search]
   )
 
@@ -74,7 +84,10 @@ export function useCustomers() {
     if (!selected || !form.name) return
     setSaving(true)
     try {
-      await apiClient.patch(`/api/customers/${selected.id}`, { name: form.name, phone: form.phone || null })
+      await apiClient.patch(`/api/customers/${selected.id}`, {
+        name: form.name,
+        phone: form.phone || null,
+      })
       toast.success("Müşteri güncellendi")
       setEditOpen(false)
       setSelected(null)
@@ -110,18 +123,33 @@ export function useCustomers() {
     new Date(date).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })
 
   return {
-    customers, loading, saving,
-    search, setSearch,
-    createOpen, setCreateOpen,
-    editOpen, setEditOpen,
-    deleteOpen, setDeleteOpen,
-    selected, setSelected,
-    form, setForm,
-    page, setPage,
-    pageSize, setPageSize,
-    filtered, paginated, safePage,
+    customers,
+    loading,
+    saving,
+    search,
+    setSearch,
+    createOpen,
+    setCreateOpen,
+    editOpen,
+    setEditOpen,
+    deleteOpen,
+    setDeleteOpen,
+    selected,
+    setSelected,
+    form,
+    setForm,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    filtered,
+    paginated,
+    safePage,
     resetForm,
-    handleCreate, handleEdit, handleDelete, openEdit,
+    handleCreate,
+    handleEdit,
+    handleDelete,
+    openEdit,
     formatDate,
   }
 }

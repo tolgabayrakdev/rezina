@@ -22,9 +22,21 @@ const fmt = (val: string) => {
 const parse = (val: string) => val.replace(/[^\d]/g, "")
 
 const STATUS_OPTIONS = [
-  { value: "in_stock", label: "Stokta", active: "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400" },
-  { value: "reserved", label: "Rezerve", active: "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400" },
-  { value: "sold", label: "Satıldı", active: "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
+  {
+    value: "in_stock",
+    label: "Stokta",
+    active: "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+  },
+  {
+    value: "reserved",
+    label: "Rezerve",
+    active: "border-amber-500 bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  },
+  {
+    value: "sold",
+    label: "Satıldı",
+    active: "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  },
 ]
 
 interface CarFormProps {
@@ -37,14 +49,15 @@ interface CarFormProps {
 }
 
 export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: CarFormProps) {
-  const set = <K extends keyof CarFormState>(key: K) =>
-    (val: CarFormState[K]) => setForm((p) => ({ ...p, [key]: val }))
+  const set =
+    <K extends keyof CarFormState>(key: K) =>
+    (val: CarFormState[K]) =>
+      setForm((p) => ({ ...p, [key]: val }))
 
   return (
     <div className="flex flex-col">
       <ScrollArea className="max-h-[68vh] pr-3">
         <div className="space-y-5 pb-1">
-
           {/* Başlık */}
           <div className="space-y-1.5">
             <Label htmlFor="title">Araç Başlığı *</Label>
@@ -123,9 +136,7 @@ export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: C
                   onClick={() => set("status")(s.value)}
                   className={cn(
                     "flex-1 rounded-md border py-1.5 text-sm font-medium transition-colors",
-                    form.status === s.value
-                      ? s.active
-                      : "text-muted-foreground hover:bg-muted"
+                    form.status === s.value ? s.active : "text-muted-foreground hover:bg-muted"
                   )}
                 >
                   {s.label}
@@ -136,11 +147,11 @@ export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: C
 
           {/* Bölüm ayırıcı */}
           <div className="flex items-center gap-3 pt-1">
-            <div className="h-px flex-1 bg-border" />
+            <div className="bg-border h-px flex-1" />
             <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
               Teknik Özellikler
             </span>
-            <div className="h-px flex-1 bg-border" />
+            <div className="bg-border h-px flex-1" />
           </div>
 
           {/* Yakıt / Vites */}
@@ -246,11 +257,11 @@ export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: C
 
           {/* Bölüm ayırıcı */}
           <div className="flex items-center gap-3 pt-1">
-            <div className="h-px flex-1 bg-border" />
+            <div className="bg-border h-px flex-1" />
             <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
               Açıklama
             </span>
-            <div className="h-px flex-1 bg-border" />
+            <div className="bg-border h-px flex-1" />
           </div>
 
           <Textarea
@@ -260,11 +271,10 @@ export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: C
             placeholder="Araç hakkında detaylar, ekipmanlar, notlar..."
             rows={3}
           />
-
         </div>
       </ScrollArea>
 
-      <DialogFooter className="mt-5 pt-4 border-t">
+      <DialogFooter className="mt-5 border-t pt-4">
         <Button variant="outline" onClick={onCancel}>
           İptal
         </Button>

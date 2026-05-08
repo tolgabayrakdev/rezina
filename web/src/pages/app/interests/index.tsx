@@ -41,17 +41,34 @@ import { useInterests, statusLabels, statusColors } from "./use-interests"
 
 export default function Interests() {
   const {
-    interests, cars, customers, loading, saving,
-    createOpen, setCreateOpen,
-    editOpen, setEditOpen,
-    deleteOpen, setDeleteOpen,
-    selected, setSelected,
-    form, setForm,
-    statusFilter, setStatusFilter,
-    setPage, pageSize, setPageSize,
-    filtered, paginated, safePage,
+    interests,
+    cars,
+    customers,
+    loading,
+    saving,
+    createOpen,
+    setCreateOpen,
+    editOpen,
+    setEditOpen,
+    deleteOpen,
+    setDeleteOpen,
+    selected,
+    setSelected,
+    form,
+    setForm,
+    statusFilter,
+    setStatusFilter,
+    setPage,
+    pageSize,
+    setPageSize,
+    filtered,
+    paginated,
+    safePage,
     resetForm,
-    handleCreate, handleEdit, handleDelete, openEdit,
+    handleCreate,
+    handleEdit,
+    handleDelete,
+    openEdit,
     formatDate,
   } = useInterests()
 
@@ -62,14 +79,25 @@ export default function Interests() {
           <h1 className="text-lg font-semibold tracking-tight">Müşteri İlgileri</h1>
           <p className="text-muted-foreground text-sm">{interests.length} kayıt</p>
         </div>
-        <Button onClick={() => { resetForm(); setCreateOpen(true) }}>
+        <Button
+          onClick={() => {
+            resetForm()
+            setCreateOpen(true)
+          }}
+        >
           <Plus className="mr-2 size-4" />
           Yeni İlgi
         </Button>
       </div>
 
       <div className="flex gap-3">
-        <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1) }}>
+        <Select
+          value={statusFilter}
+          onValueChange={(v) => {
+            setStatusFilter(v)
+            setPage(1)
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Durum filtresi" />
           </SelectTrigger>
@@ -93,7 +121,15 @@ export default function Interests() {
           <Handshake className="text-muted-foreground/30 mb-3 size-10" />
           <p className="text-muted-foreground text-sm">İlgi kaydı bulunamadı</p>
           {statusFilter === "all" && (
-            <Button variant="outline" size="sm" className="mt-3" onClick={() => { resetForm(); setCreateOpen(true) }}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={() => {
+                resetForm()
+                setCreateOpen(true)
+              }}
+            >
               <Plus className="mr-2 size-3.5" />
               İlgi Kaydı Oluştur
             </Button>
@@ -114,45 +150,60 @@ export default function Interests() {
             </TableHeader>
             <TableBody>
               {paginated.map((interest) => (
-              <TableRow key={interest.id}>
-                <TableCell>
-                  <div>
-                    <p className="font-medium">{interest.customer_name}</p>
-                    {interest.customer_phone && (
-                      <p className="text-muted-foreground text-xs">{interest.customer_phone}</p>
+                <TableRow key={interest.id}>
+                  <TableCell>
+                    <div>
+                      <p className="font-medium">{interest.customer_name}</p>
+                      {interest.customer_phone && (
+                        <p className="text-muted-foreground text-xs">{interest.customer_phone}</p>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-sm">
+                    {interest.car_brand} {interest.car_model}
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={cn(statusColors[interest.status] ?? "")}>
+                      {statusLabels[interest.status] ?? interest.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {interest.note ? (
+                      <span className="text-muted-foreground line-clamp-1 text-sm">
+                        {interest.note}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground/50">-</span>
                     )}
-                  </div>
-                </TableCell>
-                <TableCell className="text-muted-foreground text-sm">
-                  {interest.car_brand} {interest.car_model}
-                </TableCell>
-                <TableCell>
-                  <Badge className={cn(statusColors[interest.status] ?? "")}>
-                    {statusLabels[interest.status] ?? interest.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  {interest.note ? (
-                    <span className="text-muted-foreground line-clamp-1 text-sm">{interest.note}</span>
-                  ) : (
-                    <span className="text-muted-foreground/50">-</span>
-                  )}
-                </TableCell>
-                <TableCell className="text-muted-foreground text-xs">
-                  {formatDate(interest.updated_at)}
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center justify-end gap-1">
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(interest)}>
-                      <Pencil className="size-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(interest); setDeleteOpen(true) }}>
-                      <Trash2 className="size-3.5" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground text-xs">
+                    {formatDate(interest.updated_at)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => openEdit(interest)}
+                      >
+                        <Pencil className="size-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => {
+                          setSelected(interest)
+                          setDeleteOpen(true)
+                        }}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
 
@@ -172,7 +223,15 @@ export default function Interests() {
             <DialogTitle>Yeni İlgi Kaydı</DialogTitle>
             <DialogDescription>Araç ve müşteri arasında ilgi kaydı oluşturun</DialogDescription>
           </DialogHeader>
-          <InterestForm form={form} setForm={setForm} cars={cars} customers={customers} onSubmit={handleCreate} onCancel={() => setCreateOpen(false)} saving={saving} />
+          <InterestForm
+            form={form}
+            setForm={setForm}
+            cars={cars}
+            customers={customers}
+            onSubmit={handleCreate}
+            onCancel={() => setCreateOpen(false)}
+            saving={saving}
+          />
         </DialogContent>
       </Dialog>
 
@@ -182,7 +241,16 @@ export default function Interests() {
             <DialogTitle>İlgi Kaydı Düzenle</DialogTitle>
             <DialogDescription>Durum ve not bilgilerini güncelleyin</DialogDescription>
           </DialogHeader>
-          <InterestForm form={form} setForm={setForm} cars={cars} customers={customers} onSubmit={handleEdit} onCancel={() => setEditOpen(false)} saving={saving} isEdit />
+          <InterestForm
+            form={form}
+            setForm={setForm}
+            cars={cars}
+            customers={customers}
+            onSubmit={handleEdit}
+            onCancel={() => setEditOpen(false)}
+            saving={saving}
+            isEdit
+          />
         </DialogContent>
       </Dialog>
 
@@ -194,7 +262,9 @@ export default function Interests() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>İptal</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDelete}>Sil</AlertDialogAction>
+            <AlertDialogAction variant="destructive" onClick={handleDelete}>
+              Sil
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

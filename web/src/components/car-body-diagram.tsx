@@ -76,10 +76,34 @@ export function CarBodyDiagram({ expertise, onChange, readOnly }: Props) {
           style={{ fontFamily: "system-ui, sans-serif" }}
         >
           {/* Direction labels */}
-          <text x="140" y="10" textAnchor="middle" fontSize={7.5} fill="#94a3b8" letterSpacing="1">ÖN</text>
-          <text x="140" y="507" textAnchor="middle" fontSize={7.5} fill="#94a3b8" letterSpacing="1">ARKA</text>
-          <text x="7" y="258" textAnchor="middle" fontSize={7.5} fill="#94a3b8" letterSpacing="1" transform="rotate(-90,7,258)">SOL</text>
-          <text x="273" y="258" textAnchor="middle" fontSize={7.5} fill="#94a3b8" letterSpacing="1" transform="rotate(90,273,258)">SAĞ</text>
+          <text x="140" y="10" textAnchor="middle" fontSize={7.5} fill="#94a3b8" letterSpacing="1">
+            ÖN
+          </text>
+          <text x="140" y="507" textAnchor="middle" fontSize={7.5} fill="#94a3b8" letterSpacing="1">
+            ARKA
+          </text>
+          <text
+            x="7"
+            y="258"
+            textAnchor="middle"
+            fontSize={7.5}
+            fill="#94a3b8"
+            letterSpacing="1"
+            transform="rotate(-90,7,258)"
+          >
+            SOL
+          </text>
+          <text
+            x="273"
+            y="258"
+            textAnchor="middle"
+            fontSize={7.5}
+            fill="#94a3b8"
+            letterSpacing="1"
+            transform="rotate(90,273,258)"
+          >
+            SAĞ
+          </text>
 
           {/* Panels */}
           {DIAGRAM_PANELS.map((panel) => {
@@ -117,7 +141,9 @@ export function CarBodyDiagram({ expertise, onChange, readOnly }: Props) {
                   dominantBaseline="middle"
                   fontSize={fontSize}
                   fill="#334155"
-                  transform={panel.rotateAngle ? `rotate(${panel.rotateAngle},${cx},${cy})` : undefined}
+                  transform={
+                    panel.rotateAngle ? `rotate(${panel.rotateAngle},${cx},${cy})` : undefined
+                  }
                   style={{ pointerEvents: "none", userSelect: "none" }}
                 >
                   {label}
@@ -140,9 +166,25 @@ export function CarBodyDiagram({ expertise, onChange, readOnly }: Props) {
           ))}
 
           {/* Windshield line */}
-          <line x1="60" y1="168" x2="220" y2="168" stroke="#94a3b8" strokeWidth={2} style={{ pointerEvents: "none" }} />
+          <line
+            x1="60"
+            y1="168"
+            x2="220"
+            y2="168"
+            stroke="#94a3b8"
+            strokeWidth={2}
+            style={{ pointerEvents: "none" }}
+          />
           {/* Rear window line */}
-          <line x1="60" y1="368" x2="220" y2="368" stroke="#94a3b8" strokeWidth={2} style={{ pointerEvents: "none" }} />
+          <line
+            x1="60"
+            y1="368"
+            x2="220"
+            y2="368"
+            stroke="#94a3b8"
+            strokeWidth={2}
+            style={{ pointerEvents: "none" }}
+          />
         </svg>
       </div>
 
@@ -153,16 +195,14 @@ export function CarBodyDiagram({ expertise, onChange, readOnly }: Props) {
             <span className="text-muted-foreground">{PANEL_LABEL[hoveredPanel]}</span>
             {" · "}
             <span className={STATUS_LABEL_COLOR[hoveredStatus]}>{STATUS_LABEL[hoveredStatus]}</span>
-            {!readOnly && (
-              <span className="text-muted-foreground/50"> · tıkla değiştir</span>
-            )}
+            {!readOnly && <span className="text-muted-foreground/50"> · tıkla değiştir</span>}
           </span>
         ) : null}
       </div>
 
       {/* Summary */}
       <div className="border-t pt-3">
-        <p className="text-muted-foreground mb-2 text-[10px] font-semibold uppercase tracking-widest">
+        <p className="text-muted-foreground mb-2 text-[10px] font-semibold tracking-widest uppercase">
           Özet
         </p>
         <div className="flex flex-wrap gap-4 text-xs">

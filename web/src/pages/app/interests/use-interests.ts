@@ -99,8 +99,12 @@ export function useInterests() {
         }
       })
       .catch(() => toast.error("Veriler yüklenemedi"))
-      .finally(() => { if (!cancelled) setLoading(false) })
-    return () => { cancelled = true }
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   const filtered = interests.filter((i) => statusFilter === "all" || i.status === statusFilter)
@@ -180,18 +184,35 @@ export function useInterests() {
     new Date(date).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })
 
   return {
-    interests, cars, customers, loading, saving,
-    createOpen, setCreateOpen,
-    editOpen, setEditOpen,
-    deleteOpen, setDeleteOpen,
-    selected, setSelected,
-    form, setForm,
-    statusFilter, setStatusFilter,
-    page, setPage,
-    pageSize, setPageSize,
-    filtered, paginated, safePage,
+    interests,
+    cars,
+    customers,
+    loading,
+    saving,
+    createOpen,
+    setCreateOpen,
+    editOpen,
+    setEditOpen,
+    deleteOpen,
+    setDeleteOpen,
+    selected,
+    setSelected,
+    form,
+    setForm,
+    statusFilter,
+    setStatusFilter,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    filtered,
+    paginated,
+    safePage,
     resetForm,
-    handleCreate, handleEdit, handleDelete, openEdit,
+    handleCreate,
+    handleEdit,
+    handleDelete,
+    openEdit,
     formatDate,
   }
 }

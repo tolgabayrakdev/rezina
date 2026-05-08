@@ -1,6 +1,18 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate, Link } from "react-router"
-import { ArrowLeft, Car, Plus, Trash2, Link as LinkIcon, Save, ChevronLeft, ChevronRight, X, Pencil } from "lucide-react"
+import {
+  ArrowLeft,
+  Car,
+  Plus,
+  Trash2,
+  Link as LinkIcon,
+  Save,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Pencil,
+  FileDown,
+} from "lucide-react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { CarBodyDiagram } from "@/components/car-body-diagram"
@@ -14,6 +26,7 @@ import { apiClient } from "@/lib/api-client"
 import { CarImageDialog } from "@/components/car-image-dialog"
 import { CarLinkDialog } from "@/components/car-link-dialog"
 import { CarDeleteImageDialog } from "@/components/car-delete-image-dialog"
+import { exportCarReport } from "@/components/car-report-export"
 import {
   Select,
   SelectContent,
@@ -194,7 +207,7 @@ export default function CarDetail() {
     setDescSaving(true)
     try {
       await apiClient.patch(`/api/cars/${carId}`, { description: descValue })
-      setCar((prev) => prev ? { ...prev, description: descValue } : prev)
+      setCar((prev) => (prev ? { ...prev, description: descValue } : prev))
       toast.success("Açıklama güncellendi")
       setEditingDesc(false)
     } catch {
@@ -215,7 +228,9 @@ export default function CarDetail() {
     }
   }
 
-
+  const handleExportPdf = () => {
+    exportCarReport(car, expertise)
+  }
 
   if (loading) {
     return (
@@ -236,7 +251,8 @@ export default function CarDetail() {
   const getDisplayUrl = (url: string) => {
     try {
       const { hostname, pathname } = new URL(url)
-      const path = pathname.length > 1 ? pathname.slice(0, 28) + (pathname.length > 28 ? "…" : "") : ""
+      const path =
+        pathname.length > 1 ? pathname.slice(0, 28) + (pathname.length > 28 ? "…" : "") : ""
       return hostname + path
     } catch {
       return url.slice(0, 40) + (url.length > 40 ? "…" : "")
@@ -265,6 +281,10 @@ export default function CarDetail() {
             {car.brand} {car.model} {car.year ? `· ${car.year}` : ""}
           </p>
         </div>
+        <Button variant="outline" size="sm" onClick={handleExportPdf}>
+          <FileDown className="mr-1.5 size-3.5" />
+          Rapor
+        </Button>
         <Select value={car.status} onValueChange={handleStatusChange}>
           <SelectTrigger className="w-[140px]">
             <SelectValue />
@@ -312,7 +332,10 @@ export default function CarDetail() {
                           variant="secondary"
                           size="sm"
                           className="h-7 text-xs"
-                          onClick={(e) => { e.stopPropagation(); handleSetCover(img.id) }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleSetCover(img.id)
+                          }}
                         >
                           Kapak yap
                         </Button>
@@ -346,7 +369,10 @@ export default function CarDetail() {
                   variant="ghost"
                   size="icon"
                   className="size-7"
-                  onClick={() => { setDescValue(car.description ?? ""); setEditingDesc(true) }}
+                  onClick={() => {
+                    setDescValue(car.description ?? "")
+                    setEditingDesc(true)
+                  }}
                 >
                   <Pencil className="size-3.5" />
                 </Button>
@@ -401,10 +427,7 @@ export default function CarDetail() {
               </Button>
             </div>
             <div className="rounded-lg border p-4">
-              <CarBodyDiagram
-                expertise={expertise}
-                onChange={handleExpertisePanelChange}
-              />
+              <CarBodyDiagram expertise={expertise} onChange={handleExpertisePanelChange} />
             </div>
           </div>
         </div>
@@ -453,9 +476,11 @@ export default function CarDetail() {
                   <TableRow key={field}>
                     <TableCell className="text-muted-foreground pl-0">{label}</TableCell>
                     <TableCell className="pr-0 text-right font-medium">
-                      {car[field]
-                        ? (labels as Record<string, string>)[car[field]!]
-                        : <span className="text-muted-foreground font-normal">-</span>}
+                      {car[field] ? (
+                        (labels as Record<string, string>)[car[field]!]
+                      ) : (
+                        <span className="text-muted-foreground font-normal">-</span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -469,9 +494,11 @@ export default function CarDetail() {
                   <TableRow key={field}>
                     <TableCell className="text-muted-foreground pl-0">{label}</TableCell>
                     <TableCell className="pr-0 text-right font-medium">
-                      {car[field] != null
-                        ? `${car[field]}${suffix ? ` ${suffix}` : ""}`
-                        : <span className="text-muted-foreground font-normal">-</span>}
+                      {car[field] != null ? (
+                        `${car[field]}${suffix ? ` ${suffix}` : ""}`
+                      ) : (
+                        <span className="text-muted-foreground font-normal">-</span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -542,7 +569,10 @@ export default function CarDetail() {
         </div>
       </div>
 
-      <Dialog open={lightboxIndex !== null} onOpenChange={(open) => !open && setLightboxIndex(null)}>
+      <Dialog
+        open={lightboxIndex !== null}
+        onOpenChange={(open) => !open && setLightboxIndex(null)}
+      >
         <DialogContent className="max-w-5xl border-0 bg-black/95 p-0 shadow-2xl">
           {lightboxIndex !== null && (
             <div className="relative flex items-center justify-center">
@@ -560,7 +590,10 @@ export default function CarDetail() {
               {lightboxIndex > 0 && (
                 <button
                   className="absolute left-3 flex size-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i ?? 1) - 1) }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setLightboxIndex((i) => (i ?? 1) - 1)
+                  }}
                 >
                   <ChevronLeft className="size-5" />
                 </button>
@@ -568,7 +601,10 @@ export default function CarDetail() {
               {lightboxIndex < car.images.length - 1 && (
                 <button
                   className="absolute right-3 flex size-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i ?? 0) + 1) }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setLightboxIndex((i) => (i ?? 0) + 1)
+                  }}
                 >
                   <ChevronRight className="size-5" />
                 </button>

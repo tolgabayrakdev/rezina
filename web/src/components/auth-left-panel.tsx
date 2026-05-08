@@ -44,12 +44,12 @@ export function AuthLeftPanel({ heading, description }: AuthLeftPanelProps) {
       />
 
       {/* Big car silhouette — decorative */}
-      <div className="pointer-events-none absolute -bottom-6 -right-10 opacity-[0.04]">
+      <div className="pointer-events-none absolute -right-10 -bottom-6 opacity-[0.04]">
         <svg viewBox="0 0 340 160" width="340" xmlns="http://www.w3.org/2000/svg">
-          <rect x="10" y="80" width="320" height="60" rx="14" fill="white"/>
-          <path d="M50,80 C60,28 280,28 290,80 Z" fill="white"/>
-          <circle cx="70" cy="140" r="28" fill="white"/>
-          <circle cx="270" cy="140" r="28" fill="white"/>
+          <rect x="10" y="80" width="320" height="60" rx="14" fill="white" />
+          <path d="M50,80 C60,28 280,28 290,80 Z" fill="white" />
+          <circle cx="70" cy="140" r="28" fill="white" />
+          <circle cx="270" cy="140" r="28" fill="white" />
         </svg>
       </div>
 

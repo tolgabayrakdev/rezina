@@ -33,17 +33,32 @@ import { useCustomers } from "./use-customers"
 
 export default function Customers() {
   const {
-    customers, loading, saving,
-    search, setSearch,
-    createOpen, setCreateOpen,
-    editOpen, setEditOpen,
-    deleteOpen, setDeleteOpen,
-    selected, setSelected,
-    form, setForm,
-    setPage, pageSize, setPageSize,
-    filtered, paginated, safePage,
+    customers,
+    loading,
+    saving,
+    search,
+    setSearch,
+    createOpen,
+    setCreateOpen,
+    editOpen,
+    setEditOpen,
+    deleteOpen,
+    setDeleteOpen,
+    selected,
+    setSelected,
+    form,
+    setForm,
+    setPage,
+    pageSize,
+    setPageSize,
+    filtered,
+    paginated,
+    safePage,
     resetForm,
-    handleCreate, handleEdit, handleDelete, openEdit,
+    handleCreate,
+    handleEdit,
+    handleDelete,
+    openEdit,
     formatDate,
   } = useCustomers()
 
@@ -54,7 +69,12 @@ export default function Customers() {
           <h1 className="text-lg font-semibold tracking-tight">Müşteriler</h1>
           <p className="text-muted-foreground text-sm">{customers.length} müşteri</p>
         </div>
-        <Button onClick={() => { resetForm(); setCreateOpen(true) }}>
+        <Button
+          onClick={() => {
+            resetForm()
+            setCreateOpen(true)
+          }}
+        >
           <Plus className="mr-2 size-4" />
           Yeni Müşteri
         </Button>
@@ -66,7 +86,10 @@ export default function Customers() {
           className="pl-9"
           placeholder="Müşteri ara..."
           value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1) }}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setPage(1)
+          }}
         />
       </div>
 
@@ -79,7 +102,15 @@ export default function Customers() {
           <Users className="text-muted-foreground/30 mb-3 size-10" />
           <p className="text-muted-foreground text-sm">Müşteri bulunamadı</p>
           {!search && (
-            <Button variant="outline" size="sm" className="mt-3" onClick={() => { resetForm(); setCreateOpen(true) }}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={() => {
+                resetForm()
+                setCreateOpen(true)
+              }}
+            >
               <Plus className="mr-2 size-3.5" />
               Müşteri Ekle
             </Button>
@@ -124,10 +155,23 @@ export default function Customers() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
-                      <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(customer)}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => openEdit(customer)}
+                      >
                         <Pencil className="size-3.5" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="size-8" onClick={() => { setSelected(customer); setDeleteOpen(true) }}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => {
+                          setSelected(customer)
+                          setDeleteOpen(true)
+                        }}
+                      >
                         <Trash2 className="size-3.5" />
                       </Button>
                     </div>
@@ -153,7 +197,13 @@ export default function Customers() {
             <DialogTitle>Yeni Müşteri Ekle</DialogTitle>
             <DialogDescription>Müşteri bilgilerini girin</DialogDescription>
           </DialogHeader>
-          <CustomerForm form={form} setForm={setForm} onSubmit={handleCreate} onCancel={() => setCreateOpen(false)} saving={saving} />
+          <CustomerForm
+            form={form}
+            setForm={setForm}
+            onSubmit={handleCreate}
+            onCancel={() => setCreateOpen(false)}
+            saving={saving}
+          />
         </DialogContent>
       </Dialog>
 
@@ -163,7 +213,14 @@ export default function Customers() {
             <DialogTitle>Müşteri Düzenle</DialogTitle>
             <DialogDescription>Müşteri bilgilerini güncelleyin</DialogDescription>
           </DialogHeader>
-          <CustomerForm form={form} setForm={setForm} onSubmit={handleEdit} onCancel={() => setEditOpen(false)} saving={saving} isEdit />
+          <CustomerForm
+            form={form}
+            setForm={setForm}
+            onSubmit={handleEdit}
+            onCancel={() => setEditOpen(false)}
+            saving={saving}
+            isEdit
+          />
         </DialogContent>
       </Dialog>
 
@@ -172,12 +229,15 @@ export default function Customers() {
           <AlertDialogHeader>
             <AlertDialogTitle>Müşteri silinsin mi?</AlertDialogTitle>
             <AlertDialogDescription>
-              <span className="font-semibold">{selected?.name}</span> müşterisi silinecek. Bu işlem geri alınamaz.
+              <span className="font-semibold">{selected?.name}</span> müşterisi silinecek. Bu işlem
+              geri alınamaz.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>İptal</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={handleDelete}>Sil</AlertDialogAction>
+            <AlertDialogAction variant="destructive" onClick={handleDelete}>
+              Sil
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
