@@ -12,6 +12,8 @@ import {
   X,
   Pencil,
   FileDown,
+  Shield,
+  ClipboardCheck,
 } from "lucide-react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
@@ -54,6 +56,9 @@ interface CarDetail {
   engine_volume: number | null
   drive_type: string | null
   color: string | null
+  vehicle_type: string | null
+  insurance_date: string | null
+  inspection_date: string | null
   created_at: string
   updated_at: string
   images: CarImage[]
@@ -115,6 +120,47 @@ const driveTypeLabels: Record<string, string> = {
   awd: "AWD",
 }
 
+const vehicleTypeLabels: Record<string, string> = {
+  passenger: "Otomobil",
+  commercial: "Ticari",
+}
+
+function getExpiryDate(dateStr: string, years: number): Date {
+  const d = new Date(dateStr + "T12:00:00")
+  d.setFullYear(d.getFullYear() + years)
+  return d
+}
+
+function getDaysRemaining(dateStr: string | null, years: number): number | null {
+  if (!dateStr) return null
+  const expiry = getExpiryDate(dateStr, years)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return Math.ceil((expiry.getTime() - today.getTime()) / 86400000)
+}
+
+function StatusBadge({ days }: { days: number | null }) {
+  if (days === null)
+    return <span className="text-muted-foreground/50 text-xs italic">Tarih eklenmemiş</span>
+  if (days < 0)
+    return (
+      <span className="inline-flex items-center rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-600 dark:text-red-400">
+        {Math.abs(days)} gün geçti
+      </span>
+    )
+  if (days <= 30)
+    return (
+      <span className="inline-flex items-center rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+        {days} gün kaldı
+      </span>
+    )
+  return (
+    <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+      {days} gün kaldı
+    </span>
+  )
+}
+
 export default function CarDetail() {
   const { carId } = useParams<{ carId: string }>()
   const navigate = useNavigate()
@@ -130,6 +176,12 @@ export default function CarDetail() {
   const [editingDesc, setEditingDesc] = useState(false)
   const [descValue, setDescValue] = useState("")
   const [descSaving, setDescSaving] = useState(false)
+  const [editingInsurance, setEditingInsurance] = useState(false)
+  const [insuranceDateValue, setInsuranceDateValue] = useState("")
+  const [insuranceSaving, setInsuranceSaving] = useState(false)
+  const [editingInspection, setEditingInspection] = useState(false)
+  const [inspectionDateValue, setInspectionDateValue] = useState("")
+  const [inspectionSaving, setInspectionSaving] = useState(false)
 
   useEffect(() => {
     if (!carId) return
@@ -228,6 +280,40 @@ export default function CarDetail() {
     }
   }
 
+  const handleInsuranceSave = async () => {
+    if (!carId) return
+    setInsuranceSaving(true)
+    try {
+      await apiClient.patch(`/api/cars/${carId}`, {
+        insurance_date: insuranceDateValue || null,
+      })
+      setCar((prev) => (prev ? { ...prev, insurance_date: insuranceDateValue || null } : prev))
+      toast.success("Sigorta tarihi güncellendi")
+      setEditingInsurance(false)
+    } catch {
+      toast.error("Sigorta tarihi güncellenemedi")
+    } finally {
+      setInsuranceSaving(false)
+    }
+  }
+
+  const handleInspectionSave = async () => {
+    if (!carId) return
+    setInspectionSaving(true)
+    try {
+      await apiClient.patch(`/api/cars/${carId}`, {
+        inspection_date: inspectionDateValue || null,
+      })
+      setCar((prev) => (prev ? { ...prev, inspection_date: inspectionDateValue || null } : prev))
+      toast.success("Muayene tarihi güncellendi")
+      setEditingInspection(false)
+    } catch {
+      toast.error("Muayene tarihi güncellenemedi")
+    } finally {
+      setInspectionSaving(false)
+    }
+  }
+
   const handleExportPdf = () => {
     exportCarReport(car, expertise)
   }
@@ -266,6 +352,16 @@ export default function CarDetail() {
       year: "numeric",
     })
   }
+
+  const formatShortDate = (date: string) => {
+    return new Date(date + "T12:00:00").toLocaleDateString("tr-TR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })
+  }
+
+  const inspectionYears = car.vehicle_type === "commercial" ? 1 : 2
 
   return (
     <div className="space-y-8 p-8">
@@ -502,6 +598,14 @@ export default function CarDetail() {
                     </TableCell>
                   </TableRow>
                 ))}
+                {car.vehicle_type && (
+                  <TableRow>
+                    <TableCell className="text-muted-foreground pl-0">Ruhsat</TableCell>
+                    <TableCell className="pr-0 text-right font-medium">
+                      {vehicleTypeLabels[car.vehicle_type]}
+                    </TableCell>
+                  </TableRow>
+                )}
                 <TableRow>
                   <TableCell className="text-muted-foreground pl-0">Durum</TableCell>
                   <TableCell className="pr-0 text-right">
@@ -518,6 +622,155 @@ export default function CarDetail() {
                 </TableRow>
               </TableBody>
             </Table>
+          </div>
+
+          {/* Sigorta & Muayene */}
+          <div className="space-y-3">
+            <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
+              Sigorta & Muayene
+            </p>
+            <div className="space-y-2">
+              {/* Sigorta */}
+              <div className="rounded-lg border p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Shield className="text-muted-foreground size-3.5" />
+                    <span className="text-sm font-medium">Sigorta</span>
+                    <span className="text-muted-foreground text-xs">(1 yıl)</span>
+                  </div>
+                  {!editingInsurance ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-6"
+                      onClick={() => {
+                        setInsuranceDateValue(car.insurance_date ?? "")
+                        setEditingInsurance(true)
+                      }}
+                    >
+                      <Pencil className="size-3" />
+                    </Button>
+                  ) : (
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6"
+                        onClick={handleInsuranceSave}
+                        disabled={insuranceSaving}
+                      >
+                        <Save className="size-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6"
+                        onClick={() => setEditingInsurance(false)}
+                      >
+                        <X className="size-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                {editingInsurance ? (
+                  <input
+                    type="date"
+                    value={insuranceDateValue}
+                    onChange={(e) => setInsuranceDateValue(e.target.value)}
+                    className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-8 w-full rounded-md border px-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  />
+                ) : car.insurance_date ? (
+                  <div className="space-y-1.5">
+                    <div className="text-muted-foreground text-xs space-y-0.5">
+                      <div>Yapılma: {formatShortDate(car.insurance_date)}</div>
+                      <div>
+                        Bitiş:{" "}
+                        {formatShortDate(
+                          getExpiryDate(car.insurance_date, 1)
+                            .toISOString()
+                            .split("T")[0]
+                        )}
+                      </div>
+                    </div>
+                    <StatusBadge days={getDaysRemaining(car.insurance_date, 1)} />
+                  </div>
+                ) : (
+                  <StatusBadge days={null} />
+                )}
+              </div>
+
+              {/* Muayene */}
+              <div className="rounded-lg border p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <ClipboardCheck className="text-muted-foreground size-3.5" />
+                    <span className="text-sm font-medium">Muayene</span>
+                    <span className="text-muted-foreground text-xs">
+                      ({inspectionYears} yıl ·{" "}
+                      {car.vehicle_type === "commercial" ? "ticari" : "otomobil"})
+                    </span>
+                  </div>
+                  {!editingInspection ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-6"
+                      onClick={() => {
+                        setInspectionDateValue(car.inspection_date ?? "")
+                        setEditingInspection(true)
+                      }}
+                    >
+                      <Pencil className="size-3" />
+                    </Button>
+                  ) : (
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6"
+                        onClick={handleInspectionSave}
+                        disabled={inspectionSaving}
+                      >
+                        <Save className="size-3" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-6"
+                        onClick={() => setEditingInspection(false)}
+                      >
+                        <X className="size-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                {editingInspection ? (
+                  <input
+                    type="date"
+                    value={inspectionDateValue}
+                    onChange={(e) => setInspectionDateValue(e.target.value)}
+                    className="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-8 w-full rounded-md border px-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                  />
+                ) : car.inspection_date ? (
+                  <div className="space-y-1.5">
+                    <div className="text-muted-foreground text-xs space-y-0.5">
+                      <div>Yapılma: {formatShortDate(car.inspection_date)}</div>
+                      <div>
+                        Bitiş:{" "}
+                        {formatShortDate(
+                          getExpiryDate(car.inspection_date, inspectionYears)
+                            .toISOString()
+                            .split("T")[0]
+                        )}
+                      </div>
+                    </div>
+                    <StatusBadge days={getDaysRemaining(car.inspection_date, inspectionYears)} />
+                  </div>
+                ) : (
+                  <StatusBadge days={null} />
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="space-y-3">

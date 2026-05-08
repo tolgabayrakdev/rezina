@@ -29,6 +29,9 @@ export const createCarSchema = Joi.object({
   engine_volume: Joi.number().integer().min(1).optional().label('Motor Hacmi'),
   drive_type: Joi.string().valid('fwd', 'rwd', '4wd', 'awd').optional().label('Çekiş'),
   color: Joi.string().max(50).optional().allow('').label('Renk'),
+  vehicle_type: Joi.string().valid('passenger', 'commercial').optional().allow(null).label('Araç Tipi'),
+  insurance_date: Joi.date().iso().optional().allow(null).label('Sigorta Tarihi'),
+  inspection_date: Joi.date().iso().optional().allow(null).label('Muayene Tarihi'),
 }).messages(tr);
 
 export const updateCarSchema = Joi.object({
@@ -48,6 +51,9 @@ export const updateCarSchema = Joi.object({
   engine_volume: Joi.number().integer().min(1).optional().allow(null).label('Motor Hacmi'),
   drive_type: Joi.string().valid('fwd', 'rwd', '4wd', 'awd').optional().allow(null).label('Çekiş'),
   color: Joi.string().max(50).optional().allow('', null).label('Renk'),
+  vehicle_type: Joi.string().valid('passenger', 'commercial').optional().allow(null).label('Araç Tipi'),
+  insurance_date: Joi.date().iso().optional().allow(null).label('Sigorta Tarihi'),
+  inspection_date: Joi.date().iso().optional().allow(null).label('Muayene Tarihi'),
 }).min(1).messages(tr);
 
 export const addCarImageSchema = Joi.object({

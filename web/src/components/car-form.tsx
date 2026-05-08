@@ -185,7 +185,7 @@ export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: C
             </div>
           </div>
 
-          {/* Kasa / Çekiş */}
+          {/* Kasa / Çekiş / Ruhsat Tipi */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Kasa Tipi</Label>
@@ -217,6 +217,19 @@ export function CarForm({ form, setForm, onSubmit, onCancel, saving, isEdit }: C
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Ruhsat Tipi</Label>
+            <Select value={form.vehicle_type} onValueChange={set("vehicle_type")}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seçiniz" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="passenger">Otomobil</SelectItem>
+                <SelectItem value="commercial">Ticari</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Motor Gücü / Motor Hacmi / Renk */}

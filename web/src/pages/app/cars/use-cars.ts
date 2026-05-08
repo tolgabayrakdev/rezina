@@ -19,6 +19,9 @@ export interface CarItem {
   engine_volume: number | null
   drive_type: string | null
   color: string | null
+  vehicle_type: string | null
+  insurance_date: string | null
+  inspection_date: string | null
   created_at: string
 }
 
@@ -38,6 +41,7 @@ export type CarFormState = {
   engine_volume: string
   drive_type: string
   color: string
+  vehicle_type: string
 }
 
 export type SortKey =
@@ -149,6 +153,7 @@ const emptyForm: CarFormState = {
   engine_volume: "",
   drive_type: "",
   color: "",
+  vehicle_type: "",
 }
 
 export function useCars() {
@@ -284,6 +289,7 @@ export function useCars() {
         engine_volume: form.engine_volume ? parseInt(form.engine_volume) : null,
         drive_type: form.drive_type || null,
         color: form.color || null,
+        vehicle_type: form.vehicle_type || null,
       })
       toast.success("Araç eklendi")
       setCreateOpen(false)
@@ -316,6 +322,7 @@ export function useCars() {
         engine_volume: form.engine_volume ? parseInt(form.engine_volume) : null,
         drive_type: form.drive_type || null,
         color: form.color || null,
+        vehicle_type: form.vehicle_type || null,
       })
       toast.success("Araç güncellendi")
       setEditOpen(false)
@@ -360,6 +367,7 @@ export function useCars() {
       engine_volume: car.engine_volume?.toString() ?? "",
       drive_type: car.drive_type ?? "",
       color: car.color ?? "",
+      vehicle_type: car.vehicle_type ?? "",
     })
     setEditOpen(true)
   }

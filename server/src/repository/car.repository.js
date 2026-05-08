@@ -4,10 +4,10 @@ import pool from '../config/db.js';
 export class CarRepository {
   // ── Cars ────────────────────────────────────────────────────────────────
 
-  async create({ userId, title, brand, model, year, mileage, price, status, description, fuel_type, transmission, body_type, engine_power, engine_volume, drive_type, color }) {
+  async create({ userId, title, brand, model, year, mileage, price, status, description, fuel_type, transmission, body_type, engine_power, engine_volume, drive_type, color, vehicle_type, insurance_date, inspection_date }) {
     const result = await query(
-      `INSERT INTO cars (user_id, title, brand, model, year, mileage, price, status, description, fuel_type, transmission, body_type, engine_power, engine_volume, drive_type, color)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+      `INSERT INTO cars (user_id, title, brand, model, year, mileage, price, status, description, fuel_type, transmission, body_type, engine_power, engine_volume, drive_type, color, vehicle_type, insurance_date, inspection_date)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
        RETURNING *`,
       [
         userId, title,
@@ -15,6 +15,7 @@ export class CarRepository {
         price ?? null, status ?? 'in_stock', description ?? null,
         fuel_type ?? null, transmission ?? null, body_type ?? null,
         engine_power ?? null, engine_volume ?? null, drive_type ?? null, color ?? null,
+        vehicle_type ?? null, insurance_date ?? null, inspection_date ?? null,
       ]
     );
     return result.rows[0];
@@ -60,6 +61,7 @@ export class CarRepository {
       'status', 'description', 'expertise',
       'fuel_type', 'transmission', 'body_type',
       'engine_power', 'engine_volume', 'drive_type', 'color',
+      'vehicle_type', 'insurance_date', 'inspection_date',
     ];
     for (const key of allowed) {
       if (Object.prototype.hasOwnProperty.call(data, key)) {
