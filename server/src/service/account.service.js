@@ -1,5 +1,6 @@
 import { UserRepository } from '../repository/user.repository.js';
 import { NotFoundError, ValidationError } from '../exceptions/index.js';
+import { eventEmitter } from '../utils/events.js';
 import bcrypt from 'bcryptjs';
 
 const SALT_ROUNDS = 12;
@@ -39,7 +40,8 @@ export class AccountService {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
-    return this.userRepo.updateById(userId, { password: hashedPassword });
+    await this.userRepo.updateById(userId, { password: hashedPassword });
+    eventEmitter.emit('send-password-changed', { email: user.email });
   }
 
   async completeOnboarding(userId) {

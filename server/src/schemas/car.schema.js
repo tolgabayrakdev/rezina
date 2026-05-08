@@ -65,3 +65,24 @@ export const addCarLinkSchema = Joi.object({
   platform: Joi.string().max(100).required().label('Platform'),
   url: Joi.string().uri().required().label('İlan URL'),
 }).messages(tr);
+
+export const addMaintenanceItemSchema = Joi.object({
+  name: Joi.string().max(255).required().label('Bakım Adı'),
+  interval_km: Joi.number().integer().min(1).required().label('Aralık (km)'),
+  last_done_mileage: Joi.number().integer().min(0).optional().allow(null).label('Son KM'),
+  notes: Joi.string().max(1000).optional().allow('', null).label('Notlar'),
+}).messages(tr);
+
+export const updateMaintenanceItemSchema = Joi.object({
+  name: Joi.string().max(255).optional().label('Bakım Adı'),
+  interval_km: Joi.number().integer().min(1).optional().label('Aralık (km)'),
+  last_done_mileage: Joi.number().integer().min(0).optional().allow(null).label('Son KM'),
+  notes: Joi.string().max(1000).optional().allow('', null).label('Notlar'),
+}).min(1).messages(tr);
+
+export const addServiceRecordSchema = Joi.object({
+  title: Joi.string().max(255).required().label('Başlık'),
+  mileage: Joi.number().integer().min(0).optional().allow(null).label('KM'),
+  service_date: Joi.date().iso().optional().allow(null).label('Tarih'),
+  notes: Joi.string().max(2000).optional().allow('', null).label('Notlar'),
+}).messages(tr);

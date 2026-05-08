@@ -232,4 +232,95 @@ export class CarRepository {
     );
     return result.rows[0] || null;
   }
+
+  // ── Maintenance Items ────────────────────────────────────────────────────
+
+  async findMaintenanceItems(carId, userId) {
+    const result = await query(
+      `SELECT mi.* FROM car_maintenance_items mi
+       JOIN cars c ON mi.car_id = c.id
+       WHERE mi.car_id = $1 AND c.user_id = $2
+       ORDER BY mi.created_at ASC`,
+      [carId, userId]
+    );
+    return result.rows;
+  }
+
+  async addMaintenanceItem({ carId, userId, name, interval_km, last_done_mileage, notes }) {
+    const result = await query(
+      `INSERT INTO car_maintenance_items (car_id, name, interval_km, last_done_mileage, notes)
+       SELECT id, $3, $4, $5, $6 FROM cars WHERE id = $1 AND user_id = $2
+       RETURNING *`,
+      [carId, userId, name, interval_km, last_done_mileage ?? null, notes ?? null]
+    );
+    return result.rows[0];
+  }
+
+  async updateMaintenanceItem(id, carId, userId, data) {
+    const fields = [];
+    const values = [id, carId, userId];
+    let idx = 4;
+
+    if (data.name !== undefined) { fields.push(`name = $${idx++}`); values.push(data.name); }
+    if (data.interval_km !== undefined) { fields.push(`interval_km = $${idx++}`); values.push(data.interval_km); }
+    if (Object.prototype.hasOwnProperty.call(data, 'last_done_mileage')) { fields.push(`last_done_mileage = $${idx++}`); values.push(data.last_done_mileage); }
+    if (Object.prototype.hasOwnProperty.call(data, 'notes')) { fields.push(`notes = $${idx++}`); values.push(data.notes); }
+
+    if (fields.length === 0) return null;
+
+    const result = await query(
+      `UPDATE car_maintenance_items mi
+       SET ${fields.join(', ')}
+       FROM cars c
+       WHERE mi.id = $1 AND mi.car_id = c.id AND mi.car_id = $2 AND c.user_id = $3
+       RETURNING mi.*`,
+      values
+    );
+    return result.rows[0] || null;
+  }
+
+  async deleteMaintenanceItem(id, carId, userId) {
+    const result = await query(
+      `DELETE FROM car_maintenance_items mi
+       USING cars c
+       WHERE mi.id = $1 AND mi.car_id = c.id AND mi.car_id = $2 AND c.user_id = $3
+       RETURNING mi.id`,
+      [id, carId, userId]
+    );
+    return result.rows[0] || null;
+  }
+
+  // ── Service Records ──────────────────────────────────────────────────────
+
+  async findServiceRecords(carId, userId) {
+    const result = await query(
+      `SELECT sr.* FROM car_service_records sr
+       JOIN cars c ON sr.car_id = c.id
+       WHERE sr.car_id = $1 AND c.user_id = $2
+       ORDER BY sr.mileage DESC NULLS LAST, sr.created_at DESC`,
+      [carId, userId]
+    );
+    return result.rows;
+  }
+
+  async addServiceRecord({ carId, userId, title, mileage, service_date, notes }) {
+    const result = await query(
+      `INSERT INTO car_service_records (car_id, title, mileage, service_date, notes)
+       SELECT id, $3, $4, $5, $6 FROM cars WHERE id = $1 AND user_id = $2
+       RETURNING *`,
+      [carId, userId, title, mileage ?? null, service_date ?? null, notes ?? null]
+    );
+    return result.rows[0];
+  }
+
+  async deleteServiceRecord(id, carId, userId) {
+    const result = await query(
+      `DELETE FROM car_service_records sr
+       USING cars c
+       WHERE sr.id = $1 AND sr.car_id = c.id AND sr.car_id = $2 AND c.user_id = $3
+       RETURNING sr.id`,
+      [id, carId, userId]
+    );
+    return result.rows[0] || null;
+  }
 }

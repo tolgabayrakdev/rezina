@@ -27,6 +27,27 @@ eventEmitter.on('send-password-reset', async ({ email, token }) => {
   }
 });
 
+eventEmitter.on('send-password-changed', async ({ email }) => {
+  const mailOptions = {
+    from: env.EMAIL_FROM,
+    to: email,
+    subject: 'Şifreniz Değiştirildi',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; border: 1px solid #e0e0e0; border-radius: 8px;">
+        <h2 style="text-align: center; color: #333;">Şifreniz Başarıyla Değiştirildi</h2>
+        <p style="text-align: center; color: #555;">Hesabınızın şifresi başarıyla güncellendi.</p>
+        <p style="text-align: center; color: #888; font-size: 13px;">Eğer bu değişikliği siz yapmadıysanız lütfen hemen bizimle iletişime geçin.</p>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (err) {
+    console.error('Şifre değişikliği e-postası gönderilemedi:', err);
+  }
+});
+
 eventEmitter.on('send-verification-code', async ({ email, code }) => {
   const mailOptions = {
     from: env.EMAIL_FROM,

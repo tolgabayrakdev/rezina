@@ -81,6 +81,49 @@ export class CarService {
     await this.carRepo.deleteLink(linkId, userId);
   }
 
+  // ── Maintenance Items ────────────────────────────────────────────────────
+
+  async getMaintenanceItems(userId, carId) {
+    await this._findCar(carId, userId);
+    return this.carRepo.findMaintenanceItems(carId, userId);
+  }
+
+  async addMaintenanceItem(userId, carId, data) {
+    await this._findCar(carId, userId);
+    return this.carRepo.addMaintenanceItem({ carId, userId, ...data });
+  }
+
+  async updateMaintenanceItem(userId, carId, itemId, data) {
+    await this._findCar(carId, userId);
+    const item = await this.carRepo.updateMaintenanceItem(itemId, carId, userId, data);
+    if (!item) throw new NotFoundError('Bakım kalemi bulunamadı');
+    return item;
+  }
+
+  async deleteMaintenanceItem(userId, carId, itemId) {
+    await this._findCar(carId, userId);
+    const item = await this.carRepo.deleteMaintenanceItem(itemId, carId, userId);
+    if (!item) throw new NotFoundError('Bakım kalemi bulunamadı');
+  }
+
+  // ── Service Records ──────────────────────────────────────────────────────
+
+  async getServiceRecords(userId, carId) {
+    await this._findCar(carId, userId);
+    return this.carRepo.findServiceRecords(carId, userId);
+  }
+
+  async addServiceRecord(userId, carId, data) {
+    await this._findCar(carId, userId);
+    return this.carRepo.addServiceRecord({ carId, userId, ...data });
+  }
+
+  async deleteServiceRecord(userId, carId, recordId) {
+    await this._findCar(carId, userId);
+    const record = await this.carRepo.deleteServiceRecord(recordId, carId, userId);
+    if (!record) throw new NotFoundError('Servis kaydı bulunamadı');
+  }
+
   // ── Helpers ──────────────────────────────────────────────────────────────
 
   async _findCar(carId, userId) {

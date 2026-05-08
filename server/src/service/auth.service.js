@@ -201,10 +201,15 @@ export class AuthService {
       throw new ValidationError('Geçersiz veya süresi dolmuş sıfırlama bağlantısı');
     }
 
+    const user = await this.authRepo.findUserById(resetToken.user_id);
     const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
     await this.userRepo.updateById(resetToken.user_id, { password: hashedPassword });
     await this.authRepo.markPasswordResetTokenUsed(resetToken.id);
     await this.authRepo.deleteRefreshTokensByUserId(resetToken.user_id);
+
+    if (user) {
+      eventEmitter.emit('send-password-changed', { email: user.email });
+    }
   }
 
   async logout(userId, refreshToken) {
