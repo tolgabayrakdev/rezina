@@ -27,7 +27,7 @@ app.use(
     stream: { write: (msg) => logger.http(msg.trim()) },
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 app.use(generalLimiter);
 

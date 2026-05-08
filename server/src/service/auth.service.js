@@ -110,7 +110,7 @@ export class AuthService {
 
     eventEmitter.emit('send-verification-code', { email: user.email, code });
 
-    return { userId: user.id, message: 'Doğrulama kodu yeniden gönderildi' };
+    return { message: 'Doğrulama kodu yeniden gönderildi' };
   }
 
   async login({ email, password }) {

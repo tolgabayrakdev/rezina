@@ -14,7 +14,8 @@ export class AccountService {
     if (!user) {
       throw new NotFoundError('Kullanıcı bulunamadı');
     }
-    return { ...user, onboardingCompleted: user.onboarding_completed };
+    const { password, onboarding_completed, ...rest } = user;
+    return { ...rest, onboardingCompleted: onboarding_completed };
   }
 
   async updateProfile(userId, data) {
@@ -22,7 +23,8 @@ export class AccountService {
     if (!user) {
       throw new NotFoundError('Kullanıcı bulunamadı');
     }
-    return this.userRepo.updateById(userId, data);
+    const { password, ...safeData } = data;
+    return this.userRepo.updateById(userId, safeData);
   }
 
   async updatePassword(userId, { currentPassword, newPassword }) {
