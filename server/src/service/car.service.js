@@ -42,7 +42,13 @@ export class CarService {
     await this._findCar(carId, userId);
 
     const { url, public_id } = await this._uploadToCloudinary(file.buffer, file.mimetype);
-    return this.carRepo.addImage({ carId, userId, url, publicId: public_id, isCover: isCover ?? false });
+    return this.carRepo.addImage({
+      carId,
+      userId,
+      url,
+      publicId: public_id,
+      isCover: isCover ?? false,
+    });
   }
 
   async setCover(userId, carId, imageId) {

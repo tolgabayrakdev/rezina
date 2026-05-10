@@ -138,7 +138,7 @@ export function exportCarReport(
   car: CarDetail,
   expertise: Expertise,
   maintenanceItems: MaintenanceItem[] = [],
-  serviceRecords: ServiceRecord[] = [],
+  serviceRecords: ServiceRecord[] = []
 ) {
   const expertiseRows = getExpertiseRows(expertise)
   const statusColorMap: Record<string, string> = {
@@ -290,7 +290,7 @@ export function exportCarReport(
         <td>${maintenanceBadgeHtml(item, car.mileage)}</td>
       </tr>
       ${item.notes ? `<tr><td colspan="5" style="color:#64748b;font-style:italic;font-size:10px;padding-top:2px;padding-bottom:6px">${item.notes}</td></tr>` : ""}
-      `,
+      `
         )
         .join("")}
     </table>
@@ -318,7 +318,7 @@ export function exportCarReport(
         <td>${r.service_date ? formatShortDate(r.service_date) : "-"}</td>
         <td>${r.mileage != null ? `${r.mileage.toLocaleString("tr-TR")} km` : "-"}</td>
         <td style="color:#334155">${r.notes ?? "-"}</td>
-      </tr>`,
+      </tr>`
         )
         .join("")}
     </table>

@@ -39,10 +39,10 @@ import bengarajLogo from "@/assets/project_icon.svg"
 import { useTheme } from "@/providers/theme-provider"
 
 const navItems = [
-  { to: "/", label: "Ana Sayfa", icon: House },
-  { to: "/cars", label: "Araçlar", icon: Car },
-  { to: "/customers", label: "Müşteriler", icon: Users },
-  { to: "/interests", label: "İlgiler", icon: Handshake },
+  { to: "/", label: "Ana Sayfa", icon: House, tourId: "tour-nav-home" },
+  { to: "/cars", label: "Araçlar", icon: Car, tourId: "tour-nav-cars" },
+  { to: "/customers", label: "Müşteriler", icon: Users, tourId: "tour-nav-customers" },
+  { to: "/interests", label: "İlgiler", icon: Handshake, tourId: "tour-nav-interests" },
 ]
 
 export interface AppSidebarProps {
@@ -206,12 +206,13 @@ export function AppSidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: A
             Menü
           </p>
           <div className="space-y-0.5">
-            {navItems.map(({ to, label, icon: Icon }) => {
+            {navItems.map(({ to, label, icon: Icon, tourId }) => {
               const active = isActive(to)
               return (
                 <Link
                   key={to}
                   to={to}
+                  id={tourId}
                   title={collapsed ? label : undefined}
                   className={cn(
                     "group flex h-9 items-center gap-3 rounded-lg text-sm transition-all duration-150",

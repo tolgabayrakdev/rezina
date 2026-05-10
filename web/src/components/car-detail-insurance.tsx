@@ -90,7 +90,7 @@ function DateCard({
   }
 
   return (
-    <div className="rounded-lg border p-3 space-y-2">
+    <div className="space-y-2 rounded-lg border p-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           {icon}
@@ -102,16 +102,30 @@ function DateCard({
             variant="ghost"
             size="icon"
             className="size-6"
-            onClick={() => { setValue(dateStr ? toDateOnly(dateStr) : ""); setEditing(true) }}
+            onClick={() => {
+              setValue(dateStr ? toDateOnly(dateStr) : "")
+              setEditing(true)
+            }}
           >
             <Pencil className="size-3" />
           </Button>
         ) : (
           <div className="flex gap-1">
-            <Button variant="ghost" size="icon" className="size-6" onClick={handleSave} disabled={saving}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-6"
+              onClick={handleSave}
+              disabled={saving}
+            >
               <Save className="size-3" />
             </Button>
-            <Button variant="ghost" size="icon" className="size-6" onClick={() => setEditing(false)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-6"
+              onClick={() => setEditing(false)}
+            >
               <X className="size-3" />
             </Button>
           </div>
@@ -127,7 +141,7 @@ function DateCard({
         />
       ) : dateStr ? (
         <div className="space-y-1.5">
-          <div className="text-muted-foreground text-xs space-y-0.5">
+          <div className="text-muted-foreground space-y-0.5 text-xs">
             <div>Yapılma: {formatShortDate(dateStr)}</div>
             <div>
               Bitiş:{" "}
@@ -147,7 +161,13 @@ function DateCard({
   )
 }
 
-export function CarDetailInsurance({ carId, insuranceDate, inspectionDate, vehicleType, onUpdate }: Props) {
+export function CarDetailInsurance({
+  carId,
+  insuranceDate,
+  inspectionDate,
+  vehicleType,
+  onUpdate,
+}: Props) {
   const inspectionYears = vehicleType === "commercial" ? 1 : 2
 
   const saveInsurance = async (value: string | null) => {

@@ -57,7 +57,13 @@ export function CarMaintenanceDialog({ carId, open, onOpenChange, onSaved }: Pro
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) reset(); onOpenChange(v) }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) reset()
+        onOpenChange(v)
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Bakım Kalemi Ekle</DialogTitle>
@@ -102,7 +108,13 @@ export function CarMaintenanceDialog({ carId, open, onOpenChange, onSaved }: Pro
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => { reset(); onOpenChange(false) }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              reset()
+              onOpenChange(false)
+            }}
+          >
             İptal
           </Button>
           <Button onClick={handleSave} disabled={saving || !name || !intervalKm}>

@@ -57,16 +57,17 @@ export function CarDetailPhotos({ carId, images, onRefresh }: Props) {
               onClick={() => setLightboxIndex(idx)}
             >
               <img src={img.url} alt="" className="aspect-[4/3] w-full object-cover" />
-              {img.is_cover && (
-                <Badge className="absolute top-2 left-2 text-[10px]">Kapak</Badge>
-              )}
+              {img.is_cover && <Badge className="absolute top-2 left-2 text-[10px]">Kapak</Badge>}
               <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                 {!img.is_cover && (
                   <Button
                     variant="secondary"
                     size="sm"
                     className="h-7 text-xs"
-                    onClick={(e) => { e.stopPropagation(); handleSetCover(img.id) }}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSetCover(img.id)
+                    }}
                   >
                     Kapak yap
                   </Button>
@@ -89,7 +90,10 @@ export function CarDetailPhotos({ carId, images, onRefresh }: Props) {
         </div>
       )}
 
-      <Dialog open={lightboxIndex !== null} onOpenChange={(open) => !open && setLightboxIndex(null)}>
+      <Dialog
+        open={lightboxIndex !== null}
+        onOpenChange={(open) => !open && setLightboxIndex(null)}
+      >
         <DialogContent className="max-w-5xl border-0 bg-black/95 p-0 shadow-2xl">
           {lightboxIndex !== null && (
             <div className="relative flex items-center justify-center">
@@ -107,7 +111,10 @@ export function CarDetailPhotos({ carId, images, onRefresh }: Props) {
               {lightboxIndex > 0 && (
                 <button
                   className="absolute left-3 flex size-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i ?? 1) - 1) }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setLightboxIndex((i) => (i ?? 1) - 1)
+                  }}
                 >
                   <ChevronLeft className="size-5" />
                 </button>
@@ -115,7 +122,10 @@ export function CarDetailPhotos({ carId, images, onRefresh }: Props) {
               {lightboxIndex < images.length - 1 && (
                 <button
                   className="absolute right-3 flex size-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
-                  onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => (i ?? 0) + 1) }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setLightboxIndex((i) => (i ?? 0) + 1)
+                  }}
                 >
                   <ChevronRight className="size-5" />
                 </button>
@@ -139,7 +149,10 @@ export function CarDetailPhotos({ carId, images, onRefresh }: Props) {
         imageId={selectedImageId}
         open={deleteImageOpen}
         onOpenChange={setDeleteImageOpen}
-        onDeleted={() => { setSelectedImageId(null); onRefresh() }}
+        onDeleted={() => {
+          setSelectedImageId(null)
+          onRefresh()
+        }}
       />
     </div>
   )

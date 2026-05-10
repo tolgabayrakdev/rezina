@@ -77,7 +77,7 @@ export class AuthController {
 
       res.status(200).json({
         success: true,
-        data: { message: 'Token\'lar yenilendi' },
+        data: { message: "Token'lar yenilendi" },
       });
     } catch (err) {
       res.clearCookie('accessToken', getAccessTokenCookieOptions());

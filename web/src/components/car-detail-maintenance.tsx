@@ -14,7 +14,13 @@ interface Props {
   onRefresh: () => void
 }
 
-function MaintenanceBadge({ item, currentMileage }: { item: MaintenanceItem; currentMileage: number | null }) {
+function MaintenanceBadge({
+  item,
+  currentMileage,
+}: {
+  item: MaintenanceItem
+  currentMileage: number | null
+}) {
   if (item.last_done_mileage == null)
     return <span className="text-muted-foreground/50 text-xs italic">Henüz yapılmadı</span>
 
@@ -92,33 +98,42 @@ export function CarDetailMaintenance({ carId, items, currentMileage, onRefresh }
       ) : (
         <div className="space-y-2">
           {items.map((item) => {
-            const nextDue = item.last_done_mileage != null ? item.last_done_mileage + item.interval_km : null
+            const nextDue =
+              item.last_done_mileage != null ? item.last_done_mileage + item.interval_km : null
             return (
-              <div key={item.id} className="rounded-lg border p-3 space-y-2">
+              <div key={item.id} className="space-y-2 rounded-lg border p-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium truncate">{item.name}</p>
+                    <p className="truncate text-sm font-medium">{item.name}</p>
                     <p className="text-muted-foreground text-xs">
                       Her {item.interval_km.toLocaleString("tr-TR")} km
                     </p>
                   </div>
-                  <div className="flex gap-1 shrink-0">
+                  <div className="flex shrink-0 gap-1">
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-6 px-2 text-xs"
-                      onClick={() => { setDoneItemId(item.id); setDoneKmValue(currentMileage?.toString() ?? "") }}
+                      onClick={() => {
+                        setDoneItemId(item.id)
+                        setDoneKmValue(currentMileage?.toString() ?? "")
+                      }}
                     >
                       Yapıldı
                     </Button>
-                    <Button variant="ghost" size="icon" className="size-6" onClick={() => handleDelete(item.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-6"
+                      onClick={() => handleDelete(item.id)}
+                    >
                       <Trash2 className="size-3" />
                     </Button>
                   </div>
                 </div>
 
                 {doneItemId === item.id ? (
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <Input
                       type="number"
                       min={0}
@@ -129,38 +144,39 @@ export function CarDetailMaintenance({ carId, items, currentMileage, onRefresh }
                     />
                     <Button
                       size="sm"
-                      className="h-7 px-2 text-xs shrink-0"
+                      className="h-7 shrink-0 px-2 text-xs"
                       onClick={() => handleMarkDone(item.id)}
                       disabled={doneSaving || !doneKmValue}
                     >
-                      <Save className="size-3 mr-1" />
+                      <Save className="mr-1 size-3" />
                       Kaydet
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="size-7 shrink-0"
-                      onClick={() => { setDoneItemId(null); setDoneKmValue("") }}
+                      onClick={() => {
+                        setDoneItemId(null)
+                        setDoneKmValue("")
+                      }}
                     >
                       <X className="size-3" />
                     </Button>
                   </div>
                 ) : (
                   <div className="flex items-center justify-between gap-2">
-                    <div className="text-muted-foreground text-xs space-y-0.5">
+                    <div className="text-muted-foreground space-y-0.5 text-xs">
                       {item.last_done_mileage != null && (
                         <div>Son: {item.last_done_mileage.toLocaleString("tr-TR")} km</div>
                       )}
-                      {nextDue != null && (
-                        <div>Sıradaki: {nextDue.toLocaleString("tr-TR")} km</div>
-                      )}
+                      {nextDue != null && <div>Sıradaki: {nextDue.toLocaleString("tr-TR")} km</div>}
                     </div>
                     <MaintenanceBadge item={item} currentMileage={currentMileage} />
                   </div>
                 )}
 
                 {item.notes && (
-                  <p className="text-muted-foreground text-xs border-t pt-1.5 mt-1">{item.notes}</p>
+                  <p className="text-muted-foreground mt-1 border-t pt-1.5 text-xs">{item.notes}</p>
                 )}
               </div>
             )

@@ -16,10 +16,7 @@ export class CustomerController {
 
   list = async (req, res, next) => {
     try {
-      const customers = await this.customerService.getCustomers(
-        req.user.id,
-        req.query.search
-      );
+      const customers = await this.customerService.getCustomers(req.user.id, req.query.search);
       res.status(200).json({ success: true, data: customers });
     } catch (err) {
       next(err);
@@ -28,10 +25,7 @@ export class CustomerController {
 
   get = async (req, res, next) => {
     try {
-      const customer = await this.customerService.getCustomer(
-        req.user.id,
-        req.params.customerId
-      );
+      const customer = await this.customerService.getCustomer(req.user.id, req.params.customerId);
       res.status(200).json({ success: true, data: customer });
     } catch (err) {
       next(err);
@@ -53,10 +47,7 @@ export class CustomerController {
 
   delete = async (req, res, next) => {
     try {
-      await this.customerService.deleteCustomer(
-        req.user.id,
-        req.params.customerId
-      );
+      await this.customerService.deleteCustomer(req.user.id, req.params.customerId);
       res.status(200).json({ success: true, data: { message: 'Müşteri silindi' } });
     } catch (err) {
       next(err);

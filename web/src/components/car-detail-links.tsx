@@ -15,7 +15,8 @@ interface Props {
 function getDisplayUrl(url: string) {
   try {
     const { hostname, pathname } = new URL(url)
-    const path = pathname.length > 1 ? pathname.slice(0, 28) + (pathname.length > 28 ? "…" : "") : ""
+    const path =
+      pathname.length > 1 ? pathname.slice(0, 28) + (pathname.length > 28 ? "…" : "") : ""
     return hostname + path
   } catch {
     return url.slice(0, 40) + (url.length > 40 ? "…" : "")

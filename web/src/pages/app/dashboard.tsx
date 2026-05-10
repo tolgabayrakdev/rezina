@@ -151,7 +151,7 @@ export default function Dashboard() {
         </h1>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div id="tour-stats" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-1 border-b pb-4">
           <div className="flex items-center gap-2">
             <Package className="text-muted-foreground size-3.5" />
@@ -198,7 +198,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        <div className="space-y-3 lg:col-span-2">
+        <div id="tour-recent-cars" className="space-y-3 lg:col-span-2">
           <div className="flex items-center justify-between">
             <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
               Son Araçlar

@@ -86,11 +86,7 @@ export class CarController {
 
   deleteImage = async (req, res, next) => {
     try {
-      await this.carService.deleteImage(
-        req.user.id,
-        req.params.carId,
-        req.params.imageId
-      );
+      await this.carService.deleteImage(req.user.id, req.params.carId, req.params.imageId);
       res.status(200).json({ success: true, data: { message: 'Fotoğraf silindi' } });
     } catch (err) {
       next(err);
@@ -101,11 +97,7 @@ export class CarController {
 
   addLink = async (req, res, next) => {
     try {
-      const link = await this.carService.addLink(
-        req.user.id,
-        req.params.carId,
-        req.body
-      );
+      const link = await this.carService.addLink(req.user.id, req.params.carId, req.body);
       res.status(201).json({ success: true, data: link });
     } catch (err) {
       next(err);
@@ -114,10 +106,7 @@ export class CarController {
 
   getLinks = async (req, res, next) => {
     try {
-      const links = await this.carService.getLinks(
-        req.user.id,
-        req.params.carId
-      );
+      const links = await this.carService.getLinks(req.user.id, req.params.carId);
       res.status(200).json({ success: true, data: links });
     } catch (err) {
       next(err);
@@ -126,11 +115,7 @@ export class CarController {
 
   deleteLink = async (req, res, next) => {
     try {
-      await this.carService.deleteLink(
-        req.user.id,
-        req.params.carId,
-        req.params.linkId
-      );
+      await this.carService.deleteLink(req.user.id, req.params.carId, req.params.linkId);
       res.status(200).json({ success: true, data: { message: 'Link silindi' } });
     } catch (err) {
       next(err);
@@ -150,7 +135,11 @@ export class CarController {
 
   addMaintenanceItem = async (req, res, next) => {
     try {
-      const item = await this.carService.addMaintenanceItem(req.user.id, req.params.carId, req.body);
+      const item = await this.carService.addMaintenanceItem(
+        req.user.id,
+        req.params.carId,
+        req.body
+      );
       res.status(201).json({ success: true, data: item });
     } catch (err) {
       next(err);
@@ -193,7 +182,11 @@ export class CarController {
 
   addServiceRecord = async (req, res, next) => {
     try {
-      const record = await this.carService.addServiceRecord(req.user.id, req.params.carId, req.body);
+      const record = await this.carService.addServiceRecord(
+        req.user.id,
+        req.params.carId,
+        req.body
+      );
       res.status(201).json({ success: true, data: record });
     } catch (err) {
       next(err);

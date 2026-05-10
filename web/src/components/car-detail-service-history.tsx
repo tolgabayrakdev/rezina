@@ -50,17 +50,15 @@ export function CarDetailServiceHistory({ carId, records, onRefresh }: Props) {
       ) : (
         <div className="space-y-2">
           {records.map((record) => (
-            <div key={record.id} className="rounded-lg border p-3 space-y-1.5">
+            <div key={record.id} className="space-y-1.5 rounded-lg border p-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">{record.title}</p>
-                  <div className="text-muted-foreground text-xs flex items-center gap-2 mt-0.5">
+                  <div className="text-muted-foreground mt-0.5 flex items-center gap-2 text-xs">
                     {record.mileage != null && (
                       <span>{record.mileage.toLocaleString("tr-TR")} km</span>
                     )}
-                    {record.service_date && (
-                      <span>{formatShortDate(record.service_date)}</span>
-                    )}
+                    {record.service_date && <span>{formatShortDate(record.service_date)}</span>}
                   </div>
                 </div>
                 <Button
@@ -73,7 +71,7 @@ export function CarDetailServiceHistory({ carId, records, onRefresh }: Props) {
                 </Button>
               </div>
               {record.notes && (
-                <p className="text-muted-foreground text-xs border-t pt-1.5">{record.notes}</p>
+                <p className="text-muted-foreground border-t pt-1.5 text-xs">{record.notes}</p>
               )}
             </div>
           ))}

@@ -15,4 +15,6 @@ export const createCustomerSchema = Joi.object({
 export const updateCustomerSchema = Joi.object({
   name: Joi.string().min(2).max(150).optional().label('Ad Soyad'),
   phone: Joi.string().max(50).optional().allow('').label('Telefon'),
-}).min(1).messages(tr);
+})
+  .min(1)
+  .messages(tr);

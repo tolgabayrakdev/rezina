@@ -57,7 +57,13 @@ export function CarServiceRecordDialog({ carId, open, onOpenChange, onSaved }: P
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) reset(); onOpenChange(v) }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) reset()
+        onOpenChange(v)
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Servis Kaydı Ekle</DialogTitle>
@@ -103,7 +109,13 @@ export function CarServiceRecordDialog({ carId, open, onOpenChange, onSaved }: P
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => { reset(); onOpenChange(false) }}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              reset()
+              onOpenChange(false)
+            }}
+          >
             İptal
           </Button>
           <Button onClick={handleSave} disabled={saving || !title}>

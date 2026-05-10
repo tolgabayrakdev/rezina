@@ -47,15 +47,15 @@ Request → Router → Middleware (validate, authenticate) → Controller → Se
 
 ## Middleware
 
-| Middleware | Açıklama |
-|---|---|
-| `authenticate` | Cookie'den `accessToken` okur, `req.user` set eder |
-| `authorize(...roles)` | `req.user.role` kontrolü yapar |
-| `validate(schema)` | Zod şeması ile `req.body` doğrular |
-| `errorHandler` | `AppError` → uygun HTTP status; bilinmeyen → 500 |
-| `generalLimiter` | Tüm route'lara global rate limit |
-| `authLimiter` | Auth route'larına daha sıkı limit |
-| `accountLimiter` | Account route'larına limit |
+| Middleware            | Açıklama                                           |
+| --------------------- | -------------------------------------------------- |
+| `authenticate`        | Cookie'den `accessToken` okur, `req.user` set eder |
+| `authorize(...roles)` | `req.user.role` kontrolü yapar                     |
+| `validate(schema)`    | Zod şeması ile `req.body` doğrular                 |
+| `errorHandler`        | `AppError` → uygun HTTP status; bilinmeyen → 500   |
+| `generalLimiter`      | Tüm route'lara global rate limit                   |
+| `authLimiter`         | Auth route'larına daha sıkı limit                  |
+| `accountLimiter`      | Account route'larına limit                         |
 
 ---
 
@@ -91,18 +91,19 @@ AppError (base)
 
 > Rate limiter: `authLimiter`
 
-| Method | Path | Auth | Body | Açıklama |
-|---|---|---|---|---|
-| POST | `/register` | — | `email, password` | Kayıt — doğrulama kodu gönderilir |
-| POST | `/verify` | — | `email, code` | E-posta doğrulama |
-| POST | `/resend-verification` | — | `userId?` veya `email?` | Kodu yeniden gönder |
-| POST | `/login` | — | `email, password` | Giriş — cookie set edilir |
-| POST | `/refresh` | — | — | Access token yenile (cookie'den) |
-| POST | `/forgot-password` | — | `email` | Şifre sıfırlama maili gönder |
-| POST | `/reset-password` | — | `token, newPassword` | Şifreyi sıfırla |
-| POST | `/logout` | `authenticate` | — | Çıkış — cookie temizlenir |
+| Method | Path                   | Auth           | Body                    | Açıklama                          |
+| ------ | ---------------------- | -------------- | ----------------------- | --------------------------------- |
+| POST   | `/register`            | —              | `email, password`       | Kayıt — doğrulama kodu gönderilir |
+| POST   | `/verify`              | —              | `email, code`           | E-posta doğrulama                 |
+| POST   | `/resend-verification` | —              | `userId?` veya `email?` | Kodu yeniden gönder               |
+| POST   | `/login`               | —              | `email, password`       | Giriş — cookie set edilir         |
+| POST   | `/refresh`             | —              | —                       | Access token yenile (cookie'den)  |
+| POST   | `/forgot-password`     | —              | `email`                 | Şifre sıfırlama maili gönder      |
+| POST   | `/reset-password`      | —              | `token, newPassword`    | Şifreyi sıfırla                   |
+| POST   | `/logout`              | `authenticate` | —                       | Çıkış — cookie temizlenir         |
 
 **Token Akışı**
+
 - Login → `accessToken` (kısa ömür) + `refreshToken` (uzun ömür) httpOnly cookie olarak set edilir.
 - `/refresh` → her ikisi de yenilenir (refresh token rotation).
 - Logout → DB'den refresh token silinir, cookie temizlenir.
@@ -113,13 +114,13 @@ AppError (base)
 
 > Rate limiter: `accountLimiter` | Tüm route'lar `authenticate` gerektirir
 
-| Method | Path | Body | Açıklama |
-|---|---|---|---|
-| GET | `/me` | — | Profili getir |
-| PATCH | `/me` | `name?, ...` | Profili güncelle |
-| PATCH | `/me/password` | `currentPassword, newPassword` | Şifre güncelle |
-| POST | `/complete-onboarding` | — | Onboarding tamamla |
-| DELETE | `/me` | — | Hesabı sil |
+| Method | Path                   | Body                           | Açıklama           |
+| ------ | ---------------------- | ------------------------------ | ------------------ |
+| GET    | `/me`                  | —                              | Profili getir      |
+| PATCH  | `/me`                  | `name?, ...`                   | Profili güncelle   |
+| PATCH  | `/me/password`         | `currentPassword, newPassword` | Şifre güncelle     |
+| POST   | `/complete-onboarding` | —                              | Onboarding tamamla |
+| DELETE | `/me`                  | —                              | Hesabı sil         |
 
 ---
 
@@ -127,13 +128,13 @@ AppError (base)
 
 > Kişisel çalışma alanı — her kullanıcı kendi workspace'lerini oluşturur (Elite Cars, Bütçe Araçlar vb.). Üyelik sistemi yoktur; workspace sahibi her zaman o kullanıcının kendisidir.
 
-| Method | Path | Auth | Açıklama |
-|---|---|---|---|
-| POST | `/` | `authenticate` | Yeni workspace oluştur |
-| GET | `/` | `authenticate` | Kullanıcının workspace'lerini listele |
-| GET | `/:id` | `authenticate` | Workspace detayı |
-| PATCH | `/:id` | `authenticate` | Workspace güncelle |
-| DELETE | `/:id` | `authenticate` | Workspace sil |
+| Method | Path   | Auth           | Açıklama                              |
+| ------ | ------ | -------------- | ------------------------------------- |
+| POST   | `/`    | `authenticate` | Yeni workspace oluştur                |
+| GET    | `/`    | `authenticate` | Kullanıcının workspace'lerini listele |
+| GET    | `/:id` | `authenticate` | Workspace detayı                      |
+| PATCH  | `/:id` | `authenticate` | Workspace güncelle                    |
+| DELETE | `/:id` | `authenticate` | Workspace sil                         |
 
 ---
 
@@ -143,29 +144,29 @@ AppError (base)
 
 **Status değerleri:** `in_stock` | `reserved` | `sold`
 
-| Method | Path | Auth | Açıklama |
-|---|---|---|---|
-| POST | `/` | `authenticate` | Araç ekle |
-| GET | `/` | `authenticate` | Araçları listele (filtre: `status`, `brand`, `model`) |
-| GET | `/:carId` | `authenticate` | Araç detayı |
-| PATCH | `/:carId` | `authenticate` | Araç güncelle |
-| DELETE | `/:carId` | `authenticate` | Araç sil |
+| Method | Path      | Auth           | Açıklama                                              |
+| ------ | --------- | -------------- | ----------------------------------------------------- |
+| POST   | `/`       | `authenticate` | Araç ekle                                             |
+| GET    | `/`       | `authenticate` | Araçları listele (filtre: `status`, `brand`, `model`) |
+| GET    | `/:carId` | `authenticate` | Araç detayı                                           |
+| PATCH  | `/:carId` | `authenticate` | Araç güncelle                                         |
+| DELETE | `/:carId` | `authenticate` | Araç sil                                              |
 
 **Araç Fotoğrafları**
 
-| Method | Path | Açıklama |
-|---|---|---|
-| POST | `/:carId/images` | Fotoğraf ekle |
-| DELETE | `/:carId/images/:imageId` | Fotoğraf sil |
-| PATCH | `/:carId/images/:imageId/cover` | Kapak fotoğraf olarak ayarla |
+| Method | Path                            | Açıklama                     |
+| ------ | ------------------------------- | ---------------------------- |
+| POST   | `/:carId/images`                | Fotoğraf ekle                |
+| DELETE | `/:carId/images/:imageId`       | Fotoğraf sil                 |
+| PATCH  | `/:carId/images/:imageId/cover` | Kapak fotoğraf olarak ayarla |
 
 **Araç İlan Linkleri**
 
-| Method | Path | Body | Açıklama |
-|---|---|---|---|
-| POST | `/:carId/links` | `platform, url` | Platform linki ekle |
-| GET | `/:carId/links` | — | Linkleri listele |
-| DELETE | `/:carId/links/:linkId` | — | Linki sil |
+| Method | Path                    | Body            | Açıklama            |
+| ------ | ----------------------- | --------------- | ------------------- |
+| POST   | `/:carId/links`         | `platform, url` | Platform linki ekle |
+| GET    | `/:carId/links`         | —               | Linkleri listele    |
+| DELETE | `/:carId/links/:linkId` | —               | Linki sil           |
 
 > `platform` örnekleri: `sahibinden`, `arabam`, `ikinciyeni`, `custom`
 
@@ -175,13 +176,13 @@ AppError (base)
 
 > Workspace'e bağlı müşteri kayıtları.
 
-| Method | Path | Auth | Açıklama |
-|---|---|---|---|
-| POST | `/` | `authenticate` | Müşteri ekle |
-| GET | `/` | `authenticate` | Müşterileri listele |
-| GET | `/:customerId` | `authenticate` | Müşteri detayı |
-| PATCH | `/:customerId` | `authenticate` | Müşteri güncelle |
-| DELETE | `/:customerId` | `authenticate` | Müşteri sil |
+| Method | Path           | Auth           | Açıklama            |
+| ------ | -------------- | -------------- | ------------------- |
+| POST   | `/`            | `authenticate` | Müşteri ekle        |
+| GET    | `/`            | `authenticate` | Müşterileri listele |
+| GET    | `/:customerId` | `authenticate` | Müşteri detayı      |
+| PATCH  | `/:customerId` | `authenticate` | Müşteri güncelle    |
+| DELETE | `/:customerId` | `authenticate` | Müşteri sil         |
 
 ---
 
@@ -191,31 +192,31 @@ AppError (base)
 
 **Status değerleri:** `interested` | `test_drive` | `negotiating` | `lost` | `sold`
 
-| Method | Path | Body | Açıklama |
-|---|---|---|---|
-| POST | `/` | `carId, customerId, note?` | İlgi kaydı oluştur |
-| GET | `/` | — | Tüm ilgileri listele (filtre: `status`, `carId`, `customerId`) |
-| GET | `/:interestId` | — | İlgi detayı |
-| PATCH | `/:interestId` | `status?, note?` | Durum / not güncelle |
-| DELETE | `/:interestId` | — | İlgiyi sil |
+| Method | Path           | Body                       | Açıklama                                                       |
+| ------ | -------------- | -------------------------- | -------------------------------------------------------------- |
+| POST   | `/`            | `carId, customerId, note?` | İlgi kaydı oluştur                                             |
+| GET    | `/`            | —                          | Tüm ilgileri listele (filtre: `status`, `carId`, `customerId`) |
+| GET    | `/:interestId` | —                          | İlgi detayı                                                    |
+| PATCH  | `/:interestId` | `status?, note?`           | Durum / not güncelle                                           |
+| DELETE | `/:interestId` | —                          | İlgiyi sil                                                     |
 
 ---
 
 ## Veritabanı Tabloları
 
-| Tablo | Açıklama |
-|---|---|
-| `roles` | `user`, `admin` rolleri |
-| `users` | Kullanıcılar |
-| `verification_codes` | E-posta doğrulama kodları |
-| `refresh_tokens` | JWT refresh token'ları |
-| `password_reset_tokens` | Şifre sıfırlama token'ları |
-| `workspaces` | Kullanıcının kişisel çalışma alanları |
-| `cars` | Araç envanteri |
-| `car_images` | Araç fotoğrafları |
-| `car_links` | Araç ilan linkleri (sahibinden vb.) |
-| `customers` | Müşteriler |
-| `car_interests` | Araç-müşteri ilgi / satış süreci |
+| Tablo                   | Açıklama                              |
+| ----------------------- | ------------------------------------- |
+| `roles`                 | `user`, `admin` rolleri               |
+| `users`                 | Kullanıcılar                          |
+| `verification_codes`    | E-posta doğrulama kodları             |
+| `refresh_tokens`        | JWT refresh token'ları                |
+| `password_reset_tokens` | Şifre sıfırlama token'ları            |
+| `workspaces`            | Kullanıcının kişisel çalışma alanları |
+| `cars`                  | Araç envanteri                        |
+| `car_images`            | Araç fotoğrafları                     |
+| `car_links`             | Araç ilan linkleri (sahibinden vb.)   |
+| `customers`             | Müşteriler                            |
+| `car_interests`         | Araç-müşteri ilgi / satış süreci      |
 
 > Tam şema: `src/db/db.sql`
 
@@ -234,6 +235,7 @@ schemas/[module].schema.js     # gerekirse
 ```
 
 `app.js`'e route mount edilir:
+
 ```js
 app.use('/api/workspaces', workspaceRoutes);
 ```

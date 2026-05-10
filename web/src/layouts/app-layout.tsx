@@ -4,18 +4,20 @@ import AuthProvider from "@/providers/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
 import bengarajLogo from "@/assets/project_icon.svg"
-import { OnboardingModal } from "@/components/onboarding-modal"
 import { AppSidebar } from "@/components/app-sidebar"
+import { useOnboardingTour } from "@/hooks/use-onboarding-tour"
+import { CelebrationOverlay } from "@/components/celebration-overlay"
 
-export default function AppLayout() {
+function AppLayoutInner() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-
   const handleMobileClose = useCallback(() => setMobileOpen(false), [])
 
+  const { showCelebration, onCelebrationDone } = useOnboardingTour()
+
   return (
-    <AuthProvider>
-      <OnboardingModal />
+    <>
+      {showCelebration && <CelebrationOverlay onDone={onCelebrationDone} />}
       <div className="flex min-h-screen">
         {mobileOpen && (
           <div
@@ -52,6 +54,14 @@ export default function AppLayout() {
           </main>
         </div>
       </div>
+    </>
+  )
+}
+
+export default function AppLayout() {
+  return (
+    <AuthProvider>
+      <AppLayoutInner />
     </AuthProvider>
   )
 }

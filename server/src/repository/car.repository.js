@@ -4,18 +4,51 @@ import pool from '../config/db.js';
 export class CarRepository {
   // ── Cars ────────────────────────────────────────────────────────────────
 
-  async create({ userId, title, brand, model, year, mileage, price, status, description, fuel_type, transmission, body_type, engine_power, engine_volume, drive_type, color, vehicle_type, insurance_date, inspection_date }) {
+  async create({
+    userId,
+    title,
+    brand,
+    model,
+    year,
+    mileage,
+    price,
+    status,
+    description,
+    fuel_type,
+    transmission,
+    body_type,
+    engine_power,
+    engine_volume,
+    drive_type,
+    color,
+    vehicle_type,
+    insurance_date,
+    inspection_date,
+  }) {
     const result = await query(
       `INSERT INTO cars (user_id, title, brand, model, year, mileage, price, status, description, fuel_type, transmission, body_type, engine_power, engine_volume, drive_type, color, vehicle_type, insurance_date, inspection_date)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
        RETURNING *`,
       [
-        userId, title,
-        brand ?? null, model ?? null, year ?? null, mileage ?? null,
-        price ?? null, status ?? 'in_stock', description ?? null,
-        fuel_type ?? null, transmission ?? null, body_type ?? null,
-        engine_power ?? null, engine_volume ?? null, drive_type ?? null, color ?? null,
-        vehicle_type ?? null, insurance_date ?? null, inspection_date ?? null,
+        userId,
+        title,
+        brand ?? null,
+        model ?? null,
+        year ?? null,
+        mileage ?? null,
+        price ?? null,
+        status ?? 'in_stock',
+        description ?? null,
+        fuel_type ?? null,
+        transmission ?? null,
+        body_type ?? null,
+        engine_power ?? null,
+        engine_volume ?? null,
+        drive_type ?? null,
+        color ?? null,
+        vehicle_type ?? null,
+        insurance_date ?? null,
+        inspection_date ?? null,
       ]
     );
     return result.rows[0];
@@ -57,11 +90,25 @@ export class CarRepository {
     let idx = 3;
 
     const allowed = [
-      'title', 'brand', 'model', 'year', 'mileage', 'price',
-      'status', 'description', 'expertise',
-      'fuel_type', 'transmission', 'body_type',
-      'engine_power', 'engine_volume', 'drive_type', 'color',
-      'vehicle_type', 'insurance_date', 'inspection_date',
+      'title',
+      'brand',
+      'model',
+      'year',
+      'mileage',
+      'price',
+      'status',
+      'description',
+      'expertise',
+      'fuel_type',
+      'transmission',
+      'body_type',
+      'engine_power',
+      'engine_volume',
+      'drive_type',
+      'color',
+      'vehicle_type',
+      'insurance_date',
+      'inspection_date',
     ];
     for (const key of allowed) {
       if (Object.prototype.hasOwnProperty.call(data, key)) {
@@ -261,10 +308,22 @@ export class CarRepository {
     const values = [id, carId, userId];
     let idx = 4;
 
-    if (data.name !== undefined) { fields.push(`name = $${idx++}`); values.push(data.name); }
-    if (data.interval_km !== undefined) { fields.push(`interval_km = $${idx++}`); values.push(data.interval_km); }
-    if (Object.prototype.hasOwnProperty.call(data, 'last_done_mileage')) { fields.push(`last_done_mileage = $${idx++}`); values.push(data.last_done_mileage); }
-    if (Object.prototype.hasOwnProperty.call(data, 'notes')) { fields.push(`notes = $${idx++}`); values.push(data.notes); }
+    if (data.name !== undefined) {
+      fields.push(`name = $${idx++}`);
+      values.push(data.name);
+    }
+    if (data.interval_km !== undefined) {
+      fields.push(`interval_km = $${idx++}`);
+      values.push(data.interval_km);
+    }
+    if (Object.prototype.hasOwnProperty.call(data, 'last_done_mileage')) {
+      fields.push(`last_done_mileage = $${idx++}`);
+      values.push(data.last_done_mileage);
+    }
+    if (Object.prototype.hasOwnProperty.call(data, 'notes')) {
+      fields.push(`notes = $${idx++}`);
+      values.push(data.notes);
+    }
 
     if (fields.length === 0) return null;
 

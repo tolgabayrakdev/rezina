@@ -19,4 +19,6 @@ export const updateInterestSchema = Joi.object({
     .optional()
     .label('Durum'),
   note: Joi.string().max(2000).optional().allow('').label('Not'),
-}).min(1).messages(tr);
+})
+  .min(1)
+  .messages(tr);

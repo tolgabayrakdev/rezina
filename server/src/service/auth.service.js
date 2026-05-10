@@ -141,24 +141,29 @@ export class AuthService {
     const tokens = await this._generateTokens(tokenPayload, user.id);
 
     return {
-      user: { id: user.id, email: user.email, role: user.role, onboardingCompleted: user.onboarding_completed },
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        onboardingCompleted: user.onboarding_completed,
+      },
       tokens,
     };
   }
 
   async refreshToken(token) {
     if (!token) {
-      throw new UnauthorizedError('Yenileme token\'ı eksik');
+      throw new UnauthorizedError("Yenileme token'ı eksik");
     }
 
     const storedToken = await this.authRepo.findRefreshToken(token);
     if (!storedToken) {
-      throw new UnauthorizedError('Geçersiz yenileme token\'ı');
+      throw new UnauthorizedError("Geçersiz yenileme token'ı");
     }
 
     if (new Date(storedToken.expires_at) < new Date()) {
       await this.authRepo.deleteRefreshToken(token);
-      throw new UnauthorizedError('Yenileme token\'ının süresi doldu');
+      throw new UnauthorizedError("Yenileme token'ının süresi doldu");
     }
 
     if (!storedToken.is_active) {
@@ -171,7 +176,7 @@ export class AuthService {
       decoded = verifyRefreshToken(token);
     } catch {
       await this.authRepo.deleteRefreshToken(token);
-      throw new UnauthorizedError('Geçersiz yenileme token\'ı');
+      throw new UnauthorizedError("Geçersiz yenileme token'ı");
     }
 
     await this.authRepo.deleteRefreshToken(token);

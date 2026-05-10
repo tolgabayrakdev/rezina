@@ -36,13 +36,25 @@ router.delete('/:carId/links/:linkId', carController.deleteLink);
 
 // Maintenance Items
 router.get('/:carId/maintenance', carController.getMaintenanceItems);
-router.post('/:carId/maintenance', validate(addMaintenanceItemSchema), carController.addMaintenanceItem);
-router.patch('/:carId/maintenance/:itemId', validate(updateMaintenanceItemSchema), carController.updateMaintenanceItem);
+router.post(
+  '/:carId/maintenance',
+  validate(addMaintenanceItemSchema),
+  carController.addMaintenanceItem
+);
+router.patch(
+  '/:carId/maintenance/:itemId',
+  validate(updateMaintenanceItemSchema),
+  carController.updateMaintenanceItem
+);
 router.delete('/:carId/maintenance/:itemId', carController.deleteMaintenanceItem);
 
 // Service Records
 router.get('/:carId/service-records', carController.getServiceRecords);
-router.post('/:carId/service-records', validate(addServiceRecordSchema), carController.addServiceRecord);
+router.post(
+  '/:carId/service-records',
+  validate(addServiceRecordSchema),
+  carController.addServiceRecord
+);
 router.delete('/:carId/service-records/:recordId', carController.deleteServiceRecord);
 
 export default router;

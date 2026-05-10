@@ -114,8 +114,12 @@ export default function CarDetail() {
     let cancelled = false
     Promise.allSettled([
       apiClient.get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`),
-      apiClient.get<{ success: boolean; data: MaintenanceItem[] }>(`/api/cars/${carId}/maintenance`),
-      apiClient.get<{ success: boolean; data: ServiceRecord[] }>(`/api/cars/${carId}/service-records`),
+      apiClient.get<{ success: boolean; data: MaintenanceItem[] }>(
+        `/api/cars/${carId}/maintenance`
+      ),
+      apiClient.get<{ success: boolean; data: ServiceRecord[] }>(
+        `/api/cars/${carId}/service-records`
+      ),
     ])
       .then(([carResult, maintResult, svcResult]) => {
         if (cancelled) return
@@ -151,7 +155,9 @@ export default function CarDetail() {
   const fetchMaintenance = async () => {
     if (!carId) return
     try {
-      const res = await apiClient.get<{ success: boolean; data: MaintenanceItem[] }>(`/api/cars/${carId}/maintenance`)
+      const res = await apiClient.get<{ success: boolean; data: MaintenanceItem[] }>(
+        `/api/cars/${carId}/maintenance`
+      )
       setMaintenanceItems(res.data)
     } catch {
       toast.error("Bakım kalemleri yüklenemedi")
@@ -161,7 +167,9 @@ export default function CarDetail() {
   const fetchServiceRecords = async () => {
     if (!carId) return
     try {
-      const res = await apiClient.get<{ success: boolean; data: ServiceRecord[] }>(`/api/cars/${carId}/service-records`)
+      const res = await apiClient.get<{ success: boolean; data: ServiceRecord[] }>(
+        `/api/cars/${carId}/service-records`
+      )
       setServiceRecords(res.data)
     } catch {
       toast.error("Servis kayıtları yüklenemedi")

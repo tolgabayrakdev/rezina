@@ -7,10 +7,7 @@ export class InterestController {
 
   create = async (req, res, next) => {
     try {
-      const interest = await this.interestService.createInterest(
-        req.user.id,
-        req.body
-      );
+      const interest = await this.interestService.createInterest(req.user.id, req.body);
       res.status(201).json({ success: true, data: interest });
     } catch (err) {
       next(err);
@@ -20,10 +17,11 @@ export class InterestController {
   list = async (req, res, next) => {
     try {
       const { status, car_id, customer_id } = req.query;
-      const interests = await this.interestService.getInterests(
-        req.user.id,
-        { status, car_id, customer_id }
-      );
+      const interests = await this.interestService.getInterests(req.user.id, {
+        status,
+        car_id,
+        customer_id,
+      });
       res.status(200).json({ success: true, data: interests });
     } catch (err) {
       next(err);
@@ -32,10 +30,7 @@ export class InterestController {
 
   get = async (req, res, next) => {
     try {
-      const interest = await this.interestService.getInterest(
-        req.user.id,
-        req.params.interestId
-      );
+      const interest = await this.interestService.getInterest(req.user.id, req.params.interestId);
       res.status(200).json({ success: true, data: interest });
     } catch (err) {
       next(err);
@@ -57,10 +52,7 @@ export class InterestController {
 
   delete = async (req, res, next) => {
     try {
-      await this.interestService.deleteInterest(
-        req.user.id,
-        req.params.interestId
-      );
+      await this.interestService.deleteInterest(req.user.id, req.params.interestId);
       res.status(200).json({ success: true, data: { message: 'İlgi kaydı silindi' } });
     } catch (err) {
       next(err);

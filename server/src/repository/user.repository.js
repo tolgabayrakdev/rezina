@@ -13,10 +13,9 @@ export class UserRepository {
   }
 
   async completeOnboarding(id) {
-    await query(
-      `UPDATE users SET onboarding_completed = TRUE, updated_at = NOW() WHERE id = $1`,
-      [id]
-    );
+    await query(`UPDATE users SET onboarding_completed = TRUE, updated_at = NOW() WHERE id = $1`, [
+      id,
+    ]);
   }
 
   async updateById(id, data) {
