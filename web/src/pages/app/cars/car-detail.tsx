@@ -138,28 +138,34 @@ export default function CarDetail() {
     }
   }, [carId, navigate])
 
-  const fetchCar = () => {
+  const fetchCar = async () => {
     if (!carId) return
-    apiClient
-      .get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
-      .then((res) => setCar(res.data))
-      .catch(() => toast.error("Araç yüklenemedi"))
+    try {
+      const res = await apiClient.get<{ success: boolean; data: CarDetail }>(`/api/cars/${carId}`)
+      setCar(res.data)
+    } catch {
+      toast.error("Araç yüklenemedi")
+    }
   }
 
-  const fetchMaintenance = () => {
+  const fetchMaintenance = async () => {
     if (!carId) return
-    apiClient
-      .get<{ success: boolean; data: MaintenanceItem[] }>(`/api/cars/${carId}/maintenance`)
-      .then((res) => setMaintenanceItems(res.data))
-      .catch(() => toast.error("Bakım kalemleri yüklenemedi"))
+    try {
+      const res = await apiClient.get<{ success: boolean; data: MaintenanceItem[] }>(`/api/cars/${carId}/maintenance`)
+      setMaintenanceItems(res.data)
+    } catch {
+      toast.error("Bakım kalemleri yüklenemedi")
+    }
   }
 
-  const fetchServiceRecords = () => {
+  const fetchServiceRecords = async () => {
     if (!carId) return
-    apiClient
-      .get<{ success: boolean; data: ServiceRecord[] }>(`/api/cars/${carId}/service-records`)
-      .then((res) => setServiceRecords(res.data))
-      .catch(() => toast.error("Servis kayıtları yüklenemedi"))
+    try {
+      const res = await apiClient.get<{ success: boolean; data: ServiceRecord[] }>(`/api/cars/${carId}/service-records`)
+      setServiceRecords(res.data)
+    } catch {
+      toast.error("Servis kayıtları yüklenemedi")
+    }
   }
 
   const handleExpertisePanelChange = (key: string, status: PanelStatus) => {

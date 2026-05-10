@@ -52,7 +52,6 @@ export default function Interests() {
     setEditOpen,
     deleteOpen,
     setDeleteOpen,
-    selected,
     setSelected,
     form,
     setForm,
