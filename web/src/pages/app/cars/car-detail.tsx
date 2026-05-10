@@ -192,7 +192,7 @@ export default function CarDetail() {
 
   const handleExportPdf = () => {
     if (!car) return
-    exportCarReport(car, expertise)
+    exportCarReport(car, expertise, maintenanceItems, serviceRecords)
   }
 
   if (loading) {

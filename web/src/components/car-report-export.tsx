@@ -1,6 +1,7 @@
 import { PANEL_LABEL, STATUS_LABEL } from "@/types/expertise"
 import type { Expertise } from "@/types/expertise"
 import { PANELS } from "@/types/expertise"
+import type { MaintenanceItem, ServiceRecord } from "@/types/car-detail"
 
 interface CarDetail {
   id: string
@@ -20,6 +21,9 @@ interface CarDetail {
   engine_volume: number | null
   drive_type: string | null
   color: string | null
+  vehicle_type: string | null
+  insurance_date: string | null
+  inspection_date: string | null
   created_at: string
   updated_at: string
   images: { id: string; url: string; is_cover: boolean; created_at: string }[]
@@ -82,7 +86,60 @@ function getExpertiseRows(expertise: Expertise) {
   })
 }
 
-export function exportCarReport(car: CarDetail, expertise: Expertise) {
+function toDateOnly(s: string) {
+  return s.split("T")[0]
+}
+
+function getExpiryDate(dateStr: string, years: number): Date {
+  const d = new Date(toDateOnly(dateStr) + "T12:00:00")
+  d.setFullYear(d.getFullYear() + years)
+  return d
+}
+
+function getDaysRemaining(dateStr: string | null, years: number): number | null {
+  if (!dateStr) return null
+  const expiry = getExpiryDate(dateStr, years)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return Math.ceil((expiry.getTime() - today.getTime()) / 86400000)
+}
+
+function formatShortDate(dateStr: string) {
+  return new Date(toDateOnly(dateStr) + "T12:00:00").toLocaleDateString("tr-TR", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
+}
+
+function insuranceStatusHtml(days: number | null): string {
+  if (days === null) return `<span style="color:#94a3b8;font-style:italic">Tarih eklenmemiş</span>`
+  if (days < 0)
+    return `<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:10px;font-weight:600;background:#fee2e2;color:#dc2626">${Math.abs(days)} gün geçti</span>`
+  if (days <= 30)
+    return `<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:10px;font-weight:600;background:#fef3c7;color:#b45309">${days} gün kaldı</span>`
+  return `<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:10px;font-weight:600;background:#d1fae5;color:#047857">${days} gün kaldı</span>`
+}
+
+function maintenanceBadgeHtml(item: MaintenanceItem, currentMileage: number | null): string {
+  if (item.last_done_mileage == null)
+    return `<span style="color:#94a3b8;font-style:italic">Henüz yapılmadı</span>`
+  const nextDue = item.last_done_mileage + item.interval_km
+  const remaining = nextDue - (currentMileage ?? 0)
+  const threshold = Math.round(item.interval_km * 0.1)
+  if (remaining < 0)
+    return `<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:10px;font-weight:600;background:#fee2e2;color:#dc2626">${Math.abs(remaining).toLocaleString("tr-TR")} km geçildi</span>`
+  if (remaining <= threshold)
+    return `<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:10px;font-weight:600;background:#fef3c7;color:#b45309">${remaining.toLocaleString("tr-TR")} km kaldı</span>`
+  return `<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:10px;font-weight:600;background:#d1fae5;color:#047857">${remaining.toLocaleString("tr-TR")} km kaldı</span>`
+}
+
+export function exportCarReport(
+  car: CarDetail,
+  expertise: Expertise,
+  maintenanceItems: MaintenanceItem[] = [],
+  serviceRecords: ServiceRecord[] = [],
+) {
   const expertiseRows = getExpertiseRows(expertise)
   const statusColorMap: Record<string, string> = {
     Orijinal: "#64748b",
@@ -182,6 +239,92 @@ export function exportCarReport(car: CarDetail, expertise: Expertise) {
       ${expertiseHtml}
     </table>
   </div>
+
+  <div class="section">
+    <div class="section-title">Sigorta & Muayene</div>
+    <table>
+      <tr>
+        <th>Sigorta (1 yıl)</th>
+        <td>
+          ${
+            car.insurance_date
+              ? `Yapılma: ${formatShortDate(car.insurance_date)} · Bitiş: ${getExpiryDate(car.insurance_date, 1).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })} &nbsp; ${insuranceStatusHtml(getDaysRemaining(car.insurance_date, 1))}`
+              : insuranceStatusHtml(null)
+          }
+        </td>
+      </tr>
+      <tr>
+        <th>Muayene (${car.vehicle_type === "commercial" ? "1 yıl · ticari" : "2 yıl · otomobil"})</th>
+        <td>
+          ${
+            car.inspection_date
+              ? `Yapılma: ${formatShortDate(car.inspection_date)} · Bitiş: ${getExpiryDate(car.inspection_date, car.vehicle_type === "commercial" ? 1 : 2).toLocaleDateString("tr-TR", { day: "numeric", month: "short", year: "numeric" })} &nbsp; ${insuranceStatusHtml(getDaysRemaining(car.inspection_date, car.vehicle_type === "commercial" ? 1 : 2))}`
+              : insuranceStatusHtml(null)
+          }
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  ${
+    maintenanceItems.length > 0
+      ? `
+  <div class="section">
+    <div class="section-title">Bakım Takibi</div>
+    <table>
+      <tr>
+        <th style="width:30%">Bakım</th>
+        <th style="width:20%">Aralık</th>
+        <th style="width:20%">Son Yapılan</th>
+        <th style="width:20%">Sıradaki</th>
+        <th>Durum</th>
+      </tr>
+      ${maintenanceItems
+        .map(
+          (item) => `
+      <tr>
+        <td style="font-weight:500">${item.name}</td>
+        <td>${item.interval_km.toLocaleString("tr-TR")} km</td>
+        <td>${item.last_done_mileage != null ? `${item.last_done_mileage.toLocaleString("tr-TR")} km` : "-"}</td>
+        <td>${item.last_done_mileage != null ? `${(item.last_done_mileage + item.interval_km).toLocaleString("tr-TR")} km` : "-"}</td>
+        <td>${maintenanceBadgeHtml(item, car.mileage)}</td>
+      </tr>
+      ${item.notes ? `<tr><td colspan="5" style="color:#64748b;font-style:italic;font-size:10px;padding-top:2px;padding-bottom:6px">${item.notes}</td></tr>` : ""}
+      `,
+        )
+        .join("")}
+    </table>
+  </div>`
+      : ""
+  }
+
+  ${
+    serviceRecords.length > 0
+      ? `
+  <div class="section">
+    <div class="section-title">Servis Geçmişi</div>
+    <table>
+      <tr>
+        <th style="width:35%">İşlem</th>
+        <th style="width:20%">Tarih</th>
+        <th style="width:20%">Kilometre</th>
+        <th>Notlar</th>
+      </tr>
+      ${serviceRecords
+        .map(
+          (r) => `
+      <tr>
+        <td style="font-weight:500">${r.title}</td>
+        <td>${r.service_date ? formatShortDate(r.service_date) : "-"}</td>
+        <td>${r.mileage != null ? `${r.mileage.toLocaleString("tr-TR")} km` : "-"}</td>
+        <td style="color:#334155">${r.notes ?? "-"}</td>
+      </tr>`,
+        )
+        .join("")}
+    </table>
+  </div>`
+      : ""
+  }
 
   ${
     car.description
