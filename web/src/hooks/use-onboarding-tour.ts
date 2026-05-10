@@ -108,7 +108,7 @@ export function useOnboardingTour() {
       clearTimeout(timer)
       startedRef.current = false
     }
-  }, [user])
+  }, [user, completeOnboarding])
 
   return {
     showCelebration,
